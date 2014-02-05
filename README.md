@@ -1,4 +1,5 @@
-clumsy-bird
-===========
+clumsybird
+===============================
 
-A MelonJS port of the famous Floppy Bird Game
+A melonjs floppy bird clone
+http://myawesomegame.com
