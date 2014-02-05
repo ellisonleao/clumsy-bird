@@ -1,0 +1,10 @@
+{
+    "name": "clumsybird",
+    "launch_path" : "./index.html",
+    "version": "1",
+    "developer": {
+        "name": "Ellison Leão",
+        "email": "ellisonleao@gmail.com",
+        "url": "http://myawesomegame.com"
+    }
+}
