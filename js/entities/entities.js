@@ -6,28 +6,22 @@ var BirdEntity = me.ObjectEntity.extend({
     settings.spriteheight= 40;
 
     this.parent(x, y, settings);
-    this.setVelocity(1, 1);    
-    this.direction = 'down';
-    this.maxVel = new me.Vector2d(0, 100);
     this.alwaysUpdate = true;
     this.dead = false;
-    this.accel = new me.Vector2d(0, -this.gravity);
+    this.gravity = 35;
   },
 
   update: function(x, y){
     // mechanics
     if (me.input.isKeyPressed('fly')){
-      this.vel.add(new me.Vector2d(0, 5 * me.timer.tick));
-      console.log('pressed');
-      console.log(this.vel);
+      this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick));
     }else{
-      this.vel.add(new me.Vector2d(0, -10) * me.timer.tick);   
+      this.pos.y += me.timer.tick * 1.7;
     }
 
-    //this.accel.clamp(0, 100);
-
-    //console.log(this.accel)
-    //this.updateMovement();
+    if (this.pos.y > me.game.viewport.height - 20){
+      this.dead = true;
+    }
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
     return updated;
