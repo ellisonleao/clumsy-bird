@@ -1,15 +1,9 @@
 game.resources = [
 
-	/* Graphics. 
-	 * @example
-	 * {name: "example", type:"image", src: "data/img/example.png"},
-	 */
+	 {name: "bg", type:"image", src: "data/img/bg.png"},
+	 {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
 
-	/* Atlases 
-	 * @example
-	 * {name: "example_tps", type: "tps", src: "data/img/example_tps.json"},
-	 */
-		
+	
 	/* Background music. 
 	 * @example
 	 * {name: "example_bgm", type: "audio", src: "data/bgm/", channel : 1},
