@@ -6,31 +6,52 @@ var BirdEntity = me.ObjectEntity.extend({
     settings.spriteheight= 40;
 
     this.parent(x, y, settings);
-    this.setVelocity(1, 1);    
-    this.direction = 'down';
-    this.maxVel = new me.Vector2d(0, 100);
     this.alwaysUpdate = true;
-    this.dead = false;
-    this.accel = new me.Vector2d(0, -this.gravity);
+    this.gravity = 32;
   },
 
   update: function(x, y){
     // mechanics
     if (me.input.isKeyPressed('fly')){
-      this.vel.add(new me.Vector2d(0, 5 * me.timer.tick));
-      console.log('pressed');
-      console.log(this.vel);
+      this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick));
     }else{
-      this.vel.add(new me.Vector2d(0, -10) * me.timer.tick);   
+      this.pos.y += me.timer.tick * 1.7;
     }
 
-    //this.accel.clamp(0, 100);
+    if (this.pos.y > me.game.viewport.height + 40){
+		  me.state.change(me.state.GAME_OVER);
+    }
+    var updated = (this.vel.x != 0 || this.vel.y != 0);
+    return updated;
+  },
 
-    //console.log(this.accel)
-    //this.updateMovement();
+});
+
+var PipeEntity = me.ObjectEntity.extend({
+  init: function(x, y){
+    var settings = {};
+    settings.image = me.loader.getImage('pipes');
+    settings.spritewidth = 88;
+    settings.spriteheight= 521;
+
+    this.parent(x, y, settings);
+    this.alwaysUpdate = true;
+    this.gravity = 3;
+  },
+
+  update: function(x, y){
+    // mechanics
+    this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
+    if (this.pos.x < -88) {
+      //CRAP!
+      posY = parseInt(Math.random() * -100);
+      offsetX = parseInt(Math.random() * 200) + 400;
+      this.pos = new me.Vector2d(me.game.viewport.width + 88 + offsetX, posY);
+    }
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
     return updated;
   },
+
 
 });
