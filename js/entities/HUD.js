@@ -45,7 +45,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		this.parent(new me.Vector2d(x, y), 10, 10); 
 		
 		// local copy of the global score
-		this.score = -1;
+		this.score = me.game.score;
 
     this.timer = 0;
     this.timerFont = new me.Font('Artial', 40, '#ff9900', 'center');

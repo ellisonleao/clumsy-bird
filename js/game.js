@@ -40,6 +40,7 @@ var game = {
 	"loaded" : function () {
 		me.state.set(me.state.MENU, new game.TitleScreen());
 		me.state.set(me.state.PLAY, new game.PlayScreen());
+		me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
 
 		// add some fadeIn/fadeOut effect for transition 
 		me.state.transition("fade", "#000", 100);
