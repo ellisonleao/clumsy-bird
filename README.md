@@ -1,5 +1,5 @@
-clumsybird
-===============================
+Clumsy Bird
+===========
 
 A melonjs floppy bird clone
-http://myawesomegame.com
+Play online at http://ellisonleao.github.io/clumsy-bird/
