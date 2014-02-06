@@ -16,13 +16,22 @@ var BirdEntity = me.ObjectEntity.extend({
     // mechanics
     if (me.input.isKeyPressed('fly')){
       this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick * this.pushForce));
+      this.gravityForce = 5;
     }else{
+      this.gravityForce += 0.5;
       this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
     }
 
     if (this.pos.y > me.game.viewport.height + 40){
 		  me.state.change(me.state.GAME_OVER);
     }
+
+    res = this.collide();
+    if (res){
+      console.log('colidiu');
+		  //me.state.change(me.state.GAME_OVER);
+    }
+
     var updated = (this.vel.x != 0 || this.vel.y != 0);
     return updated;
   },

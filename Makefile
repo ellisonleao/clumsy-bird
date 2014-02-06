@@ -1,2 +1,2 @@
 run:
-	python -m SimpleHTTPServer
+	python -m SimpleHTTPServer 8001
