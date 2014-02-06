@@ -8,14 +8,16 @@ var BirdEntity = me.ObjectEntity.extend({
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
     this.gravity = 32;
+    this.pushForce = 1.7;
+    this.gravityForce = 2.5;
   },
 
   update: function(x, y){
     // mechanics
     if (me.input.isKeyPressed('fly')){
-      this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick));
+      this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick * this.pushForce));
     }else{
-      this.pos.y += me.timer.tick * 1.7;
+      this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
     }
 
     if (this.pos.y > me.game.viewport.height + 40){
@@ -36,21 +38,17 @@ var PipeEntity = me.ObjectEntity.extend({
 
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
-    this.gravity = 3;
+    this.gravity = 5;
+    this.visible = true;
   },
 
-  update: function(x, y){
+  update: function(){
     // mechanics
     this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
     if (this.pos.x < -88) {
-      //CRAP!
-      posY = parseInt(Math.random() * -100);
-      offsetX = parseInt(Math.random() * 200) + 400;
-      this.pos = new me.Vector2d(me.game.viewport.width + 88 + offsetX, posY);
+      me.game.remove(this);
     }
-
-    var updated = (this.vel.x != 0 || this.vel.y != 0);
-    return updated;
+    return true;
   },
 
 
