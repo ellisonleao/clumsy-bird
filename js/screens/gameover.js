@@ -3,7 +3,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 		this.parent(true);
 		this.font = null;
     this.title = 'Game Over';
-    this.score = 'Final Score: ' + me.game.score;
+    this.score = null;
 	},
 	
   onResetEvent: function() {	
@@ -13,6 +13,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 		// init a font object
     this.font = new me.Font('Verdana', 40, 'red', 'center');
     me.game.add(new BackgroundLayer('bg'));
+    this.score = 'Final Score: ' + game.data.score;
 	},
 
 	update : function() {
@@ -26,8 +27,8 @@ game.GameOverScreen = me.ScreenObject.extend({
   draw: function(context) {
 		this.font.draw(context, this.title,  me.game.viewport.width/2,
         me.game.viewport.height/2 - 100);
-		//this.font.draw(context, this.score,  me.game.viewport.width/2,
-    //    me.game.viewport.height/2);
+		this.font.draw(context, this.score,  me.game.viewport.width/2,
+        me.game.viewport.height/2);
   },
 
 	onDestroyEvent : function() {
