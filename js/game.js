@@ -38,6 +38,7 @@ var game = {
 
 	// Run on game resources loaded.
 	"loaded" : function () {
+    me.sys.fps = 30;
 		me.state.set(me.state.MENU, new game.TitleScreen());
 		me.state.set(me.state.PLAY, new game.PlayScreen());
 		me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
