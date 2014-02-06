@@ -61,7 +61,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		// we don't do anything fancy here, so just
 		// return true if the score has been updated
     this.timer += me.timer.tick / 60 * 0.5;
-    me.game.score += 1 * me.timer.tick % 100;
+    game.data.score += me.timer.tick % 100 * 5;
     return true;
 	},
 
