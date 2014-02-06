@@ -2,6 +2,7 @@ game.PlayScreen = me.ScreenObject.extend({
   init: function(){
       this.parent(true);      
       this.generate = 0;
+      this.pipeHoleSize = 109;
   },
 
   getRandomInt: function(min, max){
@@ -27,8 +28,10 @@ game.PlayScreen = me.ScreenObject.extend({
 
   update: function(){
     if (this.generate++ % 63  == 0){
-      posY = this.getRandomInt(-190, 0);
+      var posY = this.getRandomInt(-206, 0);
       me.game.add(new me.entityPool.newInstanceOf("pipe", this.posX, posY), 10);
+      var posY2 = posY + this.pipeHoleSize + 206;
+      me.game.add(new me.entityPool.newInstanceOf("pipe", this.posX, posY2), 10);
     }
     return true; 
   },

@@ -28,7 +28,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
     res = this.collide();
     if (res){
-		  //me.state.change(me.state.GAME_OVER);
+		  me.state.change(me.state.GAME_OVER);
     }
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
@@ -42,12 +42,13 @@ var PipeEntity = me.ObjectEntity.extend({
     var settings = {};
     settings.image = me.loader.getImage('pipes');
     settings.spritewidth = 88;
-    settings.spriteheight= 521;
+    settings.spriteheight= 206;
 
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
     this.gravity = 5;
     this.visible = true;
+    this.updateColRect(5, 78, 5, 195);
   },
 
   update: function(){
