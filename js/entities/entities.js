@@ -23,6 +23,13 @@ var BirdEntity = me.ObjectEntity.extend({
     if (this.pos.y > me.game.viewport.height + 40){
 		  me.state.change(me.state.GAME_OVER);
     }
+
+    res = this.collide();
+    if (res){
+      console.log(res.obj.type);
+		  //me.state.change(me.state.GAME_OVER);
+    }
+
     var updated = (this.vel.x != 0 || this.vel.y != 0);
     return updated;
   },
