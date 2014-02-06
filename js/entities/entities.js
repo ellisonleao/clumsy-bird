@@ -8,8 +8,8 @@ var BirdEntity = me.ObjectEntity.extend({
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
     this.gravity = 32;
-    this.pushForce = 1.7;
-    this.gravityForce = 2.5;
+    this.pushForce = 1.2;
+    this.gravityForce = 5;
   },
 
   update: function(x, y){
