@@ -16,7 +16,9 @@ var BirdEntity = me.ObjectEntity.extend({
     // mechanics
     if (me.input.isKeyPressed('fly')){
       this.pos.add(new me.Vector2d(0, -this.gravity * me.timer.tick * this.pushForce));
+      this.gravityForce = 5;
     }else{
+      this.gravityForce += 0.5;
       this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
     }
 
@@ -26,7 +28,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
     res = this.collide();
     if (res){
-      console.log(res.obj.type);
+      console.log('colidiu');
 		  //me.state.change(me.state.GAME_OVER);
     }
 
