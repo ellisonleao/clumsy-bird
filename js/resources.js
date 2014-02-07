@@ -2,7 +2,7 @@ game.resources = [
 
 	 {name: "bg", type:"image", src: "data/img/bg.png"},
 	 {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
-	 {name: "pipes", type:"image", src: "data/img/pipe.png"},
+	 {name: "pipesfinal", type:"image", src: "data/img/pipesfinal.png"},
 
 	
 	/* Background music. 
