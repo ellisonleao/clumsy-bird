@@ -8,7 +8,7 @@ var BirdEntity = me.ObjectEntity.extend({
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
     this.gravity = 32;
-    this.pushForce = 1.4;
+    this.pushForce = 1.1;
     this.gravityForce = 5;
     this.maxAngleRotation = Number.prototype.degToRad(45);
     this.renderable.addAnimation("flying", [0, 1, 2]);
@@ -26,7 +26,7 @@ var BirdEntity = me.ObjectEntity.extend({
       if (this.renderable.angle > -this.maxAngleRotation)
         this.renderable.angle = -this.maxAngleRotation;
     }else{
-      this.gravityForce += 0.2;
+      this.gravityForce += 0.1;
       this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
       this.renderable.angle += Number.prototype.degToRad(5) * me.timer.tick;
       if (this.renderable.angle > this.maxAngleRotation)
