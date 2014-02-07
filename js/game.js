@@ -5,7 +5,8 @@ var game = {
 	// an object where to store game information
 	data : {
 		// score
-		score : 0
+		score : 0,
+    timer: 0
 	},
 	
 	// Run on page load.

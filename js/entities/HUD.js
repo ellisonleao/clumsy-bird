@@ -47,7 +47,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		// local copy of the global score
 		this.score = me.game.score;
 
-    this.timer = 0;
+    this.timer = me.game.timer;
     this.timerFont = new me.Font('Artial', 40, '#ff9900', 'center');
 
 		// make sure we use screen coordinates
@@ -55,13 +55,13 @@ game.HUD.ScoreItem = me.Renderable.extend({
 	},
 
 	update : function () {
-    this.timer += me.timer.tick / 60 * 0.5;
+    game.data.timer += me.timer.tick / 60;
     game.data.score += me.timer.tick % 100 * 5;
     return true;
 	},
 
 	draw : function (context) {
-    this.timerFont.draw(context, Math.round(this.timer),
+    this.timerFont.draw(context, Math.round(game.data.timer),
                         me.game.viewport.width / 2, 10); 
 	}
 
