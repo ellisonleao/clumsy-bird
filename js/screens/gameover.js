@@ -8,16 +8,14 @@ game.GameOverScreen = me.ScreenObject.extend({
 	
   onResetEvent: function() {	
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-		// map the left button click on the ENTER key
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
-		// init a font object
+    
     this.font = new me.Font('Verdana', 40, 'red', 'center');
     me.game.add(new BackgroundLayer('bg'));
     this.score = 'Final Score: ' + game.data.score;
 	},
 
 	update : function() {
-		// enter pressed ?
 		if (me.input.isKeyPressed('enter')) {
 			me.state.change(me.state.MENU);
 		}
@@ -32,9 +30,7 @@ game.GameOverScreen = me.ScreenObject.extend({
   },
 
 	onDestroyEvent : function() {
-		// free the font object
 		this.font = null;
-		// unregister the event
 		me.input.unbindKey(me.input.KEY.ENTER);
 		me.input.unbindMouse(me.input.mouse.LEFT);
 	}
