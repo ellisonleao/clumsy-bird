@@ -21,11 +21,13 @@ var BirdEntity = me.ObjectEntity.extend({
   update: function(x, y){
     // mechanics
     if (me.input.isKeyPressed('fly')){
+      this.gravityForce = 5;
+
       var currentPos = this.pos.y;
       tween = new me.Tween(this.pos).to({y: currentPos - 45}, 150);
       tween.easing(me.Tween.Easing.Bounce.Out);
       tween.start();
-      this.gravityForce = 5;
+
       this.renderable.angle -= Number.prototype.degToRad(10) * me.timer.tick;
       if (this.renderable.angle > -this.maxAngleRotation)
         this.renderable.angle = -this.maxAngleRotation;
@@ -45,7 +47,7 @@ var BirdEntity = me.ObjectEntity.extend({
     }
 
     res = this.collide();
-    if (res || this.pos.y > me.game.viewport.height + 40){
+    if (res || this.pos.y > me.game.viewport.height + 40 || this.pos.y < 0){
 		  me.state.change(me.state.GAME_OVER);
     }
 
