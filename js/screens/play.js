@@ -21,7 +21,9 @@ game.PlayScreen = me.ScreenObject.extend({
     this.bird = me.entityPool.newInstanceOf("clumsy", 30, me.game.viewport.height/2);
     me.game.add(this.bird, 10);
     this.posX = me.game.viewport.width;
-
+    
+    //touch
+    me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
 	},
 
   update: function(){
