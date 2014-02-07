@@ -2,8 +2,8 @@ var BirdEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
     settings.image = me.loader.getImage('clumsy');
-    settings.spritewidth = 40;
-    settings.spriteheight= 40;
+    settings.spritewidth = 38;
+    settings.spriteheight= 28;
 
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
@@ -11,6 +11,10 @@ var BirdEntity = me.ObjectEntity.extend({
     this.pushForce = 1.4;
     this.gravityForce = 5;
     this.maxAngleRotation = Number.prototype.degToRad(45);
+    this.renderable.addAnimation("flying", [0, 1, 2]);
+    this.renderable.addAnimation("idle", [0]);
+    this.renderable.setCurrentAnimation("flying");
+    this.animationController = 0;
   },
 
   update: function(x, y){
@@ -29,17 +33,24 @@ var BirdEntity = me.ObjectEntity.extend({
         this.renderable.angle = this.maxAngleRotation;
     }
 
-    if (this.pos.y > me.game.viewport.height + 40){
-		  me.state.change(me.state.GAME_OVER);
+    //manual animation
+    var actual = this.renderable.getCurrentAnimationFrame();
+    if (this.animationController++ % 100){
+      actual++;
+      this.renderable.setAnimationFrame(actual);
     }
 
     res = this.collide();
-    if (res){
+    if (res || this.pos.y > me.game.viewport.height + 40){
 		  me.state.change(me.state.GAME_OVER);
     }
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
-    return updated;
+    if (updated){
+      this.parent();
+      return true;
+    }
+    return false;
   },
 
 });
@@ -47,15 +58,14 @@ var BirdEntity = me.ObjectEntity.extend({
 var PipeEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
-    settings.image = me.loader.getImage('pipes');
+    settings.image = me.loader.getImage('pipesfinal');
     settings.spritewidth = 88;
-    settings.spriteheight= 206;
+    settings.spriteheight= 247;
 
     this.parent(x, y, settings);
     this.alwaysUpdate = true;
     this.gravity = 5;
     this.visible = true;
-    this.updateColRect(5, 78, 5, 195);
   },
 
   update: function(){
