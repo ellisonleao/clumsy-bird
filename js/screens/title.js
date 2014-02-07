@@ -8,9 +8,7 @@ game.TitleScreen = me.ScreenObject.extend({
 	
 	onResetEvent: function() {	
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-		// map the left button click on the ENTER key
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
-		// init a font object
     this.titleFont = new me.Font('Verdana', 40, 'red', 'center');
 		this.font = new me.Font('Arial', 20, 'black', 'center');
 
@@ -18,7 +16,6 @@ game.TitleScreen = me.ScreenObject.extend({
 	},
 	
 	update : function() {
-		// enter pressed ?
 		if (me.input.isKeyPressed('enter')) {
 			me.state.change(me.state.PLAY);
 		}
@@ -33,10 +30,8 @@ game.TitleScreen = me.ScreenObject.extend({
   },
 
 	onDestroyEvent : function() {
-		// free the font object
 		this.font = null;
     this.titleFont = null;
-		// unregister the event
 		me.input.unbindKey(me.input.KEY.ENTER);
 		me.input.unbindMouse(me.input.mouse.LEFT);
 	}
