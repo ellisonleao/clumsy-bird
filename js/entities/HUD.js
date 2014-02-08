@@ -12,38 +12,38 @@ game.HUD.Container = me.ObjectContainer.extend({
 	init: function() {
 		// call the constructor
 		this.parent();
-		
+
 		// persistent across level change
 		this.isPersistent = true;
-		
+
 		// non collidable
 		this.collidable = false;
-		
+
 		// make sure our object is always draw first
 		this.z = Infinity;
 
 		// give a name
 		this.name = "HUD";
-		
+
 		// add our child score object at the top left corner
 		this.addChild(new game.HUD.ScoreItem(5, 5));
 	}
 });
 
 
-/** 
+/**
  * a basic HUD item to display score
  */
-game.HUD.ScoreItem = me.Renderable.extend({	
-	/** 
+game.HUD.ScoreItem = me.Renderable.extend({
+	/**
 	 * constructor
 	 */
 	init: function(x, y) {
-		
-		// call the parent constructor 
+
+		// call the parent constructor
 		// (size does not matter here)
-		this.parent(new me.Vector2d(x, y), 10, 10); 
-		
+		this.parent(new me.Vector2d(x, y), 10, 10);
+
 		// local copy of the global score
 		this.score = me.game.score;
 
@@ -62,7 +62,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 
 	draw : function (context) {
     this.timerFont.draw(context, Math.round(game.data.timer),
-                        me.game.viewport.width / 2, 10); 
+                        me.game.viewport.width / 2, 10);
 	}
 
 });

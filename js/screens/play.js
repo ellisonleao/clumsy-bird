@@ -2,7 +2,7 @@ game.PlayScreen = me.ScreenObject.extend({
   init: function(){
       this.parent(true);      
       this.generate = 0;
-      this.pipeHoleSize = 150;
+      this.pipeHoleSize = 1240;
   },
 
   getRandomInt: function(min, max){
@@ -11,6 +11,7 @@ game.PlayScreen = me.ScreenObject.extend({
 
 	onResetEvent: function() {
 		game.data.score = 0;
+    game.data.timer = 0;
     me.game.add(new BackgroundLayer("bg"));
 		this.HUD = new game.HUD.Container();
 		me.game.world.addChild(this.HUD);
@@ -22,14 +23,17 @@ game.PlayScreen = me.ScreenObject.extend({
     me.game.add(this.bird, 10);
     this.posX = me.game.viewport.width;
     
-    //touch
+    //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
 	},
 
   update: function(){
-    if (this.generate++ % 63  == 0){
-      var posY = this.getRandomInt(-206, 0);
-      var posY2 = posY + this.pipeHoleSize + 206;
+    if (this.generate++ % 80  == 0){
+      var posY = this.getRandomInt(
+          me.video.getHeight() - 100,
+          200
+      );
+      var posY2 = posY - me.video.getHeight() - this.pipeHoleSize;
       var pipe1 = new me.entityPool.newInstanceOf("pipe", this.posX, posY);
       var pipe2 = new me.entityPool.newInstanceOf("pipe", this.posX, posY2);
       pipe1.renderable.flipY();

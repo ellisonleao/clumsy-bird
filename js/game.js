@@ -12,12 +12,11 @@ var game = {
 	// Run on page load.
 	"onload" : function () {
     // Initialize the video.
-    if (!me.video.init("screen", 480, 320, true, 'auto')) {
+    if (!me.video.init("screen", 900, 600, true, 'auto')) {
       alert("Your browser does not support HTML5 canvas.");
       return;
     }
 
-    // add "#debug" to the URL to enable the debug Panel
     if (document.location.hash === "#debug") {
       window.onReady(function () {
         me.plugin.register.defer(debugPanel, "debug");
@@ -47,18 +46,9 @@ var game = {
 		// add some fadeIn/fadeOut effect for transition 
 		me.state.transition("fade", "#000", 100);
 		
-    // add a fn callback that displays pause on pause :)
-		me.state.onPause = function () {
-			var _font = new me.Font('Arial', 20, 'black', 'center');
-			_font.bold();
-			_font.draw(me.video.getSystemContext(), 'Paused !', me.game.viewport.width/2, me.game.viewport.height/2 + 110);
-			me.video.blitSurface();
-		};
-
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     me.input.bindTouch(me.input.KEY.SPACE); 
 
-	
 		// Start the game.
 		me.state.change(me.state.MENU);
 	}
