@@ -4,6 +4,8 @@ game.PlayScreen = me.ScreenObject.extend({
       this.generate = 0;
       this.pipeHoleSize = 1240;
       this.ground = null;
+      this.helped = false;
+      this.pipeFrequency = 60;
   },
 
   getRandomInt: function(min, max){
@@ -38,10 +40,11 @@ game.PlayScreen = me.ScreenObject.extend({
     
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
+		me.state.transition("fade", "#fff", 100);
 	},
 
   update: function(){
-    if (this.generate++ % 80  == 0){
+    if (this.generate++ % this.pipeFrequency  == 0){
       var posY = this.getRandomInt(
           me.video.getHeight() - 100,
           200

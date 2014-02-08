@@ -34,7 +34,7 @@ var BirdEntity = me.ObjectEntity.extend({
         this.renderable.angle = -this.maxAngleRotation;
     }else{
       this.renderable.setCurrentAnimation("flying");
-      this.gravityForce += 0.4;
+      this.gravityForce += 0.5;
       this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
       this.renderable.angle += Number.prototype.degToRad(6 * me.timer.tick);
       if (this.renderable.angle > this.maxAngleRotationDown)
@@ -49,8 +49,9 @@ var BirdEntity = me.ObjectEntity.extend({
     }
 
     res = this.collide();
-    if (res || this.pos.y < 0 || this.pos.y >= me.game.viewport.height - (96 + 60)){
-		  me.state.change(me.state.GAME_OVER);
+    if (res || this.pos.y >= me.game.viewport.height - (96 + 60)){
+      me.state.change(me.state.GAME_OVER);
+      return false;
     }
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
@@ -78,7 +79,7 @@ var PipeEntity = me.ObjectEntity.extend({
 
   update: function(){
     // mechanics
-    this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
+    this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick * 2, 0));
     if (this.pos.x < -this.renderable.spritewidth) {
       me.game.remove(this);
     }
