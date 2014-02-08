@@ -3,6 +3,7 @@ game.PlayScreen = me.ScreenObject.extend({
       this.parent(true);      
       this.generate = 0;
       this.pipeHoleSize = 1240;
+      this.ground = null;
   },
 
   getRandomInt: function(min, max){
@@ -12,14 +13,25 @@ game.PlayScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
 		game.data.score = 0;
     game.data.timer = 0;
-    me.game.add(new BackgroundLayer("bg"));
+    me.game.add(new BackgroundLayer('bg', 1));        
+
+    var groundImage = me.loader.getImage('ground');
+
+    this.ground = new me.SpriteObject(
+      0,
+      me.video.getHeight() - groundImage.height,
+      groundImage
+    );
+    me.game.add(this.ground, 11);
+
 		this.HUD = new game.HUD.Container();
 		me.game.world.addChild(this.HUD);
 
     me.entityPool.add("clumsy", BirdEntity);
     me.entityPool.add("pipe", PipeEntity, true);
 
-    this.bird = me.entityPool.newInstanceOf("clumsy", 30, me.game.viewport.height/2);
+    this.bird = me.entityPool.newInstanceOf("clumsy", 60,
+      me.game.viewport.height/2);
     me.game.add(this.bird, 10);
     this.posX = me.game.viewport.width;
     

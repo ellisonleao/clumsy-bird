@@ -12,7 +12,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
     
     this.font = new me.Font('Verdana', 40, 'red', 'center');
-    me.game.add(new BackgroundLayer('bg'));
+    me.game.add(new BackgroundLayer('bg', 1));
     this.score = 'Final Score: ' + game.data.score;
     this.timer = 'Steps: ' + Math.round(game.data.timer);
 	},

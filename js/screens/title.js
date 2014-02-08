@@ -6,7 +6,7 @@ game.TitleScreen = me.ScreenObject.extend({
 	},
 	
 	onResetEvent: function() {	
-    me.game.add(new BackgroundLayer('bg'));
+    me.game.add(new BackgroundLayer('bg', 1));
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
