@@ -1,5 +1,5 @@
 body {
-	background-color: #000;
+	background-color: #0099cc;
 	color: #fff;
 
 	/* Allow mouse dragging. */
@@ -18,7 +18,7 @@ body {
 }
 
 #screen canvas {
-	margin: auto;
+	margin: 0;
 
 	/* Hide the gap for font descenders. */
 	display: block;
