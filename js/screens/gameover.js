@@ -2,19 +2,34 @@ game.GameOverScreen = me.ScreenObject.extend({
   init : function() {
 		this.parent(true);
 		this.font = null;
-    this.title = 'Game Over';
     this.score = null;
     this.timer = null;
 	},
-	
-  onResetEvent: function() {	
+
+  onResetEvent: function() {
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
-    
-    this.font = new me.Font('Verdana', 40, 'red', 'center');
-    me.game.add(new BackgroundLayer('bg', 1));
+
+    this.font = new me.Font('Arial Black', 50, 'black', 'center');
     this.score = 'Final Score: ' + game.data.score;
     this.timer = 'Steps: ' + Math.round(game.data.timer);
+
+    me.game.add(new BackgroundLayer('bg', 1));
+
+    var gImage =  me.loader.getImage('gameover');
+    me.game.add(new me.SpriteObject(
+      me.video.getWidth()/2 - gImage.width/2,
+      me.video.getHeight()/2 - gImage.height/2 - 100,
+      gImage
+    ), 10);
+
+    var gImageBoard = me.loader.getImage('gameoverbg');
+    me.game.add(new me.SpriteObject(
+      me.video.getWidth()/2 - gImageBoard.width/2,
+      me.video.getHeight()/2 - gImageBoard.height/2,
+      gImageBoard
+    ), 10);
+
 	},
 
 	update : function() {
@@ -25,12 +40,10 @@ game.GameOverScreen = me.ScreenObject.extend({
 	},
 
   draw: function(context) {
-		this.font.draw(context, this.title,  me.game.viewport.width/2,
-        me.game.viewport.height/2 - 100);
 		this.font.draw(context, this.score,  me.game.viewport.width/2,
         me.game.viewport.height/2);
 		this.font.draw(context, this.timer,  me.game.viewport.width/2,
-        me.game.viewport.height/2 + 40);
+        me.game.viewport.height/2 + 60);
   },
 
 	onDestroyEvent : function() {

@@ -20,15 +20,8 @@ game.TitleScreen = me.ScreenObject.extend({
     //start button
     this.button = new Start('start', me.state.PLAY, me.video.getHeight()/2);
     me.game.add(this.button, 10);
-
     me.game.add(this.logo, 10);
-    /*
-     * DONT KNOW WHY THIS IS NOT WORKING!!
-    var logoTween = new me.Tween(this.logo).to(
-        {y: me.game.viewport.height/2},
-        1000
-    ).easing(me.Tween.Easing.Bounce.InOut).start();
-    */
+   
 	},
 	
 	update : function() {

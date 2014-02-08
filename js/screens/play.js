@@ -13,6 +13,7 @@ game.PlayScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
 		game.data.score = 0;
     game.data.timer = 0;
+
     me.game.add(new BackgroundLayer('bg', 1));        
 
     var groundImage = me.loader.getImage('ground');
