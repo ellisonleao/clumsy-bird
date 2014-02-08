@@ -49,7 +49,6 @@ var BirdEntity = me.ObjectEntity.extend({
     }
 
     res = this.collide();
-    console.log(this.pos.y, me.game.viewport.height - 96  - 88);
     if (res || this.pos.y < 0 || this.pos.y >= me.game.viewport.height - (96 + 60)){
 		  me.state.change(me.state.GAME_OVER);
     }
