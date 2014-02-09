@@ -4,6 +4,8 @@ game.PlayScreen = me.ScreenObject.extend({
       this.generate = 0;
       this.pipeHoleSize = 1240;
       this.ground = null;
+      this.helped = false;
+      this.pipeFrequency = 92;
   },
 
   getRandomInt: function(min, max){
@@ -13,6 +15,7 @@ game.PlayScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
 		game.data.score = 0;
     game.data.timer = 0;
+
     me.game.add(new BackgroundLayer('bg', 1));        
 
     var groundImage = me.loader.getImage('ground');
@@ -29,18 +32,20 @@ game.PlayScreen = me.ScreenObject.extend({
 
     me.entityPool.add("clumsy", BirdEntity);
     me.entityPool.add("pipe", PipeEntity, true);
+    me.entityPool.add("hit", HitEntity, true);
 
     this.bird = me.entityPool.newInstanceOf("clumsy", 60,
-      me.game.viewport.height/2);
+      me.game.viewport.height/2 - 100);
     me.game.add(this.bird, 10);
     this.posX = me.game.viewport.width;
     
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
+		me.state.transition("fade", "#fff", 100);
 	},
 
   update: function(){
-    if (this.generate++ % 80  == 0){
+    if (this.generate++ % this.pipeFrequency == 0){
       var posY = this.getRandomInt(
           me.video.getHeight() - 100,
           200
@@ -48,9 +53,12 @@ game.PlayScreen = me.ScreenObject.extend({
       var posY2 = posY - me.video.getHeight() - this.pipeHoleSize;
       var pipe1 = new me.entityPool.newInstanceOf("pipe", this.posX, posY);
       var pipe2 = new me.entityPool.newInstanceOf("pipe", this.posX, posY2);
+      var hitPos = posY - 100;
+      var hit = new me.entityPool.newInstanceOf("hit", this.posX, hitPos);
       pipe1.renderable.flipY();
       me.game.add(pipe1, 10);
       me.game.add(pipe2, 10);
+      me.game.add(hit, 11);
     }
     return true; 
   },

@@ -7,6 +7,9 @@ game.resources = [
 	 {name: "start", type:"image", src: "data/img/start1.png"},
 	 {name: "start_hover", type:"image", src: "data/img/start2.png"},
 	 {name: "ground", type:"image", src: "data/img/ground.png"},
+	 {name: "gameover", type:"image", src: "data/img/gameover.png"},
+	 {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
+	 {name: "hit", type:"image", src: "data/img/hit.png"},
 
 	
 	/* Background music. 

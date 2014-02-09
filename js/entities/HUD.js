@@ -45,17 +45,13 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		this.parent(new me.Vector2d(x, y), 10, 10);
 
 		// local copy of the global score
-		this.score = me.game.score;
-
-    this.timer = me.game.timer;
-    this.timerFont = new me.Font('Artial', 40, '#ff9900', 'center');
+    this.timerFont = new me.Font('Helvetica', 60, '#000', 'center');
 
 		// make sure we use screen coordinates
 		this.floating = true;
 	},
 
 	update : function () {
-    game.data.timer += me.timer.tick / 60;
     game.data.score += me.timer.tick % 100 * 5;
     return true;
 	},
