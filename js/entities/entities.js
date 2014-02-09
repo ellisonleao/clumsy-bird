@@ -26,7 +26,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
       var currentPos = this.pos.y;
       tween = new me.Tween(this.pos).to({y: currentPos - 72}, 100);
-      tween.easing(me.Tween.Easing.Cubic.In);
+      tween.easing(me.Tween.Easing.Sinusoidal.InOut);
       tween.start();
 
       this.renderable.angle = Number.prototype.degToRad(40);
