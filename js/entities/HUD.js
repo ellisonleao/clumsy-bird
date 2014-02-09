@@ -58,7 +58,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 
 	draw : function (context) {
     this.timerFont.draw(context, Math.round(game.data.timer),
-                        me.game.viewport.width / 2, 10);
+                        50, 10);
 	}
 
 });
