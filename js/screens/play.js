@@ -6,6 +6,9 @@ game.PlayScreen = me.ScreenObject.extend({
       this.ground = null;
       this.helped = false;
       this.pipeFrequency = 92;
+      this.tap = null;
+      this.getReady = null;
+      this.start = false;
   },
 
   getRandomInt: function(min, max){
@@ -13,6 +16,7 @@ game.PlayScreen = me.ScreenObject.extend({
   },
 
 	onResetEvent: function() {
+    //this.start = false;
 		game.data.score = 0;
     game.data.timer = 0;
 
@@ -42,9 +46,24 @@ game.PlayScreen = me.ScreenObject.extend({
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
 		me.state.transition("fade", "#fff", 100);
+    
+    this.getReady = new me.SpriteObject(
+      me.video.getWidth()/2 - 200,
+      me.video.getHeight()/2 - 100,
+      me.loader.getImage('getready') 
+    );
+    me.game.add(this.getReady, 11);
+    var popOut = new me.Tween(this.getReady.pos).to({y: -132}, 2000)
+      .easing(me.Tween.Easing.Linear.None)
+      .onComplete(this.setStartTrue.bind(this)).start();
 	},
 
+  setStartTrue: function(){
+    this.start = true;              
+  },
+
   update: function(){
+    if (!this.start) return false;
     if (this.generate++ % this.pipeFrequency == 0){
       var posY = this.getRandomInt(
           me.video.getHeight() - 100,
