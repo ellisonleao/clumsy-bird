@@ -32,6 +32,10 @@ body {
 }
 
 #share {
-  margin: auto;
+  margin: 10px auto;
   text-align: center;
+}
+
+#share .fb-share-button iframe {
+	margin-top: -4px;
 }
