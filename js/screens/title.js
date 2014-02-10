@@ -8,6 +8,7 @@ game.TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {	
     me.game.add(new BackgroundLayer('bg', 1));
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
+    me.input.bindKey(me.input.KEY.SPACE, "enter", true);
 		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     //logo
@@ -38,6 +39,7 @@ game.TitleScreen = me.ScreenObject.extend({
 
 	onDestroyEvent : function() {
 		me.input.unbindKey(me.input.KEY.ENTER);
+    me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
 	}
 

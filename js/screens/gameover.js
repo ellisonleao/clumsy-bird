@@ -8,7 +8,8 @@ game.GameOverScreen = me.ScreenObject.extend({
 
   onResetEvent: function() {
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
+    me.input.bindKey(me.input.KEY.SPACE, "enter", false)
+   	me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     this.font = new me.Font('Arial Black', 50, 'black', 'center');
     this.score = 'Final Score: ' + game.data.score;
@@ -49,6 +50,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 	onDestroyEvent : function() {
 		this.font = null;
 		me.input.unbindKey(me.input.KEY.ENTER);
+    me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
 	}
 
