@@ -10,12 +10,6 @@ var game = {
       return;
     }
 
-    if (document.location.hash === "#debug") {
-      window.onReady(function () {
-        me.plugin.register.defer(debugPanel, "debug");
-      });
-    }
-
     me.audio.init("mp3,ogg");
     me.loader.onload = this.loaded.bind(this);
     me.loader.preload(game.resources);
