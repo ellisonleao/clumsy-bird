@@ -16,6 +16,8 @@ game.PlayScreen = me.ScreenObject.extend({
   },
 
 	onResetEvent: function() {
+    
+    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     //this.start = false;
 		game.data.score = 0;
     game.data.timer = 0;
