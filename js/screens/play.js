@@ -16,11 +16,12 @@ game.PlayScreen = me.ScreenObject.extend({
   },
 
 	onResetEvent: function() {
-    
+    var that = this;
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     //this.start = false;
 		game.data.score = 0;
     game.data.timer = 0;
+    game.data.start = false;
 
     me.game.add(new BackgroundLayer('bg', 1));        
 
@@ -57,15 +58,11 @@ game.PlayScreen = me.ScreenObject.extend({
     me.game.add(this.getReady, 11);
     var popOut = new me.Tween(this.getReady.pos).to({y: -132}, 2000)
       .easing(me.Tween.Easing.Linear.None)
-      .onComplete(this.setStartTrue.bind(this)).start();
+      .onComplete(function(){ game.data.start = true;}).start();
 	},
 
-  setStartTrue: function(){
-    this.start = true;              
-  },
-
   update: function(){
-    if (!this.start) return false;
+    if (!game.data.start) return false;
     if (this.generate++ % this.pipeFrequency == 0){
       var posY = this.getRandomInt(
           me.video.getHeight() - 100,
