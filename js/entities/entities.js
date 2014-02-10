@@ -49,6 +49,8 @@ var BirdEntity = me.ObjectEntity.extend({
     }
 
     res = this.collide();
+    var hitGround = me.game.viewport.height - (96 + 60);
+    var hitSky = -80; // bird height + 20px
     if (res) {
       if (res.obj.type != 'hit'){
         me.state.change(me.state.GAME_OVER);
@@ -57,7 +59,7 @@ var BirdEntity = me.ObjectEntity.extend({
       me.game.remove(res.obj);
       game.data.timer++;
       return true;
-    }else if (this.pos.y >= me.game.viewport.height - (96 + 60)){
+    }else if (this.pos.y >= hitGround || this.pos.y <= hitSky){
       me.state.change(me.state.GAME_OVER);
       return false;
     }
