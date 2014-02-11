@@ -47,7 +47,7 @@ game.PlayScreen = me.ScreenObject.extend({
 
     
 	onDestroyEvent: function() {
-        me.audio.stop('theme');
+        me.audio.stopTrack('theme');
 		    // free the stored instance
         this.HUD = null;
         this.bird = null;
