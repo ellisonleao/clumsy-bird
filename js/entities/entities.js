@@ -1,7 +1,12 @@
 var BirdEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
-    settings.image = me.loader.getImage('clumsy');
+    var clumsyStr = "clumsy";
+    var rand = Math.floor(Math.random() * 3);
+    if (rand === 0) clumsyStr += "blue";
+    else if (rand === 1) clumsyStr += "yellow";
+    else clumsyStr += "red";
+    settings.image = me.loader.getImage(clumsyStr);
     settings.spritewidth = 85;
     settings.spriteheight= 60;
 
