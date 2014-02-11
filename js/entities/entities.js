@@ -2,6 +2,8 @@ var BirdEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
     settings.image = me.loader.getImage('clumsy');
+    settings.width = 85;
+    settings.height = 60;
     settings.spritewidth = 85;
     settings.spriteheight= 60;
 
@@ -15,10 +17,11 @@ var BirdEntity = me.ObjectEntity.extend({
     this.renderable.addAnimation("idle", [0]);
     this.renderable.setCurrentAnimation("flying");
     this.animationController = 0;
-    this.updateColRect(10, 70, 2, 58);
+    // manually add a rectangular shape
+    this.addShape(new me.Rect(new me.Vector2d(10, 70), 2, 58));
   },
 
-  update: function(x, y){
+  update: function(dt){
     // mechanics
     if (game.data.start) {
       if (me.input.isKeyPressed('fly')){
@@ -64,7 +67,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
     var updated = (this.vel.x != 0 || this.vel.y != 0);
     if (updated){
-      this.parent();
+      this.parent(dt);
       return true;
     }
     return false;
@@ -72,10 +75,13 @@ var BirdEntity = me.ObjectEntity.extend({
 
 });
 
+
 var PipeEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
     settings.image = me.loader.getImage('pipe');
+    settings.width = 148;
+    settings.height= 1664;
     settings.spritewidth = 148;
     settings.spriteheight= 1664;
 
@@ -85,13 +91,43 @@ var PipeEntity = me.ObjectEntity.extend({
     this.updateTime = false;
   },
 
-  update: function(){
+  update: function(dt){
     // mechanics
     this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
     if (this.pos.x < -148) {
-      me.game.remove(this);
+      me.game.world.removeChild(this);
     }
     return true;
+  },
+
+});
+
+var PipeGenerator = me.Renderable.extend({
+  init: function(){
+    this.parent(new me.Vector2d(), me.game.viewport.width, me.game.viewport.height);
+    this.alwaysUpdate = true;
+    this.generate = 0;
+    this.pipeFrequency = 92;
+    this.pipeHoleSize = 1240;
+  },
+
+  update: function(dt){
+    if (this.generate++ % this.pipeFrequency == 0){
+      var posY = Number.prototype.random(
+          me.video.getHeight() - 100,
+          200
+      );
+      var posY2 = posY - me.video.getHeight() - this.pipeHoleSize;
+      var pipe1 = new me.pool.pull("pipe", this.posX, posY);
+      var pipe2 = new me.pool.pull("pipe", this.posX, posY2);
+      var hitPos = posY - 100;
+      var hit = new me.pool.pull("hit", this.posX, hitPos);
+      pipe1.renderable.flipY();
+      me.game.world.addChild(pipe1, 10);
+      me.game.world.addChild(pipe2, 10);
+      me.game.world.addChild(hit, 11);
+    }
+    return true; 
   },
 
 });
