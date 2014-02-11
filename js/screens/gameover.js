@@ -79,10 +79,10 @@ game.GameOverScreen = me.ScreenObject.extend({
             return true;
         },
         draw : function (context) {
-            this.stepsText = this.font.measureText(context, this.timer);
-            this.scoreText = this.font.measureText(context, this.score);
-            this.font.draw(context, this.score,  me.game.viewport.width/2 - this.scoreText.width/2,  me.game.viewport.height/2);
-            this.font.draw(context, this.timer,  me.game.viewport.width/2 - this.stepsText.width/2,  me.game.viewport.height/2 + 60);
+            var stepsText = this.font.measureText(context, this.timer);
+            var scoreText = this.font.measureText(context, this.score);
+            this.font.draw(context, this.score,  me.game.viewport.width/2 - scoreText.width/2,  me.game.viewport.height/2);
+            this.font.draw(context, this.timer,  me.game.viewport.width/2 - stepsText.width/2,  me.game.viewport.height/2 + 60);
         }
     })), 12);
 
