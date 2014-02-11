@@ -84,7 +84,7 @@ var BackgroundLayer = me.ImageLayer.extend({
   }
 });
 
-var Start = me.Rect.extend({
+var Start = me.Renderable.extend({
   init: function(image, action, y){
     this.image = me.loader.getImage(image);
     this.image_hover = me.loader.getImage(image + '_hover');

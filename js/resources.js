@@ -13,6 +13,6 @@ game.resources = [
 	 {name: "getready", type:"image", src: "data/img/getready.png"},
 
 	
-	 {name: "theme", type: "audio", src: "data/bgm/", channel : 1},
-	 {name: "intro", type: "audio", src: "data/bgm/", channel : 2},
+	 {name: "theme", type: "audio", src: "data/bgm/"},
+	 {name: "intro", type: "audio", src: "data/bgm/"},
 ];
