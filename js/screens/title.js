@@ -6,6 +6,7 @@ game.TitleScreen = me.ScreenObject.extend({
 	},
 	
 	onResetEvent: function() {	
+    me.audio.play('intro', true);
     me.game.add(new BackgroundLayer('bg', 1));
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
     me.input.bindKey(me.input.KEY.SPACE, "enter", true);

@@ -20,27 +20,25 @@ var BirdEntity = me.ObjectEntity.extend({
 
   update: function(x, y){
     // mechanics
-    if (me.input.isKeyPressed('fly')){
-      this.renderable.setCurrentAnimation("idle");
-      this.gravityForce = 0.01;
+    if (game.data.start) {
+      if (me.input.isKeyPressed('fly')){
+        this.gravityForce = 0.01;
 
-      var currentPos = this.pos.y;
-      tween = new me.Tween(this.pos).to({y: currentPos - 72}, 100);
-      tween.easing(me.Tween.Easing.Exponential.InOut);
-      tween.start();
-
-      this.renderable.angle = Number.prototype.degToRad(40);
-      if (this.renderable.angle > -this.maxAngleRotation)
+        var currentPos = this.pos.y;
+        tween = new me.Tween(this.pos).to({y: currentPos - 72}, 100);
+        tween.easing(me.Tween.Easing.Exponential.InOut);
+        tween.start();
+        
         this.renderable.angle = -this.maxAngleRotation;
-    }else{
-      this.renderable.setCurrentAnimation("flying");
-      this.gravityForce += 0.2;
-      this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
-      this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick; 
-      if (this.renderable.angle > this.maxAngleRotationDown)
-        this.renderable.angle = this.maxAngleRotationDown;
+      }else{
+        this.renderable.setCurrentAnimation("flying");
+        this.gravityForce += 0.2;
+        this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
+        this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick; 
+        if (this.renderable.angle > this.maxAngleRotationDown)
+          this.renderable.angle = this.maxAngleRotationDown;
+      }
     }
-
     //manual animation
     var actual = this.renderable.getCurrentAnimationFrame();
     if (this.animationController++ % 2){
@@ -49,6 +47,8 @@ var BirdEntity = me.ObjectEntity.extend({
     }
 
     res = this.collide();
+    var hitGround = me.game.viewport.height - (96 + 60);
+    var hitSky = -80; // bird height + 20px
     if (res) {
       if (res.obj.type != 'hit'){
         me.state.change(me.state.GAME_OVER);
@@ -57,7 +57,7 @@ var BirdEntity = me.ObjectEntity.extend({
       me.game.remove(res.obj);
       game.data.timer++;
       return true;
-    }else if (this.pos.y >= me.game.viewport.height - (96 + 60)){
+    }else if (this.pos.y >= hitGround || this.pos.y <= hitSky){
       me.state.change(me.state.GAME_OVER);
       return false;
     }

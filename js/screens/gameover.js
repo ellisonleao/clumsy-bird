@@ -7,6 +7,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 	},
 
   onResetEvent: function() {
+    me.audio.stop('theme');
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
     me.input.bindKey(me.input.KEY.SPACE, "enter", false)
    	me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);

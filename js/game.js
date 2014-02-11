@@ -1,19 +1,14 @@
 var game = {
   data : {
     score : 0,
-    timer: 0
+    timer: 0,
+    start: false
   },
 
   "onload" : function () {
     if (!me.video.init("screen", 900, 600, true, 'auto')) {
       alert("Your browser does not support HTML5 canvas.");
       return;
-    }
-
-    if (document.location.hash === "#debug") {
-      window.onReady(function () {
-        me.plugin.register.defer(debugPanel, "debug");
-      });
     }
 
     me.audio.init("mp3,ogg");
