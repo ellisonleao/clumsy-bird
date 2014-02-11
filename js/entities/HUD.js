@@ -83,39 +83,3 @@ var BackgroundLayer = me.ImageLayer.extend({
     return true;
   }
 });
-
-var Start = me.Renderable.extend({
-  init: function(image, action, y){
-    this.image = me.loader.getImage(image);
-    this.image_hover = me.loader.getImage(image + '_hover');
-    this.action = action;
-    this.pos = new me.Vector2d(
-      me.video.getWidth()/ 2 - this.image.width/2,
-      y
-    );
-    this.parent(this.pos, this.image.width, this.image.height);
-    me.input.registerPointerEvent("mousedown", this, this.clicked.bind(this));
-  },
-
-  clicked: function(){
-    me.state.change(this.action);
-  },
-
-  draw: function(context){
-    if (this.containsPointV(me.input.mouse.pos)){
-      context.drawImage(this.image_hover, this.pos.x, this.pos.y);
-    }else{
-      context.drawImage(this.image, this.pos.x, this.pos.y);
-    }
-
-  },
-
-  update: function(){
-    return true;
-  },
-
-  onDestroyEvent: function(){
-      me.input.releasePointerEvent("mousedown", this);
-  }
-
-});
