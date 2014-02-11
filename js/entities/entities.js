@@ -36,19 +36,19 @@ var BirdEntity = me.ObjectEntity.extend({
         this.flyTween.stop()
         this.flyTween.to({y: currentPos - 72}, 100);
         this.flyTween.start();
-        
+
         this.renderable.angle = -this.maxAngleRotation;
       } else {
         this.gravityForce += 0.2;
         this.pos.y += me.timer.tick * this.gravityForce;
-        this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick; 
+        this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick;
         if (this.renderable.angle > this.maxAngleRotationDown)
           this.renderable.angle = this.maxAngleRotationDown;
       }
     }
 
     var res = me.game.collide(this);
-    
+
     if (res) {
       if (res.obj.type != 'hit'){
         me.state.change(me.state.GAME_OVER);
@@ -130,7 +130,7 @@ var PipeGenerator = me.Renderable.extend({
       me.game.world.addChild(pipe2, 10);
       me.game.world.addChild(hit, 11);
     }
-    return true; 
+    return true;
   },
 
 });
