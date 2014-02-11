@@ -57,7 +57,7 @@ var BirdEntity = me.ObjectEntity.extend({
         me.state.change(me.state.GAME_OVER);
         return false;
       }
-      me.game.remove(res.obj);
+      me.game.world.removeChildNow(res.obj);
       game.data.timer++;
       return true;
     }else if (this.pos.y >= hitGround || this.pos.y <= hitSky){
@@ -109,6 +109,7 @@ var PipeGenerator = me.Renderable.extend({
     this.generate = 0;
     this.pipeFrequency = 92;
     this.pipeHoleSize = 1240;
+    this.posX = me.game.viewport.width;
   },
 
   update: function(dt){
@@ -136,6 +137,8 @@ var HitEntity = me.ObjectEntity.extend({
   init: function(x, y){
     var settings = {};
     settings.image = me.loader.getImage('hit');
+    settings.width = 148;
+    settings.height= 60;
     settings.spritewidth = 148;
     settings.spriteheight= 60;
 
@@ -151,7 +154,7 @@ var HitEntity = me.ObjectEntity.extend({
     // mechanics
     this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
     if (this.pos.x < -148) {
-      me.game.remove(this);
+      me.game.world.removeChild(this);
     }
     return true;
   },

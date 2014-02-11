@@ -1,8 +1,6 @@
 game.PlayScreen = me.ScreenObject.extend({
 
 	onResetEvent: function() {
-
-        me.audio.stop('intro');
         me.audio.play('theme', true);
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
 
@@ -28,8 +26,6 @@ game.PlayScreen = me.ScreenObject.extend({
         this.bird = me.pool.pull("clumsy", 60, me.game.viewport.height/2 - 100);
         
         me.game.world.addChild(this.bird, 10);
-         
-        this.posX = me.game.viewport.width;
         
         //inputs
         me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
@@ -52,8 +48,11 @@ game.PlayScreen = me.ScreenObject.extend({
 
     
 	onDestroyEvent: function() {
-		me.game.world.removeChild(this.HUD);
-        me.game.world.removeChild(this.bird);
+        me.audio.stop('theme');
+		// free the stored instance
+        this.HUD = null;
+        this.bird = null;
+        me.input.unbindKey(me.input.KEY.SPACE);
 	}
 
 });

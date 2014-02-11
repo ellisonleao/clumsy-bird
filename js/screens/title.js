@@ -30,6 +30,7 @@ game.TitleScreen = me.ScreenObject.extend({
 	
 
 	onDestroyEvent : function() {
+        me.audio.stop('intro');
     	// unregister the event
 		me.event.unsubscribe(this.handler);
 		me.input.unbindKey(me.input.KEY.ENTER);
