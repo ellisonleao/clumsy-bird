@@ -17,6 +17,8 @@ game.PlayScreen = me.ScreenObject.extend({
 
 	onResetEvent: function() {
     var that = this;
+    me.audio.stop('intro');
+    me.audio.play('theme', true);
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     //this.start = false;
 		game.data.score = 0;
