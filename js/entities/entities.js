@@ -17,8 +17,12 @@ var BirdEntity = me.ObjectEntity.extend({
     this.renderable.addAnimation("idle", [0]);
     this.renderable.setCurrentAnimation("flying");
     this.animationController = 0;
-    // manually add a rectangular shape
+    // manually add a rectangular collision shape
     this.addShape(new me.Rect(new me.Vector2d(5, 5), 70, 50));
+
+    // a tween object for the flying physic effect
+    this.flyTween = new me.Tween(this.pos);
+    this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
   },
 
   update: function(dt){
@@ -28,50 +32,46 @@ var BirdEntity = me.ObjectEntity.extend({
         this.gravityForce = 0.01;
 
         var currentPos = this.pos.y;
-        tween = new me.Tween(this.pos).to({y: currentPos - 72}, 100);
-        tween.easing(me.Tween.Easing.Exponential.InOut);
-        tween.start();
+        // stop the previous one
+        this.flyTween.stop()
+        this.flyTween.to({y: currentPos - 72}, 100);
+        this.flyTween.start();
         
         this.renderable.angle = -this.maxAngleRotation;
-      }else{
-        this.renderable.setCurrentAnimation("flying");
+      } else {
         this.gravityForce += 0.2;
-        this.pos.add(new me.Vector2d(0, me.timer.tick * this.gravityForce));
+        this.pos.y += me.timer.tick * this.gravityForce;
         this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick; 
         if (this.renderable.angle > this.maxAngleRotationDown)
           this.renderable.angle = this.maxAngleRotationDown;
       }
     }
-    //manual animation
-    var actual = this.renderable.getCurrentAnimationFrame();
-    if (this.animationController++ % 2){
-      actual++;
-      this.renderable.setAnimationFrame(actual);
-    }
 
-    res = this.collide();
-    var hitGround = me.game.viewport.height - (96 + 60);
-
-    var hitSky = -80; // bird height + 20px
+    var res = me.game.collide(this);
+    
     if (res) {
       if (res.obj.type != 'hit'){
         me.state.change(me.state.GAME_OVER);
         return false;
       }
+      // remove the hit box
       me.game.world.removeChildNow(res.obj);
+      // the give dt parameter to the update function
+      // give the time in ms since last frame
+      // use it instead ?
       game.data.timer++;
-      return true;
-    }else if (this.pos.y >= hitGround || this.pos.y <= hitSky){
-      me.state.change(me.state.GAME_OVER);
-      return false;
+
+    } else {
+      var hitGround = me.game.viewport.height - (96 + 60);
+      var hitSky = -80; // bird height + 20px
+      if (this.pos.y >= hitGround || this.pos.y <= hitSky){
+        me.state.change(me.state.GAME_OVER);
+        return false;
+      }
     }
 
-    var updated = (this.vel.x != 0 || this.vel.y != 0);
-    if (updated){
-      this.parent(dt);
-      return true;
-    }
-    return false;
+    return this.parent(dt);
+
   },
 
 });
