@@ -1,7 +1,6 @@
 game.PlayScreen = me.ScreenObject.extend({
 
 	onResetEvent: function() {
-        me.audio.play('theme', true);
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
 
         game.data.score = 0;
@@ -49,7 +48,7 @@ game.PlayScreen = me.ScreenObject.extend({
     
 	onDestroyEvent: function() {
         me.audio.stop('theme');
-		// free the stored instance
+		    // free the stored instance
         this.HUD = null;
         this.bird = null;
         me.input.unbindKey(me.input.KEY.SPACE);

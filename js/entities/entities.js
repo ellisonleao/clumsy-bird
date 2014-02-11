@@ -18,7 +18,7 @@ var BirdEntity = me.ObjectEntity.extend({
     this.renderable.setCurrentAnimation("flying");
     this.animationController = 0;
     // manually add a rectangular shape
-    this.addShape(new me.Rect(new me.Vector2d(10, 70), 2, 58));
+    this.addShape(new me.Rect(new me.Vector2d(5, 5), 70, 50));
   },
 
   update: function(dt){
@@ -51,6 +51,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
     res = this.collide();
     var hitGround = me.game.viewport.height - (96 + 60);
+
     var hitSky = -80; // bird height + 20px
     if (res) {
       if (res.obj.type != 'hit'){
@@ -84,6 +85,7 @@ var PipeEntity = me.ObjectEntity.extend({
     settings.height= 1664;
     settings.spritewidth = 148;
     settings.spriteheight= 1664;
+
 
     this.parent(x, y, settings);
     this.alwaysUpdate = true;

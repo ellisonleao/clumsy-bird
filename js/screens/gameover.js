@@ -37,11 +37,15 @@ game.GameOverScreen = me.ScreenObject.extend({
                 this.score = 'Final Score: ' + game.data.score;
                 this.timer = 'Steps: ' + Math.round(game.data.timer);
             },
+            update : function () {
+                return true;
+            },
             draw : function (context) {
                 this.font.draw(context, this.score,  me.game.viewport.width/2,  me.game.viewport.height/2);
                 this.font.draw(context, this.timer,  me.game.viewport.width/2,  me.game.viewport.height/2 + 60);
             }      
         })), 12);
+
     },
 
 	onDestroyEvent : function() {
