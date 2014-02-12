@@ -15,7 +15,6 @@ game.GameOverScreen = me.ScreenObject.extend({
     };
     me.save.add(this.savedData);
     if (!me.save.topSteps) me.save.add({topSteps: game.data.timer});
-    console.log(game.data.newHiScore);
     if (game.data.timer > me.save.topSteps){
       me.save.topSteps = game.data.timer;
       game.data.newHiScore = true;

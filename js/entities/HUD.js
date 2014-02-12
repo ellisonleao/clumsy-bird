@@ -83,3 +83,26 @@ var BackgroundLayer = me.ImageLayer.extend({
     return true;
   }
 });
+
+/*
+var Share = me.GUI_Object.extend({
+  init: function(){
+    settings = {};
+    x = me.video.getWidth()/2 - 100;
+    y = me.video.getHeight()/2;
+    settings.image = "share";
+    settings.spritewidth = 214;
+    settings.spriteheight = 75;
+    this.parent(x, y, settings);
+  },
+
+  onClick: function(event){
+    var shareText = 'Just made ' + game.data.steps+ ' steps on Clumsy Bird! Try online here!' 
+    var url = 'http://ellisonleao.github.io/clumsy-bird/';
+    window.open('http://www.facebook.com/sharer.php?u='+ url +'&t='+ shareText, 'Facebook Share', 'height=300, width=300');
+    return false;
+  }
+
+});
+
+*/
