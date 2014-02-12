@@ -1,5 +1,25 @@
 game.GameOverScreen = me.ScreenObject.extend({
+
+  init: function(){
+    this.savedData = null;
+    this.handler = null;
+    this.dialog = null;
+
+  },
+
   onResetEvent: function() {
+    //save section
+    this.savedData = {
+      score: game.data.score,
+      steps: game.data.timer
+    };
+    me.save.add(this.savedData);
+    if (!me.save.topSteps) me.save.add({topSteps: game.data.timer});
+    console.log(game.data.newHiScore);
+    if (game.data.timer > me.save.topSteps){
+      me.save.topSteps = game.data.timer;
+      game.data.newHiScore = true;
+    }
     me.input.bindKey(me.input.KEY.ENTER, "enter", true);
     me.input.bindKey(me.input.KEY.SPACE, "enter", false)
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
@@ -26,12 +46,11 @@ game.GameOverScreen = me.ScreenObject.extend({
       gImageBoard
     ), 10);
 
-
+    /*
     var shareImg = me.loader.getImage('share');
-    var Start = me.Renderable.extend({
+    var Share = me.Renderable.extend({
       init: function(image, action, y){
         this.image = me.loader.getImage(image);
-        this.image_hover = me.loader.getImage(image + '_hover');
         this.action = action;
         this.pos = new me.Vector2d(
           me.video.getWidth()/ 2 - this.image.width/2,
@@ -42,16 +61,11 @@ game.GameOverScreen = me.ScreenObject.extend({
       },
 
       clicked: function(){
-        me.state.change(this.action);
+        console.log('Call facebook share api!');
       },
 
       draw: function(context){
-        if (this.containsPointV(me.input.mouse.pos)){
-          context.drawImage(this.image_hover, this.pos.x, this.pos.y);
-        }else{
-          context.drawImage(this.image, this.pos.x, this.pos.y);
-        }
-
+        context.drawImage(this.image, this.pos.x, this.pos.y);
       },
 
       update: function(){
@@ -63,29 +77,65 @@ game.GameOverScreen = me.ScreenObject.extend({
       }
 
     });
+    me.game.world.addChild(Share, 12);
+    */
 
     // add the dialog witht he game information
-    me.game.world.addChild(new (me.Renderable.extend ({
-        // constructor
-        init : function() {
-            // size does not matter, it's just to avoid having a zero size 
-            // renderable
-            this.parent(new me.Vector2d(), 100, 100);
-            this.font = new me.Font('Arial Black', 40, 'black', 'left');
-            this.score = 'Final Score: ' + game.data.score.toString();
-            this.timer = 'Steps: ' + Math.round(game.data.timer).toString();
-        },
-        update : function () {
-            return true;
-        },
-        draw : function (context) {
-            var stepsText = this.font.measureText(context, this.timer);
-            var scoreText = this.font.measureText(context, this.score);
-            this.font.draw(context, this.score,  me.game.viewport.width/2 - scoreText.width/2,  me.game.viewport.height/2);
-            this.font.draw(context, this.timer,  me.game.viewport.width/2 - stepsText.width/2,  me.game.viewport.height/2 + 60);
-        }
-    })), 12);
+    if (game.data.newHiScore){
+      var newRect = new me.SpriteObject(
+          235,
+          415,
+          me.loader.getImage('new')
+      );
+      me.game.world.addChild(newRect, 12);
+    }
 
+    this.dialog = new (me.Renderable.extend({
+      // constructor
+      init : function() {
+          // size does not matter, it's just to avoid having a zero size
+          // renderable
+          this.parent(new me.Vector2d(), 100, 100);
+          this.font = new me.Font('Arial Black', 40, 'black', 'left');
+          this.score = 'Final Score: ' + game.data.score.toString();
+          this.timer = 'Steps: ' + Math.round(game.data.timer).toString();
+          this.topSteps= 'Larger Step: ' + me.save.topSteps.toString();
+      },
+
+      update : function () {
+        return true;
+      },
+
+      draw : function (context) {
+        var stepsText = this.font.measureText(context, this.timer);
+        var topStepsText = this.font.measureText(context, this.topSteps);
+
+        var scoreText = this.font.measureText(context, this.score);
+        //score
+        this.font.draw(
+            context,
+            this.score,
+            me.game.viewport.width/2 - scoreText.width/2,
+            me.game.viewport.height/2
+        );
+        //steps
+        this.font.draw(
+            context,
+            this.timer,
+            me.game.viewport.width/2 - stepsText.width/2,
+            me.game.viewport.height/2 + 50
+        );
+        //top score
+        this.font.draw(
+            context,
+            this.topSteps,
+            me.game.viewport.width/2 - topStepsText.width/2,
+            me.game.viewport.height/2 + 110
+        );
+
+      }
+    }));
+    me.game.world.addChild(this.dialog, 12);
   },
 
 	onDestroyEvent : function() {

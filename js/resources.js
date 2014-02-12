@@ -9,6 +9,7 @@ game.resources = [
 	 {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
 	 {name: "hit", type:"image", src: "data/img/hit.png"},
 	 {name: "getready", type:"image", src: "data/img/getready.png"},
+	 {name: "new", type:"image", src: "data/img/new.png"},
 
 	
 	 {name: "theme", type: "audio", src: "data/bgm/"},

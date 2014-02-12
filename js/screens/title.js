@@ -1,5 +1,6 @@
 game.TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
+    game.data.newHiScore = false;
     me.audio.playTrack('intro');
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
