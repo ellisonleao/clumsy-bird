@@ -98,7 +98,7 @@ var Share = me.GUI_Object.extend({
   },
 
   onClick: function(event){
-    var shareText = 'Just made ' + game.data.timer + ' steps on Clumsy Bird! Try online here!'
+    var shareText = 'Just made ' + game.data.timer + ' steps on Clumsy Bird! Can you beat me? Try online here!'
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     FB.ui(
       {
