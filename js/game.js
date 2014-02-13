@@ -33,9 +33,6 @@ var game = {
 
     // in melonJS 1.0.0, viewport size is set to Infinity by default
     me.game.viewport.setBounds(0,0, 900, 600);
-    if (me.device.isMobile && !navigator.isCocoonJS) {
-      me.game.world.addChild(new game.EnableAudioButton(), 12);
-    }
     me.state.change(me.state.MENU);
 	}
 };
