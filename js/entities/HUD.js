@@ -84,25 +84,35 @@ var BackgroundLayer = me.ImageLayer.extend({
   }
 });
 
-/*
 var Share = me.GUI_Object.extend({
   init: function(){
-    settings = {};
-    x = me.video.getWidth()/2 - 100;
-    y = me.video.getHeight()/2;
+    var settings = {};
+    var x = me.video.getWidth()/2 - 100;
+    var y = me.video.getHeight()/2 + 200;
     settings.image = "share";
     settings.spritewidth = 214;
     settings.spriteheight = 75;
+    settings.width = 214;
+    settings.height = 75;
     this.parent(x, y, settings);
   },
 
   onClick: function(event){
     var shareText = 'Just made ' + game.data.steps+ ' steps on Clumsy Bird! Try online here!' 
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
-    window.open('http://www.facebook.com/sharer.php?u='+ url +'&t='+ shareText, 'Facebook Share', 'height=300, width=300');
+    FB.ui(
+      {
+       method: 'feed',
+       name: 'Clumsy Bird Score!',
+       caption: "Clumsy Bird",
+       description: (
+          shareText
+       ),
+       link: url,
+       picture: 'http://ellisonleao.github.io/clumsy-bird/data/img/clumsy.png'
+      }
+    );
     return false;
   }
 
 });
-
-*/

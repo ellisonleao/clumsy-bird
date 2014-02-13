@@ -18,16 +18,23 @@
 
   <body>
     <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1&appId=454517184645569";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '213642148840283',
+          status     : true,
+          xfbml      : true
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/pt_BR/all.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
     </script>
-
-
     <!-- Canvas placeholder -->
     <div id="screen"></div>
     <!-- Sharing section -->
@@ -65,7 +72,7 @@
     </div>
 
     <!-- melonJS Library -->
-    <script type="text/javascript" src="lib/melonJS-1.0.0-dev-min.js"></script>
+    <script type="text/javascript" src="lib/melonJS-1.0.0-min.js"></script>
 
     <!-- Plugin(s) -->
     <script type="text/javascript" src="lib/plugins/debugPanel.js"></script>

@@ -4,7 +4,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     this.savedData = null;
     this.handler = null;
     this.dialog = null;
-
+    this.share = null;
   },
 
   onResetEvent: function() {
@@ -45,39 +45,8 @@ game.GameOverScreen = me.ScreenObject.extend({
       gImageBoard
     ), 10);
 
-    /*
-    var shareImg = me.loader.getImage('share');
-    var Share = me.Renderable.extend({
-      init: function(image, action, y){
-        this.image = me.loader.getImage(image);
-        this.action = action;
-        this.pos = new me.Vector2d(
-          me.video.getWidth()/ 2 - this.image.width/2,
-          y
-        );
-        this.parent(this.pos, this.image.width, this.image.height);
-        me.input.registerPointerEvent("mousedown", this, this.clicked.bind(this));
-      },
-
-      clicked: function(){
-        console.log('Call facebook share api!');
-      },
-
-      draw: function(context){
-        context.drawImage(this.image, this.pos.x, this.pos.y);
-      },
-
-      update: function(){
-        return true;
-      },
-
-      onDestroyEvent: function(){
-          me.input.releasePointerEvent("mousedown", this);
-      }
-
-    });
-    me.game.world.addChild(Share, 12);
-    */
+    this.share = new Share();
+    me.game.world.addChild(this.share, 12);
 
     // add the dialog witht he game information
     if (game.data.newHiScore){
