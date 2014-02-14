@@ -45,20 +45,19 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		this.parent(new me.Vector2d(x, y), 10, 10);
 
 		// local copy of the global score
-    this.timerFont = new me.Font('Helvetica', 60, '#000', 'center');
+    this.stepsFont = new me.Font('Helvetica', 60, '#000', 'center');
 
 		// make sure we use screen coordinates
 		this.floating = true;
 	},
 
 	update : function () {
-    game.data.score += me.timer.tick % 100 * 5;
     return true;
 	},
 
 	draw : function (context) {
     if (game.data.start && me.state.isCurrent(me.state.PLAY))
-      this.timerFont.draw(context, Math.round(game.data.timer), 50, 10);
+      this.stepsFont.draw(context, game.data.steps, 50, 10);
 	}
 
 });
@@ -82,4 +81,56 @@ var BackgroundLayer = me.ImageLayer.extend({
     }
     return true;
   }
+});
+
+var Share = me.GUI_Object.extend({
+  init: function(){
+    var settings = {};
+    var x = me.video.getWidth()/2 - 170;
+    var y = me.video.getHeight()/2 + 200;
+    settings.image = "share";
+    settings.spritewidth = 150;
+    settings.spriteheight = 75;
+    this.parent(x, y, settings);
+  },
+
+  onClick: function(event){
+    var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
+    var url = 'http://ellisonleao.github.io/clumsy-bird/';
+    FB.ui(
+      {
+       method: 'feed',
+       name: 'My Clumsy Bird Score!',
+       caption: "Share to your friends",
+       description: (
+          shareText
+       ),
+       link: url,
+       picture: 'http://ellisonleao.github.io/clumsy-bird/data/img/clumsy.png'
+      }
+    );
+    return false;
+  }
+
+});
+
+var Tweet = me.GUI_Object.extend({
+  init: function(){
+    var settings = {};
+    var x = me.video.getWidth()/2 + 10;
+    var y = me.video.getHeight()/2 + 200;
+    settings.image = "tweet";
+    settings.spritewidth = 152;
+    settings.spriteheight = 75;
+    this.parent(x, y, settings);
+  },
+
+  onClick: function(event){
+    var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
+    var url = 'http://ellisonleao.github.io/clumsy-bird/';
+    var hashtags = 'clumsybird,melonjs'
+    window.open('https://twitter.com/intent/tweet?text=' + shareText + '&hashtags=' + hashtags + '&count=' + url + '&url=' + url, 'Tweet!', 'height=300,width=400')
+    return false;
+  }
+
 });

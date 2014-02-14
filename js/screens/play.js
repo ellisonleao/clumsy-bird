@@ -3,7 +3,7 @@ game.PlayScreen = me.ScreenObject.extend({
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
 
     game.data.score = 0;
-    game.data.timer = 0;
+    game.data.steps = 0;
     game.data.start = false;
     game.data.newHiscore = false;
 
