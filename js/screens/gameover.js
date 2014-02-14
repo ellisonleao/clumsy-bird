@@ -12,12 +12,12 @@ game.GameOverScreen = me.ScreenObject.extend({
     //save section
     this.savedData = {
       score: game.data.score,
-      steps: game.data.timer
+      steps: game.data.steps
     };
     me.save.add(this.savedData);
-    if (!me.save.topSteps) me.save.add({topSteps: game.data.timer});
-    if (game.data.timer > me.save.topSteps){
-      me.save.topSteps = game.data.timer;
+    if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
+    if (game.data.steps > me.save.topSteps){
+      me.save.topSteps = game.data.steps;
       game.data.newHiScore = true;
     }
     me.input.bindKey(me.input.KEY.ENTER, "enter", true);
@@ -58,7 +58,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     if (game.data.newHiScore){
       var newRect = new me.SpriteObject(
           235,
-          415,
+          355,
           me.loader.getImage('new')
       );
       me.game.world.addChild(newRect, 12);
@@ -71,9 +71,8 @@ game.GameOverScreen = me.ScreenObject.extend({
           // renderable
           this.parent(new me.Vector2d(), 100, 100);
           this.font = new me.Font('Arial Black', 40, 'black', 'left');
-          this.score = 'Final Score: ' + game.data.score.toString();
-          this.timer = 'Steps: ' + Math.round(game.data.timer).toString();
-          this.topSteps= 'Larger Step: ' + me.save.topSteps.toString();
+          this.steps = 'Steps: ' + game.data.steps.toString();
+          this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
       },
 
       update : function () {
@@ -81,30 +80,23 @@ game.GameOverScreen = me.ScreenObject.extend({
       },
 
       draw : function (context) {
-        var stepsText = this.font.measureText(context, this.timer);
+        var stepsText = this.font.measureText(context, this.steps);
         var topStepsText = this.font.measureText(context, this.topSteps);
 
         var scoreText = this.font.measureText(context, this.score);
-        //score
-        this.font.draw(
-            context,
-            this.score,
-            me.game.viewport.width/2 - scoreText.width/2,
-            me.game.viewport.height/2
-        );
         //steps
         this.font.draw(
             context,
-            this.timer,
+            this.steps,
             me.game.viewport.width/2 - stepsText.width/2,
-            me.game.viewport.height/2 + 50
+            me.game.viewport.height/2
         );
         //top score
         this.font.draw(
             context,
             this.topSteps,
             me.game.viewport.width/2 - topStepsText.width/2,
-            me.game.viewport.height/2 + 110
+            me.game.viewport.height/2 + 50
         );
 
       }

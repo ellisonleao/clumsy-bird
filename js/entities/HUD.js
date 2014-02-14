@@ -45,20 +45,19 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		this.parent(new me.Vector2d(x, y), 10, 10);
 
 		// local copy of the global score
-    this.timerFont = new me.Font('Helvetica', 60, '#000', 'center');
+    this.stepsFont = new me.Font('Helvetica', 60, '#000', 'center');
 
 		// make sure we use screen coordinates
 		this.floating = true;
 	},
 
 	update : function () {
-    game.data.score += me.timer.tick % 100 * 5;
     return true;
 	},
 
 	draw : function (context) {
     if (game.data.start && me.state.isCurrent(me.state.PLAY))
-      this.timerFont.draw(context, Math.round(game.data.timer), 50, 10);
+      this.stepsFont.draw(context, game.data.steps, 50, 10);
 	}
 
 });
@@ -96,7 +95,7 @@ var Share = me.GUI_Object.extend({
   },
 
   onClick: function(event){
-    var shareText = 'Just made ' + game.data.timer + ' steps on Clumsy Bird! Can you beat me? Try online here!';
+    var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     FB.ui(
       {
@@ -127,7 +126,7 @@ var Tweet = me.GUI_Object.extend({
   },
 
   onClick: function(event){
-    var shareText = 'Just made ' + game.data.timer + ' steps on Clumsy Bird! Can you beat me? Try online here!';
+    var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     var hashtags = 'clumsybird,melonjs'
     window.open('https://twitter.com/intent/tweet?text=' + shareText + '&hashtags=' + hashtags + '&count=' + url + '&url=' + url, 'Tweet!', 'height=300,width=400')

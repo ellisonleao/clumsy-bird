@@ -59,7 +59,7 @@ var BirdEntity = me.ObjectEntity.extend({
       // the give dt parameter to the update function
       // give the time in ms since last frame
       // use it instead ?
-      game.data.timer++;
+      game.data.steps++;
 
     } else {
       var hitGround = me.game.viewport.height - (96 + 60);
