@@ -5,6 +5,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     this.handler = null;
     this.dialog = null;
     this.share = null;
+    this.tweet = null;
   },
 
   onResetEvent: function() {
@@ -45,8 +46,13 @@ game.GameOverScreen = me.ScreenObject.extend({
       gImageBoard
     ), 10);
 
+    // share button
     this.share = new Share();
     me.game.world.addChild(this.share, 12);
+
+    //tweet button
+    this.tweet = new Tweet();
+    me.game.world.addChild(this.tweet, 12);
 
     // add the dialog witht he game information
     if (game.data.newHiScore){

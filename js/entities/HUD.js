@@ -87,13 +87,11 @@ var BackgroundLayer = me.ImageLayer.extend({
 var Share = me.GUI_Object.extend({
   init: function(){
     var settings = {};
-    var x = me.video.getWidth()/2 - 100;
+    var x = me.video.getWidth()/2 - 170;
     var y = me.video.getHeight()/2 + 200;
     settings.image = "share";
-    settings.spritewidth = 214;
+    settings.spritewidth = 150;
     settings.spriteheight = 75;
-    settings.width = 214;
-    settings.height = 75;
     this.parent(x, y, settings);
   },
 
@@ -112,6 +110,27 @@ var Share = me.GUI_Object.extend({
        picture: 'http://ellisonleao.github.io/clumsy-bird/data/img/clumsy.png'
       }
     );
+    return false;
+  }
+
+});
+
+var Tweet = me.GUI_Object.extend({
+  init: function(){
+    var settings = {};
+    var x = me.video.getWidth()/2 + 10;
+    var y = me.video.getHeight()/2 + 200;
+    settings.image = "tweet";
+    settings.spritewidth = 152;
+    settings.spriteheight = 75;
+    this.parent(x, y, settings);
+  },
+
+  onClick: function(event){
+    var shareText = 'Just made ' + game.data.timer + ' steps on Clumsy Bird! Can you beat me? Try online here!';
+    var url = 'http://ellisonleao.github.io/clumsy-bird/';
+    var hashtags = 'clumsybird,melonjs'
+    window.open('https://twitter.com/intent/tweet?text=' + shareText + '&hashtags=' + hashtags + '&count=' + url + '&url=' + url, 'Tweet!', 'height=300,width=400')
     return false;
   }
 

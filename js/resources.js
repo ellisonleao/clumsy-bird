@@ -11,6 +11,7 @@ game.resources = [
 	 {name: "getready", type:"image", src: "data/img/getready.png"},
 	 {name: "new", type:"image", src: "data/img/new.png"},
 	 {name: "share", type:"image", src: "data/img/share.png"},
+	 {name: "tweet", type:"image", src: "data/img/tweet.png"},
 
 	
 	 {name: "theme", type: "audio", src: "data/bgm/"},
