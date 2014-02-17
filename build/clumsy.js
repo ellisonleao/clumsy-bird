@@ -460,9 +460,8 @@ game.PlayScreen = me.ScreenObject.extend({
   init: function(){
     me.audio.play("theme", true);
     // lower audio volume on firefox browser
-    if ( me.device.ua.contains("Firefox") ) {
-      me.audio.setVolume(0.3);
-    }
+    var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
+    me.audio.setVolume(vol);
     this.parent(this);
   },
 
