@@ -56,13 +56,14 @@ var BirdEntity = me.ObjectEntity.extend({
         }
         me.state.change(me.state.GAME_OVER);
         return false;
-      }
+      }      
       // remove the hit box
       me.game.world.removeChildNow(res.obj);
       // the give dt parameter to the update function
       // give the time in ms since last frame
       // use it instead ?
       game.data.steps++;
+      me.audio.play('hit');
 
     } else {
       var hitGround = me.game.viewport.height - (96 + 60);
