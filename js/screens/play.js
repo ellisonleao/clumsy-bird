@@ -9,13 +9,7 @@ game.PlayScreen = me.ScreenObject.extend({
 
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-    var groundImage = me.loader.getImage('ground');
-
-    this.ground = new me.SpriteObject(
-      0,
-      me.video.getHeight() - groundImage.height,
-      groundImage
-    );
+    this.ground = new TheGround();
     me.game.world.addChild(this.ground, 11);
 
     this.HUD = new game.HUD.Container();

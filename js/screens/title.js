@@ -29,6 +29,9 @@ game.TitleScreen = me.ScreenObject.extend({
     var logoTween = new me.Tween(logo.pos).to({y: me.game.viewport.height/2 - 100},
         1000).easing(me.Tween.Easing.Exponential.InOut).start();
 
+    this.ground = new TheGround();
+    me.game.world.addChild(this.ground, 11);
+
     me.game.world.addChild(new (me.Renderable.extend ({
         // constructor
         init : function() {
@@ -56,6 +59,7 @@ game.TitleScreen = me.ScreenObject.extend({
 		me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.game.world.removeChild(this.ground);
 	}
 
 });

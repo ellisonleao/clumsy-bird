@@ -46,6 +46,9 @@ game.GameOverScreen = me.ScreenObject.extend({
       gImageBoard
     ), 10);
 
+    this.ground = new TheGround();
+    me.game.world.addChild(this.ground, 11);
+
     // share button
     this.share = new Share();
     me.game.world.addChild(this.share, 12);

@@ -163,3 +163,39 @@ var HitEntity = me.ObjectEntity.extend({
   },
 
 });
+
+var Ground = me.ObjectEntity.extend({
+  init: function(x, y){
+    var settings = {};
+    settings.image = me.loader.getImage('ground');
+    settings.width = 900;
+    settings.height= 96;
+
+    this.parent(x, y, settings);
+    this.alwaysUpdate = true;
+    this.gravity = 0;
+    this.updateTime = false;
+    this.accel = new me.Vector2d(-10, 0);
+  },
+
+  update: function(){
+    // mechanics
+    this.pos.add(this.accel);
+    if (this.pos.x < -this.renderable.width) {
+      this.pos.x = me.video.getWidth() - 10;
+    }
+    return true;
+  },
+
+});
+
+var TheGround = Object.extend({
+  init: function(){
+    this.ground1 = new Ground(0, me.video.getHeight() - 96);
+    this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+    me.game.world.addChild(this.ground1, 11);
+    me.game.world.addChild(this.ground2, 11);
+  },
+
+  update: function (){ return true; }
+})
