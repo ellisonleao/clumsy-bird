@@ -396,8 +396,8 @@ var Tweet = me.GUI_Object.extend({
 
 game.TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
+    me.audio.stop("theme");
     game.data.newHiScore = false;
-    me.audio.stopTrack();
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
@@ -407,8 +407,6 @@ game.TitleScreen = me.ScreenObject.extend({
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
 			if (action === "enter") {
 			  me.state.change(me.state.PLAY);
-        // start audio here, so that it unlock audio on iOS
-        me.audio.playTrack('theme');
 			}
 		});
 
@@ -459,9 +457,20 @@ game.TitleScreen = me.ScreenObject.extend({
 
 });
 game.PlayScreen = me.ScreenObject.extend({
-	onResetEvent: function() {
-    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
+  init: function(){
+    me.audio.play("theme", true);
+    // lower audio volume on firefox browser
+    if ( me.device.ua.contains("Firefox") ) {
+      me.audio.setVolume(0.3);
+    }
+    this.parent(this);
+  },
 
+	onResetEvent: function() {
+    me.audio.stop("theme");
+    me.audio.play("theme", true);
+
+    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     game.data.score = 0;
     game.data.steps = 0;
     game.data.start = false;
@@ -480,7 +489,6 @@ game.PlayScreen = me.ScreenObject.extend({
 
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
-    me.state.transition("fade", "#fff", 100);
 
     this.getReady = new me.SpriteObject(
       me.video.getWidth()/2 - 200,
@@ -511,9 +519,6 @@ game.GameOverScreen = me.ScreenObject.extend({
   init: function(){
     this.savedData = null;
     this.handler = null;
-    this.dialog = null;
-    this.share = null;
-    this.tweet = null;
   },
 
   onResetEvent: function() {
@@ -538,14 +543,13 @@ game.GameOverScreen = me.ScreenObject.extend({
         }
     });
 
-    me.game.world.addChild(new BackgroundLayer('bg', 1));
 
     var gImage =  me.loader.getImage('gameover');
     me.game.world.addChild(new me.SpriteObject(
         me.video.getWidth()/2 - gImage.width/2,
         me.video.getHeight()/2 - gImage.height/2 - 100,
         gImage
-    ), 10);
+    ), 12);
 
     var gImageBoard = me.loader.getImage('gameoverbg');
     me.game.world.addChild(new me.SpriteObject(
@@ -554,6 +558,7 @@ game.GameOverScreen = me.ScreenObject.extend({
       gImageBoard
     ), 10);
 
+    me.game.world.addChild(new BackgroundLayer('bg', 1));
     this.ground = new TheGround();
     me.game.world.addChild(this.ground, 11);
 
@@ -622,8 +627,8 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
-    me.game.world.removeChild(this.dialog);
     this.font = null;
+    me.audio.stop("theme");
 	}
 
 });

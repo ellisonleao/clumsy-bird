@@ -1,7 +1,17 @@
 game.PlayScreen = me.ScreenObject.extend({
-	onResetEvent: function() {
-    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
+  init: function(){
+    me.audio.play("theme", true);
+    // lower audio volume on firefox browser
+    var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
+    me.audio.setVolume(vol);
+    this.parent(this);
+  },
 
+	onResetEvent: function() {
+    me.audio.stop("theme");
+    me.audio.play("theme", true);
+
+    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     game.data.score = 0;
     game.data.steps = 0;
     game.data.start = false;
@@ -20,7 +30,6 @@ game.PlayScreen = me.ScreenObject.extend({
 
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
-    me.state.transition("fade", "#fff", 100);
 
     this.getReady = new me.SpriteObject(
       me.video.getWidth()/2 - 200,

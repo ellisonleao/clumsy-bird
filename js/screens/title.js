@@ -1,7 +1,7 @@
 game.TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
+    me.audio.stop("theme");
     game.data.newHiScore = false;
-    me.audio.stopTrack();
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
@@ -11,8 +11,6 @@ game.TitleScreen = me.ScreenObject.extend({
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
 			if (action === "enter") {
 			  me.state.change(me.state.PLAY);
-        // start audio here, so that it unlock audio on iOS
-        me.audio.playTrack('theme');
 			}
 		});
 
