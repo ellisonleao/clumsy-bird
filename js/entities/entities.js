@@ -178,7 +178,7 @@ var Ground = me.ObjectEntity.extend({
     this.alwaysUpdate = true;
     this.gravity = 0;
     this.updateTime = false;
-    this.accel = new me.Vector2d(-10, 0);
+    this.accel = new me.Vector2d(-4, 0);
   },
 
   update: function(){
