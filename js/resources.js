@@ -15,5 +15,4 @@ game.resources = [
 
 	
 	 {name: "theme", type: "audio", src: "data/bgm/"},
-	 {name: "intro", type: "audio", src: "data/bgm/"},
 ];
