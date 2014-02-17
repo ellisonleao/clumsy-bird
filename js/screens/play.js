@@ -29,7 +29,7 @@ game.PlayScreen = me.ScreenObject.extend({
     );
     me.game.world.addChild(this.getReady, 11);
 
-    var popOut = new me.Tween(this.getReady.pos).to({y: -132}, 2000)
+    var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
       .easing(me.Tween.Easing.Linear.None)
       .onComplete(function(){
             game.data.start = true;
