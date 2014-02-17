@@ -150,11 +150,12 @@ var HitEntity = me.ObjectEntity.extend({
     this.updateTime = false;
     this.type = 'hit';
     this.renderable.alpha = 0;
+    this.ac = new me.Vector2d(-this.gravity, 0);
   },
 
   update: function(){
     // mechanics
-    this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
+    this.pos.add(this.ac);
     if (this.pos.x < -148) {
       me.game.world.removeChild(this);
     }
