@@ -51,6 +51,9 @@ var BirdEntity = me.ObjectEntity.extend({
 
     if (res) {
       if (res.obj.type != 'hit'){
+        if (me.device.touch){
+          me.device.vibrate(1000);
+        }
         me.state.change(me.state.GAME_OVER);
         return false;
       }
