@@ -113,6 +113,9 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.input.unbindKey(me.input.KEY.ENTER);
     me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.game.world.removeChild(this.ground);
+    me.game.world.removeChild(this.dialog);
+    this.font = null;
 	}
 
 });
