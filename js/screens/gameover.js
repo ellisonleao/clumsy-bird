@@ -6,6 +6,7 @@ game.GameOverScreen = me.ScreenObject.extend({
   },
 
   onResetEvent: function() {
+    me.audio.play("lose");
     //save section
     this.savedData = {
       score: game.data.score,
