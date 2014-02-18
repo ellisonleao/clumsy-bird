@@ -51,15 +51,19 @@ var BirdEntity = me.ObjectEntity.extend({
 
     if (res) {
       if (res.obj.type != 'hit'){
+        if (me.device.touch){
+          me.device.vibrate(1000);
+        }
         me.state.change(me.state.GAME_OVER);
         return false;
-      }
+      }      
       // remove the hit box
       me.game.world.removeChildNow(res.obj);
       // the give dt parameter to the update function
       // give the time in ms since last frame
       // use it instead ?
       game.data.steps++;
+      me.audio.play('hit');
 
     } else {
       var hitGround = me.game.viewport.height - (96 + 60);
@@ -150,11 +154,12 @@ var HitEntity = me.ObjectEntity.extend({
     this.updateTime = false;
     this.type = 'hit';
     this.renderable.alpha = 0;
+    this.ac = new me.Vector2d(-this.gravity, 0);
   },
 
   update: function(){
     // mechanics
-    this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
+    this.pos.add(this.ac);
     if (this.pos.x < -148) {
       me.game.world.removeChild(this);
     }
@@ -162,3 +167,39 @@ var HitEntity = me.ObjectEntity.extend({
   },
 
 });
+
+var Ground = me.ObjectEntity.extend({
+  init: function(x, y){
+    var settings = {};
+    settings.image = me.loader.getImage('ground');
+    settings.width = 900;
+    settings.height= 96;
+
+    this.parent(x, y, settings);
+    this.alwaysUpdate = true;
+    this.gravity = 0;
+    this.updateTime = false;
+    this.accel = new me.Vector2d(-4, 0);
+  },
+
+  update: function(){
+    // mechanics
+    this.pos.add(this.accel);
+    if (this.pos.x < -this.renderable.width) {
+      this.pos.x = me.video.getWidth() - 10;
+    }
+    return true;
+  },
+
+});
+
+var TheGround = Object.extend({
+  init: function(){
+    this.ground1 = new Ground(0, me.video.getHeight() - 96);
+    this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+    me.game.world.addChild(this.ground1, 11);
+    me.game.world.addChild(this.ground2, 11);
+  },
+
+  update: function (){ return true; }
+})

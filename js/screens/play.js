@@ -1,7 +1,17 @@
 game.PlayScreen = me.ScreenObject.extend({
-	onResetEvent: function() {
-    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
+  init: function(){
+    me.audio.play("theme", true);
+    // lower audio volume on firefox browser
+    var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
+    me.audio.setVolume(vol);
+    this.parent(this);
+  },
 
+	onResetEvent: function() {
+    me.audio.stop("theme");
+    me.audio.play("theme", true);
+
+    me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     game.data.score = 0;
     game.data.steps = 0;
     game.data.start = false;
@@ -9,13 +19,7 @@ game.PlayScreen = me.ScreenObject.extend({
 
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-    var groundImage = me.loader.getImage('ground');
-
-    this.ground = new me.SpriteObject(
-      0,
-      me.video.getHeight() - groundImage.height,
-      groundImage
-    );
+    this.ground = new TheGround();
     me.game.world.addChild(this.ground, 11);
 
     this.HUD = new game.HUD.Container();
@@ -26,7 +30,6 @@ game.PlayScreen = me.ScreenObject.extend({
 
     //inputs
     me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
-    me.state.transition("fade", "#fff", 100);
 
     this.getReady = new me.SpriteObject(
       me.video.getWidth()/2 - 200,
@@ -35,7 +38,7 @@ game.PlayScreen = me.ScreenObject.extend({
     );
     me.game.world.addChild(this.getReady, 11);
 
-    var popOut = new me.Tween(this.getReady.pos).to({y: -132}, 2000)
+    var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
       .easing(me.Tween.Easing.Linear.None)
       .onComplete(function(){
             game.data.start = true;

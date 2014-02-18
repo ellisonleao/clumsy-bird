@@ -3,9 +3,6 @@ game.GameOverScreen = me.ScreenObject.extend({
   init: function(){
     this.savedData = null;
     this.handler = null;
-    this.dialog = null;
-    this.share = null;
-    this.tweet = null;
   },
 
   onResetEvent: function() {
@@ -30,14 +27,13 @@ game.GameOverScreen = me.ScreenObject.extend({
         }
     });
 
-    me.game.world.addChild(new BackgroundLayer('bg', 1));
 
     var gImage =  me.loader.getImage('gameover');
     me.game.world.addChild(new me.SpriteObject(
         me.video.getWidth()/2 - gImage.width/2,
         me.video.getHeight()/2 - gImage.height/2 - 100,
         gImage
-    ), 10);
+    ), 12);
 
     var gImageBoard = me.loader.getImage('gameoverbg');
     me.game.world.addChild(new me.SpriteObject(
@@ -45,6 +41,10 @@ game.GameOverScreen = me.ScreenObject.extend({
       me.video.getHeight()/2 - gImageBoard.height/2,
       gImageBoard
     ), 10);
+
+    me.game.world.addChild(new BackgroundLayer('bg', 1));
+    this.ground = new TheGround();
+    me.game.world.addChild(this.ground, 11);
 
     // share button
     this.share = new Share();
@@ -110,6 +110,9 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.input.unbindKey(me.input.KEY.ENTER);
     me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.game.world.removeChild(this.ground);
+    this.font = null;
+    me.audio.stop("theme");
 	}
 
 });

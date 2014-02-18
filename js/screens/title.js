@@ -1,7 +1,7 @@
 game.TitleScreen = me.ScreenObject.extend({
 	onResetEvent: function() {
+    me.audio.stop("theme");
     game.data.newHiScore = false;
-    me.audio.playTrack('intro');
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
 		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
@@ -11,9 +11,6 @@ game.TitleScreen = me.ScreenObject.extend({
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
 			if (action === "enter") {
 			  me.state.change(me.state.PLAY);
-        // start audio here, so that it unlock audio on iOS
-        me.audio.stopTrack('intro');
-        me.audio.playTrack('theme');
 			}
 		});
 
@@ -28,6 +25,9 @@ game.TitleScreen = me.ScreenObject.extend({
 
     var logoTween = new me.Tween(logo.pos).to({y: me.game.viewport.height/2 - 100},
         1000).easing(me.Tween.Easing.Exponential.InOut).start();
+
+    this.ground = new TheGround();
+    me.game.world.addChild(this.ground, 11);
 
     me.game.world.addChild(new (me.Renderable.extend ({
         // constructor
@@ -56,6 +56,7 @@ game.TitleScreen = me.ScreenObject.extend({
 		me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
 		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.game.world.removeChild(this.ground);
 	}
 
 });

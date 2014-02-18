@@ -22,7 +22,6 @@ var game = {
     me.state.set(me.state.MENU, new game.TitleScreen());
     me.state.set(me.state.PLAY, new game.PlayScreen());
     me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
-    me.state.transition("fade", "#000", 100);
 
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     me.input.bindTouch(me.input.KEY.SPACE);
