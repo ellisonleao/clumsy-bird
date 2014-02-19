@@ -39,3 +39,14 @@ body {
 #share .fb-share-button iframe {
 	margin-top: -4px;
 }
+
+@font-face {
+    font-family: 'gamefont';
+    src: url('data/css/gamefont.eot');
+    src: url('data/css/gamefont.eot?#iefix') format('embedded-opentype'),
+         url('data/css/gamefont.woff') format('woff'),
+         url('data/css/gamefont.ttf') format('truetype'),
+         url('data/css/gamefont.svg#gamefont') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

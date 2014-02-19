@@ -1,4 +1,8 @@
 game.TitleScreen = me.ScreenObject.extend({
+  init: function(){
+    this.font = null;    
+  },
+
 	onResetEvent: function() {
     me.audio.stop("theme");
     game.data.newHiScore = false;
@@ -35,8 +39,9 @@ game.TitleScreen = me.ScreenObject.extend({
             // size does not matter, it's just to avoid having a zero size 
             // renderable
             this.parent(new me.Vector2d(), 100, 100);
-            this.font = new me.Font('Arial Black', 20, 'black', 'left');
+            //this.font = new me.Font('Arial Black', 20, 'black', 'left');
             this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START';
+            this.font = new me.Font('gamefont', 20, '#000');
         },
         update : function () {
             return true;

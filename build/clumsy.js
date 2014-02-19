@@ -305,7 +305,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 		this.parent(new me.Vector2d(x, y), 10, 10);
 
 		// local copy of the global score
-    this.stepsFont = new me.Font('Helvetica', 60, '#000', 'center');
+    this.stepsFont = new me.Font('gamefont', 80, '#000', 'center');
 
 		// make sure we use screen coordinates
 		this.floating = true;
@@ -317,7 +317,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 
 	draw : function (context) {
     if (game.data.start && me.state.isCurrent(me.state.PLAY))
-      this.stepsFont.draw(context, game.data.steps, 50, 10);
+      this.stepsFont.draw(context, game.data.steps, me.video.getWidth()/2, 10);
 	}
 
 });
@@ -396,6 +396,10 @@ var Tweet = me.GUI_Object.extend({
 });
 
 game.TitleScreen = me.ScreenObject.extend({
+  init: function(){
+    this.font = null;    
+  },
+
 	onResetEvent: function() {
     me.audio.stop("theme");
     game.data.newHiScore = false;
@@ -432,8 +436,9 @@ game.TitleScreen = me.ScreenObject.extend({
             // size does not matter, it's just to avoid having a zero size 
             // renderable
             this.parent(new me.Vector2d(), 100, 100);
-            this.font = new me.Font('Arial Black', 20, 'black', 'left');
+            //this.font = new me.Font('Arial Black', 20, 'black', 'left');
             this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START';
+            this.font = new me.Font('gamefont', 20, '#000');
         },
         update : function () {
             return true;
@@ -587,7 +592,7 @@ game.GameOverScreen = me.ScreenObject.extend({
           // size does not matter, it's just to avoid having a zero size
           // renderable
           this.parent(new me.Vector2d(), 100, 100);
-          this.font = new me.Font('Arial Black', 40, 'black', 'left');
+          this.font = new me.Font('gamefont', 40, 'black', 'left');
           this.steps = 'Steps: ' + game.data.steps.toString();
           this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
       },
@@ -605,14 +610,14 @@ game.GameOverScreen = me.ScreenObject.extend({
         this.font.draw(
             context,
             this.steps,
-            me.game.viewport.width/2 - stepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2
         );
         //top score
         this.font.draw(
             context,
             this.topSteps,
-            me.game.viewport.width/2 - topStepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2 + 50
         );
 

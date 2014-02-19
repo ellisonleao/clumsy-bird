@@ -71,7 +71,7 @@ game.GameOverScreen = me.ScreenObject.extend({
           // size does not matter, it's just to avoid having a zero size
           // renderable
           this.parent(new me.Vector2d(), 100, 100);
-          this.font = new me.Font('Arial Black', 40, 'black', 'left');
+          this.font = new me.Font('gamefont', 40, 'black', 'left');
           this.steps = 'Steps: ' + game.data.steps.toString();
           this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
       },
@@ -89,14 +89,14 @@ game.GameOverScreen = me.ScreenObject.extend({
         this.font.draw(
             context,
             this.steps,
-            me.game.viewport.width/2 - stepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2
         );
         //top score
         this.font.draw(
             context,
             this.topSteps,
-            me.game.viewport.width/2 - topStepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2 + 50
         );
 
