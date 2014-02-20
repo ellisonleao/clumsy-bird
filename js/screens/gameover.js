@@ -1,6 +1,6 @@
 game.GameOverScreen = me.ScreenObject.extend({
 
-  init: function(){
+  init: function() {
     this.savedData = null;
     this.handler = null;
   },
@@ -14,7 +14,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     };
     me.save.add(this.savedData);
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
-    if (game.data.steps > me.save.topSteps){
+    if (game.data.steps > me.save.topSteps) {
       me.save.topSteps = game.data.steps;
       game.data.newHiScore = true;
     }
@@ -27,7 +27,6 @@ game.GameOverScreen = me.ScreenObject.extend({
             me.state.change(me.state.MENU);
         }
     });
-
 
     var gImage =  me.loader.getImage('gameover');
     me.game.world.addChild(new me.SpriteObject(
@@ -56,7 +55,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.tweet, 12);
 
     // add the dialog witht he game information
-    if (game.data.newHiScore){
+    if (game.data.newHiScore) {
       var newRect = new me.SpriteObject(
           235,
           355,
@@ -67,7 +66,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 
     this.dialog = new (me.Renderable.extend({
       // constructor
-      init : function() {
+      init: function() {
           // size does not matter, it's just to avoid having a zero size
           // renderable
           this.parent(new me.Vector2d(), 100, 100);
@@ -76,11 +75,11 @@ game.GameOverScreen = me.ScreenObject.extend({
           this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
       },
 
-      update : function () {
+      update: function () {
         return true;
       },
 
-      draw : function (context) {
+      draw: function (context) {
         var stepsText = this.font.measureText(context, this.steps);
         var topStepsText = this.font.measureText(context, this.topSteps);
 
@@ -105,15 +104,14 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.dialog, 12);
   },
 
-	onDestroyEvent : function() {
-		// unregister the event
-		me.event.unsubscribe(this.handler);
+  onDestroyEvent: function() {
+    // unregister the event
+    me.event.unsubscribe(this.handler);
     me.input.unbindKey(me.input.KEY.ENTER);
     me.input.unbindKey(me.input.KEY.SPACE);
-		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.input.unbindMouse(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
     this.font = null;
     me.audio.stop("theme");
-	}
-
+  }
 });
