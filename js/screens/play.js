@@ -1,5 +1,5 @@
 game.PlayScreen = me.ScreenObject.extend({
-  init: function(){
+  init: function() {
     me.audio.play("theme", true);
     // lower audio volume on firefox browser
     var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
@@ -7,7 +7,7 @@ game.PlayScreen = me.ScreenObject.extend({
     this.parent(this);
   },
 
-	onResetEvent: function() {
+  onResetEvent: function() {
     me.audio.stop("theme");
     me.audio.play("theme", true);
 
@@ -40,18 +40,17 @@ game.PlayScreen = me.ScreenObject.extend({
 
     var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
       .easing(me.Tween.Easing.Linear.None)
-      .onComplete(function(){
+      .onComplete(function() {
             game.data.start = true;
             me.game.world.addChild(new PipeGenerator(), 0);
        }).start();
   },
 
-	onDestroyEvent: function() {
+  onDestroyEvent: function() {
     me.audio.stopTrack('theme');
     // free the stored instance
     this.HUD = null;
     this.bird = null;
     me.input.unbindKey(me.input.KEY.SPACE);
-	}
-
+  }
 });
