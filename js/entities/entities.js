@@ -1,5 +1,5 @@
 var BirdEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('clumsy');
     settings.width = 85;
@@ -25,10 +25,10 @@ var BirdEntity = me.ObjectEntity.extend({
     this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
   },
 
-  update: function(dt){
+  update: function(dt) {
     // mechanics
     if (game.data.start) {
-      if (me.input.isKeyPressed('fly')){
+      if (me.input.isKeyPressed('fly')) {
         this.gravityForce = 0.01;
 
         var currentPos = this.pos.y;
@@ -50,7 +50,7 @@ var BirdEntity = me.ObjectEntity.extend({
     var res = me.game.collide(this);
 
     if (res) {
-      if (res.obj.type != 'hit'){
+      if (res.obj.type != 'hit') {
         me.device.vibrate(500);
         me.state.change(me.state.GAME_OVER);
         return false;
@@ -66,7 +66,7 @@ var BirdEntity = me.ObjectEntity.extend({
     } else {
       var hitGround = me.game.viewport.height - (96 + 60);
       var hitSky = -80; // bird height + 20px
-      if (this.pos.y >= hitGround || this.pos.y <= hitSky){
+      if (this.pos.y >= hitGround || this.pos.y <= hitSky) {
         me.state.change(me.state.GAME_OVER);
         return false;
       }
@@ -80,7 +80,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
 
 var PipeEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('pipe');
     settings.width = 148;
@@ -95,7 +95,7 @@ var PipeEntity = me.ObjectEntity.extend({
     this.updateTime = false;
   },
 
-  update: function(dt){
+  update: function(dt) {
     // mechanics
     this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
     if (this.pos.x < -148) {
@@ -107,7 +107,7 @@ var PipeEntity = me.ObjectEntity.extend({
 });
 
 var PipeGenerator = me.Renderable.extend({
-  init: function(){
+  init: function() {
     this.parent(new me.Vector2d(), me.game.viewport.width, me.game.viewport.height);
     this.alwaysUpdate = true;
     this.generate = 0;
@@ -116,8 +116,8 @@ var PipeGenerator = me.Renderable.extend({
     this.posX = me.game.viewport.width;
   },
 
-  update: function(dt){
-    if (this.generate++ % this.pipeFrequency == 0){
+  update: function(dt) {
+    if (this.generate++ % this.pipeFrequency == 0) {
       var posY = Number.prototype.random(
           me.video.getHeight() - 100,
           200
@@ -138,7 +138,7 @@ var PipeGenerator = me.Renderable.extend({
 });
 
 var HitEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('hit');
     settings.width = 148;
@@ -155,7 +155,7 @@ var HitEntity = me.ObjectEntity.extend({
     this.ac = new me.Vector2d(-this.gravity, 0);
   },
 
-  update: function(){
+  update: function() {
     // mechanics
     this.pos.add(this.ac);
     if (this.pos.x < -148) {
@@ -167,7 +167,7 @@ var HitEntity = me.ObjectEntity.extend({
 });
 
 var Ground = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('ground');
     settings.width = 900;
@@ -180,7 +180,7 @@ var Ground = me.ObjectEntity.extend({
     this.accel = new me.Vector2d(-4, 0);
   },
 
-  update: function(){
+  update: function() {
     // mechanics
     this.pos.add(this.accel);
     if (this.pos.x < -this.renderable.width) {
@@ -192,12 +192,12 @@ var Ground = me.ObjectEntity.extend({
 });
 
 var TheGround = Object.extend({
-  init: function(){
+  init: function() {
     this.ground1 = new Ground(0, me.video.getHeight() - 96);
     this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
     me.game.world.addChild(this.ground1, 11);
     me.game.world.addChild(this.ground2, 11);
   },
 
-  update: function (){ return true; }
+  update: function () { return true; }
 })
