@@ -50,3 +50,8 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+.google {
+  position: absolute;
+  left:23%;
+}
