@@ -9,25 +9,25 @@ game.HUD = game.HUD || {};
 
 game.HUD.Container = me.ObjectContainer.extend({
 
-	init: function() {
-		// call the constructor
-		this.parent();
+  init: function() {
+    // call the constructor
+    this.parent();
 
-		// persistent across level change
-		this.isPersistent = true;
+    // persistent across level change
+    this.isPersistent = true;
 
-		// non collidable
-		this.collidable = false;
+    // non collidable
+    this.collidable = false;
 
-		// make sure our object is always draw first
-		this.z = Infinity;
+    // make sure our object is always draw first
+    this.z = Infinity;
 
-		// give a name
-		this.name = "HUD";
+    // give a name
+    this.name = "HUD";
 
-		// add our child score object at the top left corner
-		this.addChild(new game.HUD.ScoreItem(5, 5));
-	}
+    // add our child score object at the top left corner
+    this.addChild(new game.HUD.ScoreItem(5, 5));
+  }
 });
 
 
@@ -35,35 +35,35 @@ game.HUD.Container = me.ObjectContainer.extend({
  * a basic HUD item to display score
  */
 game.HUD.ScoreItem = me.Renderable.extend({
-	/**
-	 * constructor
-	 */
-	init: function(x, y) {
+  /**
+   * constructor
+   */
+  init: function(x, y) {
 
-		// call the parent constructor
-		// (size does not matter here)
-		this.parent(new me.Vector2d(x, y), 10, 10);
+    // call the parent constructor
+    // (size does not matter here)
+    this.parent(new me.Vector2d(x, y), 10, 10);
 
-		// local copy of the global score
-    this.stepsFont = new me.Font('Helvetica', 60, '#000', 'center');
+    // local copy of the global score
+    this.stepsFont = new me.Font('gamefont', 80, '#000', 'center');
 
-		// make sure we use screen coordinates
-		this.floating = true;
-	},
+    // make sure we use screen coordinates
+    this.floating = true;
+  },
 
-	update : function () {
+  update: function() {
     return true;
-	},
+  },
 
-	draw : function (context) {
+  draw: function (context) {
     if (game.data.start && me.state.isCurrent(me.state.PLAY))
-      this.stepsFont.draw(context, game.data.steps, 50, 10);
-	}
+      this.stepsFont.draw(context, game.data.steps, me.video.getWidth()/2, 10);
+  }
 
 });
 
 var BackgroundLayer = me.ImageLayer.extend({
-  init: function(image, z, speed){
+  init: function(image, z, speed) {
     name = image;
     width = 900;
     height = 600;
@@ -74,7 +74,7 @@ var BackgroundLayer = me.ImageLayer.extend({
   },
 
   update: function() {
-    if (!this.fixed){
+    if (!this.fixed) {
       if (this.pos.x >= this.imagewidth - 1)
         this.pos.x = 0;
       this.pos.x += this.speed;
@@ -84,7 +84,7 @@ var BackgroundLayer = me.ImageLayer.extend({
 });
 
 var Share = me.GUI_Object.extend({
-  init: function(){
+  init: function() {
     var settings = {};
     var x = me.video.getWidth()/2 - 170;
     var y = me.video.getHeight()/2 + 200;
@@ -94,7 +94,7 @@ var Share = me.GUI_Object.extend({
     this.parent(x, y, settings);
   },
 
-  onClick: function(event){
+  onClick: function(event) {
     var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     FB.ui(
@@ -115,7 +115,7 @@ var Share = me.GUI_Object.extend({
 });
 
 var Tweet = me.GUI_Object.extend({
-  init: function(){
+  init: function() {
     var settings = {};
     var x = me.video.getWidth()/2 + 10;
     var y = me.video.getHeight()/2 + 200;
@@ -125,7 +125,7 @@ var Tweet = me.GUI_Object.extend({
     this.parent(x, y, settings);
   },
 
-  onClick: function(event){
+  onClick: function(event) {
     var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     var hashtags = 'clumsybird,melonjs'

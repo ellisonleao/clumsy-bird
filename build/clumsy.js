@@ -1,12 +1,12 @@
 var game = {
-  data : {
+  data: {
     score : 0,
     steps: 0,
     start: false,
     newHiScore: false
   },
 
-  "onload" : function () {
+  "onload": function() {
     if (!me.video.init("screen", 900, 600, true, 'auto')) {
       alert("Your browser does not support HTML5 canvas.");
       return;
@@ -18,7 +18,7 @@ var game = {
     me.state.change(me.state.LOADING);
   },
 
-  "loaded" : function () {
+  "loaded": function() {
     me.state.set(me.state.MENU, new game.TitleScreen());
     me.state.set(me.state.PLAY, new game.PlayScreen());
     me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
@@ -31,10 +31,11 @@ var game = {
     me.pool.register("hit", HitEntity, true);
 
     // in melonJS 1.0.0, viewport size is set to Infinity by default
-    me.game.viewport.setBounds(0,0, 900, 600);
+    me.game.viewport.setBounds(0, 0, 900, 600);
     me.state.change(me.state.MENU);
-	}
+  }
 };
+
 game.resources = [
 
 	 {name: "bg", type:"image", src: "data/img/bg.png"},
@@ -53,9 +54,10 @@ game.resources = [
 	
 	 {name: "theme", type: "audio", src: "data/bgm/"},
 	 {name: "hit", type: "audio", src: "data/sfx/"},
+	 {name: "lose", type: "audio", src: "data/sfx/"},
 ];
 var BirdEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('clumsy');
     settings.width = 85;
@@ -81,10 +83,10 @@ var BirdEntity = me.ObjectEntity.extend({
     this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
   },
 
-  update: function(dt){
+  update: function(dt) {
     // mechanics
     if (game.data.start) {
-      if (me.input.isKeyPressed('fly')){
+      if (me.input.isKeyPressed('fly')) {
         this.gravityForce = 0.01;
 
         var currentPos = this.pos.y;
@@ -106,10 +108,8 @@ var BirdEntity = me.ObjectEntity.extend({
     var res = me.game.collide(this);
 
     if (res) {
-      if (res.obj.type != 'hit'){
-        if (me.device.touch){
-          me.device.vibrate(1000);
-        }
+      if (res.obj.type != 'hit') {
+        me.device.vibrate(500);
         me.state.change(me.state.GAME_OVER);
         return false;
       }      
@@ -124,7 +124,7 @@ var BirdEntity = me.ObjectEntity.extend({
     } else {
       var hitGround = me.game.viewport.height - (96 + 60);
       var hitSky = -80; // bird height + 20px
-      if (this.pos.y >= hitGround || this.pos.y <= hitSky){
+      if (this.pos.y >= hitGround || this.pos.y <= hitSky) {
         me.state.change(me.state.GAME_OVER);
         return false;
       }
@@ -138,7 +138,7 @@ var BirdEntity = me.ObjectEntity.extend({
 
 
 var PipeEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('pipe');
     settings.width = 148;
@@ -153,7 +153,7 @@ var PipeEntity = me.ObjectEntity.extend({
     this.updateTime = false;
   },
 
-  update: function(dt){
+  update: function(dt) {
     // mechanics
     this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
     if (this.pos.x < -148) {
@@ -165,7 +165,7 @@ var PipeEntity = me.ObjectEntity.extend({
 });
 
 var PipeGenerator = me.Renderable.extend({
-  init: function(){
+  init: function() {
     this.parent(new me.Vector2d(), me.game.viewport.width, me.game.viewport.height);
     this.alwaysUpdate = true;
     this.generate = 0;
@@ -174,8 +174,8 @@ var PipeGenerator = me.Renderable.extend({
     this.posX = me.game.viewport.width;
   },
 
-  update: function(dt){
-    if (this.generate++ % this.pipeFrequency == 0){
+  update: function(dt) {
+    if (this.generate++ % this.pipeFrequency == 0) {
       var posY = Number.prototype.random(
           me.video.getHeight() - 100,
           200
@@ -196,7 +196,7 @@ var PipeGenerator = me.Renderable.extend({
 });
 
 var HitEntity = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('hit');
     settings.width = 148;
@@ -213,7 +213,7 @@ var HitEntity = me.ObjectEntity.extend({
     this.ac = new me.Vector2d(-this.gravity, 0);
   },
 
-  update: function(){
+  update: function() {
     // mechanics
     this.pos.add(this.ac);
     if (this.pos.x < -148) {
@@ -225,7 +225,7 @@ var HitEntity = me.ObjectEntity.extend({
 });
 
 var Ground = me.ObjectEntity.extend({
-  init: function(x, y){
+  init: function(x, y) {
     var settings = {};
     settings.image = me.loader.getImage('ground');
     settings.width = 900;
@@ -238,7 +238,7 @@ var Ground = me.ObjectEntity.extend({
     this.accel = new me.Vector2d(-4, 0);
   },
 
-  update: function(){
+  update: function() {
     // mechanics
     this.pos.add(this.accel);
     if (this.pos.x < -this.renderable.width) {
@@ -250,15 +250,16 @@ var Ground = me.ObjectEntity.extend({
 });
 
 var TheGround = Object.extend({
-  init: function(){
+  init: function() {
     this.ground1 = new Ground(0, me.video.getHeight() - 96);
     this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
     me.game.world.addChild(this.ground1, 11);
     me.game.world.addChild(this.ground2, 11);
   },
 
-  update: function (){ return true; }
+  update: function () { return true; }
 })
+
 
 
 /**
@@ -270,25 +271,25 @@ game.HUD = game.HUD || {};
 
 game.HUD.Container = me.ObjectContainer.extend({
 
-	init: function() {
-		// call the constructor
-		this.parent();
+  init: function() {
+    // call the constructor
+    this.parent();
 
-		// persistent across level change
-		this.isPersistent = true;
+    // persistent across level change
+    this.isPersistent = true;
 
-		// non collidable
-		this.collidable = false;
+    // non collidable
+    this.collidable = false;
 
-		// make sure our object is always draw first
-		this.z = Infinity;
+    // make sure our object is always draw first
+    this.z = Infinity;
 
-		// give a name
-		this.name = "HUD";
+    // give a name
+    this.name = "HUD";
 
-		// add our child score object at the top left corner
-		this.addChild(new game.HUD.ScoreItem(5, 5));
-	}
+    // add our child score object at the top left corner
+    this.addChild(new game.HUD.ScoreItem(5, 5));
+  }
 });
 
 
@@ -296,35 +297,35 @@ game.HUD.Container = me.ObjectContainer.extend({
  * a basic HUD item to display score
  */
 game.HUD.ScoreItem = me.Renderable.extend({
-	/**
-	 * constructor
-	 */
-	init: function(x, y) {
+  /**
+   * constructor
+   */
+  init: function(x, y) {
 
-		// call the parent constructor
-		// (size does not matter here)
-		this.parent(new me.Vector2d(x, y), 10, 10);
+    // call the parent constructor
+    // (size does not matter here)
+    this.parent(new me.Vector2d(x, y), 10, 10);
 
-		// local copy of the global score
-    this.stepsFont = new me.Font('Helvetica', 60, '#000', 'center');
+    // local copy of the global score
+    this.stepsFont = new me.Font('gamefont', 80, '#000', 'center');
 
-		// make sure we use screen coordinates
-		this.floating = true;
-	},
+    // make sure we use screen coordinates
+    this.floating = true;
+  },
 
-	update : function () {
+  update: function() {
     return true;
-	},
+  },
 
-	draw : function (context) {
+  draw: function (context) {
     if (game.data.start && me.state.isCurrent(me.state.PLAY))
-      this.stepsFont.draw(context, game.data.steps, 50, 10);
-	}
+      this.stepsFont.draw(context, game.data.steps, me.video.getWidth()/2, 10);
+  }
 
 });
 
 var BackgroundLayer = me.ImageLayer.extend({
-  init: function(image, z, speed){
+  init: function(image, z, speed) {
     name = image;
     width = 900;
     height = 600;
@@ -335,7 +336,7 @@ var BackgroundLayer = me.ImageLayer.extend({
   },
 
   update: function() {
-    if (!this.fixed){
+    if (!this.fixed) {
       if (this.pos.x >= this.imagewidth - 1)
         this.pos.x = 0;
       this.pos.x += this.speed;
@@ -345,7 +346,7 @@ var BackgroundLayer = me.ImageLayer.extend({
 });
 
 var Share = me.GUI_Object.extend({
-  init: function(){
+  init: function() {
     var settings = {};
     var x = me.video.getWidth()/2 - 170;
     var y = me.video.getHeight()/2 + 200;
@@ -355,7 +356,7 @@ var Share = me.GUI_Object.extend({
     this.parent(x, y, settings);
   },
 
-  onClick: function(event){
+  onClick: function(event) {
     var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     FB.ui(
@@ -376,7 +377,7 @@ var Share = me.GUI_Object.extend({
 });
 
 var Tweet = me.GUI_Object.extend({
-  init: function(){
+  init: function() {
     var settings = {};
     var x = me.video.getWidth()/2 + 10;
     var y = me.video.getHeight()/2 + 200;
@@ -386,7 +387,7 @@ var Tweet = me.GUI_Object.extend({
     this.parent(x, y, settings);
   },
 
-  onClick: function(event){
+  onClick: function(event) {
     var shareText = 'Just made ' + game.data.steps + ' steps on Clumsy Bird! Can you beat me? Try online here!';
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     var hashtags = 'clumsybird,melonjs'
@@ -397,20 +398,24 @@ var Tweet = me.GUI_Object.extend({
 });
 
 game.TitleScreen = me.ScreenObject.extend({
-	onResetEvent: function() {
+  init: function(){
+    this.font = null;    
+  },
+
+  onResetEvent: function() {
     me.audio.stop("theme");
     game.data.newHiScore = false;
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-		me.input.bindKey(me.input.KEY.ENTER, "enter", true);
+    me.input.bindKey(me.input.KEY.ENTER, "enter", true);
         me.input.bindKey(me.input.KEY.SPACE, "enter", true);
-		me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
+    me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
-			if (action === "enter") {
-			  me.state.change(me.state.PLAY);
-			}
-		});
+      if (action === "enter") {
+        me.state.change(me.state.PLAY);
+      }
+    });
 
     //logo
     var logoImg = me.loader.getImage('logo');
@@ -429,37 +434,36 @@ game.TitleScreen = me.ScreenObject.extend({
 
     me.game.world.addChild(new (me.Renderable.extend ({
         // constructor
-        init : function() {
+        init: function() {
             // size does not matter, it's just to avoid having a zero size 
             // renderable
             this.parent(new me.Vector2d(), 100, 100);
-            this.font = new me.Font('Arial Black', 20, 'black', 'left');
+            //this.font = new me.Font('Arial Black', 20, 'black', 'left');
             this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START';
+            this.font = new me.Font('gamefont', 20, '#000');
         },
-        update : function () {
+        update: function () {
             return true;
         },
-        draw : function (context) {
+        draw: function (context) {
             var measure = this.font.measureText(context, this.text);
-            this.font.draw(context, this.text,  me.game.viewport.width/2 - measure.width/2,  me.game.viewport.height/2 + 50);
+            this.font.draw(context, this.text, me.game.viewport.width/2 - measure.width/2, me.game.viewport.height/2 + 50);
         }
     })), 12);
+  },
 
-
-	},
-
-	onDestroyEvent : function() {
-    	// unregister the event
-		me.event.unsubscribe(this.handler);
-		me.input.unbindKey(me.input.KEY.ENTER);
+  onDestroyEvent: function() {
+      // unregister the event
+    me.event.unsubscribe(this.handler);
+    me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
-		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.input.unbindMouse(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
-	}
-
+  }
 });
+
 game.PlayScreen = me.ScreenObject.extend({
-  init: function(){
+  init: function() {
     me.audio.play("theme", true);
     // lower audio volume on firefox browser
     var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
@@ -467,7 +471,7 @@ game.PlayScreen = me.ScreenObject.extend({
     this.parent(this);
   },
 
-	onResetEvent: function() {
+  onResetEvent: function() {
     me.audio.stop("theme");
     me.audio.play("theme", true);
 
@@ -500,29 +504,30 @@ game.PlayScreen = me.ScreenObject.extend({
 
     var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
       .easing(me.Tween.Easing.Linear.None)
-      .onComplete(function(){
+      .onComplete(function() {
             game.data.start = true;
             me.game.world.addChild(new PipeGenerator(), 0);
        }).start();
   },
 
-	onDestroyEvent: function() {
+  onDestroyEvent: function() {
     me.audio.stopTrack('theme');
     // free the stored instance
     this.HUD = null;
     this.bird = null;
     me.input.unbindKey(me.input.KEY.SPACE);
-	}
-
+  }
 });
+
 game.GameOverScreen = me.ScreenObject.extend({
 
-  init: function(){
+  init: function() {
     this.savedData = null;
     this.handler = null;
   },
 
   onResetEvent: function() {
+    me.audio.play("lose");
     //save section
     this.savedData = {
       score: game.data.score,
@@ -530,7 +535,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     };
     me.save.add(this.savedData);
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
-    if (game.data.steps > me.save.topSteps){
+    if (game.data.steps > me.save.topSteps) {
       me.save.topSteps = game.data.steps;
       game.data.newHiScore = true;
     }
@@ -543,7 +548,6 @@ game.GameOverScreen = me.ScreenObject.extend({
             me.state.change(me.state.MENU);
         }
     });
-
 
     var gImage =  me.loader.getImage('gameover');
     me.game.world.addChild(new me.SpriteObject(
@@ -572,7 +576,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.tweet, 12);
 
     // add the dialog witht he game information
-    if (game.data.newHiScore){
+    if (game.data.newHiScore) {
       var newRect = new me.SpriteObject(
           235,
           355,
@@ -583,20 +587,20 @@ game.GameOverScreen = me.ScreenObject.extend({
 
     this.dialog = new (me.Renderable.extend({
       // constructor
-      init : function() {
+      init: function() {
           // size does not matter, it's just to avoid having a zero size
           // renderable
           this.parent(new me.Vector2d(), 100, 100);
-          this.font = new me.Font('Arial Black', 40, 'black', 'left');
+          this.font = new me.Font('gamefont', 40, 'black', 'left');
           this.steps = 'Steps: ' + game.data.steps.toString();
           this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
       },
 
-      update : function () {
+      update: function () {
         return true;
       },
 
-      draw : function (context) {
+      draw: function (context) {
         var stepsText = this.font.measureText(context, this.steps);
         var topStepsText = this.font.measureText(context, this.topSteps);
 
@@ -605,14 +609,14 @@ game.GameOverScreen = me.ScreenObject.extend({
         this.font.draw(
             context,
             this.steps,
-            me.game.viewport.width/2 - stepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2
         );
         //top score
         this.font.draw(
             context,
             this.topSteps,
-            me.game.viewport.width/2 - topStepsText.width/2,
+            me.game.viewport.width/2 - stepsText.width/2 - 60,
             me.game.viewport.height/2 + 50
         );
 
@@ -621,15 +625,14 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.dialog, 12);
   },
 
-	onDestroyEvent : function() {
-		// unregister the event
-		me.event.unsubscribe(this.handler);
+  onDestroyEvent: function() {
+    // unregister the event
+    me.event.unsubscribe(this.handler);
     me.input.unbindKey(me.input.KEY.ENTER);
     me.input.unbindKey(me.input.KEY.SPACE);
-		me.input.unbindMouse(me.input.mouse.LEFT);
+    me.input.unbindMouse(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
     this.font = null;
     me.audio.stop("theme");
-	}
-
+  }
 });

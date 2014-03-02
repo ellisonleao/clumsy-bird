@@ -6,6 +6,8 @@ repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/s
 
 A MelonJS made "Flappy Bird" clone.
 
+![](http://i.imgur.com/Slbvt65.png)
+
 Play online at http://ellisonleao.github.io/clumsy-bird/
 
 ## Running Locally
@@ -14,4 +16,4 @@ Just type on your shell:
 
 	make run
 
-and open yout browser on http://localhost:8001/
+and open your browser on http://localhost:8001/
