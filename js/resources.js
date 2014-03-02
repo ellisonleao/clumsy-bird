@@ -16,4 +16,5 @@ game.resources = [
 	
 	 {name: "theme", type: "audio", src: "data/bgm/"},
 	 {name: "hit", type: "audio", src: "data/sfx/"},
+	 {name: "lose", type: "audio", src: "data/sfx/"},
 ];

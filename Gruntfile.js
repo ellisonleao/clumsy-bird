@@ -79,6 +79,6 @@ module.exports = function(grunt) {
 
 
   // Default task.
-  grunt.registerTask('default', ['concat', 'uglify']);
+  grunt.registerTask('default', ['concat', 'uglify', 'manifest']);
   grunt.registerTask('lint', ['jshint:beforeConcat', 'concat', 'jshint:afterConcat']);
 };
