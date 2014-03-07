@@ -1,0 +1,13 @@
+/* TEAM */
+
+Developer: Ellison Leão 
+Site: https://ellisonleao.github.io, https://github.com/ellisonleao
+Twitter: @ellisonleao
+Location: Curitiba, Brazil
+
+/* SITE */
+
+Last Update: 2014/03/06
+Standards: HTML5, CSS3
+Components: MelonJS, jQuery
+Software: VIM, Photoshop
