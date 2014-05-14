@@ -2,8 +2,7 @@ var game = {
   data: {
     score : 0,
     steps: 0,
-    start: false,
-    newHiScore: false
+    start: true
   },
 
   "onload": function() {
@@ -30,7 +29,6 @@ var game = {
     me.pool.register("pipe", PipeEntity, true);
     me.pool.register("hit", HitEntity, true);
 
-    // in melonJS 1.0.0, viewport size is set to Infinity by default
     me.game.viewport.setBounds(0, 0, 900, 600);
     me.state.change(me.state.MENU);
   }
