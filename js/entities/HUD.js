@@ -19,7 +19,6 @@ game.HUD.Container = me.ObjectContainer.extend({
     // non collidable
     this.collidable = false;
 
-    // make sure our object is always draw first
     this.z = Infinity;
 
     // give a name
