@@ -58,27 +58,15 @@ module.exports = function(grunt) {
       ],
     },
 
-    manifest: {
-      generate:{
-        options: {
-          basePath: '.',
-          cache: sourceFiles,
-          master: ['index.html']        
-        },
-        src: sourceFiles + ['index.html', 'index.css', 'data/*', 'lib/*']     
-      }
-    }
-
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-manifest');
 
 
   // Default task.
-  grunt.registerTask('default', ['concat', 'uglify', 'manifest']);
+  grunt.registerTask('default', ['concat', 'uglify']);
   grunt.registerTask('lint', ['jshint:beforeConcat', 'concat', 'jshint:afterConcat']);
 };
