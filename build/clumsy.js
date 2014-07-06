@@ -534,6 +534,13 @@ game.GameOverScreen = me.ScreenObject.extend({
       steps: game.data.steps
     };
     me.save.add(this.savedData);
+
+    // clay.io
+    var leaderboard = new Clay.Leaderboard({ id: 4197 });
+    leaderboard.post({score: game.data.score }, function(response) {
+       console.log(response);
+    });
+
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
     if (game.data.steps > me.save.topSteps) {
       me.save.topSteps = game.data.steps;
