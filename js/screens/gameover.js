@@ -15,7 +15,9 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.save.add(this.savedData);
 
     // clay.io
-    me.plugin.clay.leaderboard(4198);
+    if (game.data.score > 0) {
+      me.plugin.clay.leaderboard('clumsy');
+    }
 
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
     if (game.data.steps > me.save.topSteps) {
