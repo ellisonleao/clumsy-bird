@@ -97,31 +97,17 @@
           }
         }(document, 'script', 'twitter-wjs');
       </script>
-      <script>
-        var Clay = Clay || {};
-        Clay.gameKey = "clumsy";
-        Clay.readyFunctions = [];
-        Clay.ready = function( fn ) {
-            Clay.readyFunctions.push( fn );
-        };
-        (function() {
-              var clay = document.createElement("script"); clay.async = true;
-                  clay.src = ( "https:" == document.location.protocol ? "https://" : "http://" ) + "clay.io/api/api.js";
-                      var tag = document.getElementsByTagName("script")[0]; tag.parentNode.insertBefore(clay, tag);
-          }
-        )();
-      </script>
     </div>
 
     <!-- melonJS Library -->
     <script type="text/javascript" src="lib/melonJS-1.0.0-min.js" ></script>
+    <script type="text/javascript" src="lib/plugins/Clay.js" ></script>
     <script type="text/javascript" src="build/clumsy-min.js" ></script>
     <!-- Bootstrap & Mobile optimization tricks -->
     <script type="text/javascript">
       window.onReady(function onReady() {
 
         game.onload();
-
         // Mobile browser hacks
         if (me.device.isMobile && !navigator.isCocoonJS) {
           // Prevent the webview from moving on a swipe
