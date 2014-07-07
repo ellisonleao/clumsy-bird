@@ -54,8 +54,9 @@ game.resources = [
 	 {name: "new", type:"image", src: "data/img/new.png"},
 	 {name: "share", type:"image", src: "data/img/share.png"},
 	 {name: "tweet", type:"image", src: "data/img/tweet.png"},
+	 {name: "leader", type:"image", src: "data/img/leader.png"},
 
-	
+
 	 {name: "theme", type: "audio", src: "data/bgm/"},
 	 {name: "hit", type: "audio", src: "data/sfx/"},
 	 {name: "lose", type: "audio", src: "data/sfx/"},
@@ -352,7 +353,7 @@ var BackgroundLayer = me.ImageLayer.extend({
 var Share = me.GUI_Object.extend({
   init: function() {
     var settings = {};
-    var x = me.video.getWidth()/2 - 170;
+    var x = 170;
     var y = me.video.getHeight()/2 + 200;
     settings.image = "share";
     settings.spritewidth = 150;
@@ -383,7 +384,7 @@ var Share = me.GUI_Object.extend({
 var Tweet = me.GUI_Object.extend({
   init: function() {
     var settings = {};
-    var x = me.video.getWidth()/2 + 10;
+    var x = 370;
     var y = me.video.getHeight()/2 + 200;
     settings.image = "tweet";
     settings.spritewidth = 152;
@@ -396,6 +397,25 @@ var Tweet = me.GUI_Object.extend({
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     var hashtags = 'clumsybird,melonjs'
     window.open('https://twitter.com/intent/tweet?text=' + shareText + '&hashtags=' + hashtags + '&count=' + url + '&url=' + url, 'Tweet!', 'height=300,width=400')
+    return false;
+  }
+
+});
+
+
+var Leader = me.GUI_Object.extend({
+  init: function() {
+    var settings = {};
+    var x = 570;
+    var y = me.video.getHeight()/2 + 200;
+    settings.image = "leader";
+    settings.spritewidth = 152;
+    settings.spriteheight = 75;
+    this.parent(x, y, settings);
+  },
+
+  onClick: function(event) {
+    me.plugin.clay.showLeaderBoard(4198);
     return false;
   }
 
@@ -582,6 +602,10 @@ game.GameOverScreen = me.ScreenObject.extend({
     //tweet button
     this.tweet = new Tweet();
     me.game.world.addChild(this.tweet, 12);
+
+    //leaderboard button
+    this.leader = new Leader();
+    me.game.world.addChild(this.leader, 12);
 
     // add the dialog witht he game information
     if (game.data.newHiScore) {
