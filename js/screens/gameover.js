@@ -58,6 +58,10 @@ game.GameOverScreen = me.ScreenObject.extend({
     this.tweet = new Tweet();
     me.game.world.addChild(this.tweet, 12);
 
+    //leaderboard button
+    this.leader = new Leader();
+    me.game.world.addChild(this.leader, 12);
+
     // add the dialog witht he game information
     if (game.data.newHiScore) {
       var newRect = new me.SpriteObject(
