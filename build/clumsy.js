@@ -13,6 +13,10 @@ var game = {
     }
 
     me.audio.init("mp3,ogg");
+    window.onReady(function() {
+      me.plugin.register.defer(this, Clay, "clay", "clumsy");
+    });
+
     me.loader.onload = this.loaded.bind(this);
     me.loader.preload(game.resources);
     me.state.change(me.state.LOADING);
@@ -536,13 +540,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.save.add(this.savedData);
 
     // clay.io
-    Clay.ready(function() {
-      var leaderboard = new Clay.Leaderboard({id: 4198});
-      console.log(leaderboard);
-      leaderboard.post({score: game.data.score}, function(response) {
-        console.log(response);
-      });
-    })
+    me.plugin.clay.leaderboard(4198);
 
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
     if (game.data.steps > me.save.topSteps) {
