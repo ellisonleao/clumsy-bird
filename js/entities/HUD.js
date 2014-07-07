@@ -135,7 +135,7 @@ var Leader = me.GUI_Object.extend({
   init: function(x, y) {
     var settings = {};
     settings.image = "leader";
-    settings.spritewidth = 152;
+    settings.spritewidth = 150;
     settings.spriteheight = 75;
     this.parent(x, y, settings);
   },
