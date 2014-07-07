@@ -18,3 +18,4 @@ node_modules/
 
 clumsy-bird.sublime-workspace
 bower_components
+build/clumsy.js
