@@ -1,6 +1,6 @@
 game.TitleScreen = me.ScreenObject.extend({
   init: function(){
-    this.font = null;    
+    this.font = null;
   },
 
   onResetEvent: function() {
@@ -10,7 +10,7 @@ game.TitleScreen = me.ScreenObject.extend({
 
     me.input.bindKey(me.input.KEY.ENTER, "enter", true);
         me.input.bindKey(me.input.KEY.SPACE, "enter", true);
-    me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
+    me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
       if (action === "enter") {
@@ -36,7 +36,7 @@ game.TitleScreen = me.ScreenObject.extend({
     me.game.world.addChild(new (me.Renderable.extend ({
         // constructor
         init: function() {
-            // size does not matter, it's just to avoid having a zero size 
+            // size does not matter, it's just to avoid having a zero size
             // renderable
             this.parent(new me.Vector2d(), 100, 100);
             //this.font = new me.Font('Arial Black', 20, 'black', 'left');
@@ -58,7 +58,7 @@ game.TitleScreen = me.ScreenObject.extend({
     me.event.unsubscribe(this.handler);
     me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
-    me.input.unbindMouse(me.input.mouse.LEFT);
+    me.input.unbindPointer(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
   }
 });

@@ -84,10 +84,8 @@ var BackgroundLayer = me.ImageLayer.extend({
 });
 
 var Share = me.GUI_Object.extend({
-  init: function() {
+  init: function(x, y) {
     var settings = {};
-    var x = 170;
-    var y = me.video.getHeight()/2 + 200;
     settings.image = "share";
     settings.spritewidth = 150;
     settings.spriteheight = 75;
@@ -115,10 +113,8 @@ var Share = me.GUI_Object.extend({
 });
 
 var Tweet = me.GUI_Object.extend({
-  init: function() {
+  init: function(x, y) {
     var settings = {};
-    var x = 370;
-    var y = me.video.getHeight()/2 + 200;
     settings.image = "tweet";
     settings.spritewidth = 152;
     settings.spriteheight = 75;
@@ -135,12 +131,9 @@ var Tweet = me.GUI_Object.extend({
 
 });
 
-
 var Leader = me.GUI_Object.extend({
-  init: function() {
+  init: function(x, y) {
     var settings = {};
-    var x = 570;
-    var y = me.video.getHeight()/2 + 200;
     settings.image = "leader";
     settings.spritewidth = 152;
     settings.spriteheight = 75;
@@ -148,7 +141,7 @@ var Leader = me.GUI_Object.extend({
   },
 
   onClick: function(event) {
-    me.plugin.clay.showLeaderBoard(4198);
+    me.plugin.clay.showLeaderBoard('clumsy');
     return false;
   }
 

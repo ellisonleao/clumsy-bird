@@ -29,7 +29,7 @@ game.PlayScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.bird, 10);
 
     //inputs
-    me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.SPACE);
+    me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.SPACE);
 
     this.getReady = new me.SpriteObject(
       me.video.getWidth()/2 - 200,

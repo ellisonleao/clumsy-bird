@@ -47,14 +47,14 @@ var BirdEntity = me.ObjectEntity.extend({
       }
     }
 
-    var res = me.game.collide(this);
+    var res = me.game.world.collide(this);
 
     if (res) {
       if (res.obj.type != 'hit') {
         me.device.vibrate(500);
         me.state.change(me.state.GAME_OVER);
         return false;
-      }      
+      }
       // remove the hit box
       me.game.world.removeChildNow(res.obj);
       // the give dt parameter to the update function

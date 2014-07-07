@@ -24,7 +24,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     }
     me.input.bindKey(me.input.KEY.ENTER, "enter", true);
     me.input.bindKey(me.input.KEY.SPACE, "enter", false)
-    me.input.bindMouse(me.input.mouse.LEFT, me.input.KEY.ENTER);
+    me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
         if (action === "enter") {
@@ -51,15 +51,16 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.game.world.addChild(this.ground, 11);
 
     // share button
-    this.share = new Share();
+    var buttonsHeight = me.video.getHeight() / 2 + 200;
+    this.share = new Share(me.video.getWidth()/3 - 100, buttonsHeight);
     me.game.world.addChild(this.share, 12);
 
     //tweet button
-    this.tweet = new Tweet();
+    this.tweet = new Tweet(this.share.pos.x + 170, buttonsHeight);
     me.game.world.addChild(this.tweet, 12);
 
     //leaderboard button
-    this.leader = new Leader();
+    this.leader = new Leader(this.tweet.pos.x + 170, buttonsHeight);
     me.game.world.addChild(this.leader, 12);
 
     // add the dialog witht he game information
@@ -117,7 +118,7 @@ game.GameOverScreen = me.ScreenObject.extend({
     me.event.unsubscribe(this.handler);
     me.input.unbindKey(me.input.KEY.ENTER);
     me.input.unbindKey(me.input.KEY.SPACE);
-    me.input.unbindMouse(me.input.mouse.LEFT);
+    me.input.unbindPointer(me.input.mouse.LEFT);
     me.game.world.removeChild(this.ground);
     this.font = null;
     me.audio.stop("theme");

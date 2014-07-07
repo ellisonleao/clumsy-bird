@@ -28,7 +28,7 @@ var game = {
     me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
 
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
-    me.input.bindTouch(me.input.KEY.SPACE);
+    me.input.bindPointer(me.input.KEY.SPACE);
 
     me.pool.register("clumsy", BirdEntity);
     me.pool.register("pipe", PipeEntity, true);
