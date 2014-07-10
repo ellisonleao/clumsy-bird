@@ -9,7 +9,7 @@ game.TitleScreen = me.ScreenObject.extend({
     me.game.world.addChild(new BackgroundLayer('bg', 1));
 
     me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-        me.input.bindKey(me.input.KEY.SPACE, "enter", true);
+    me.input.bindKey(me.input.KEY.SPACE, "enter", true);
     me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
 
     this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
@@ -40,7 +40,7 @@ game.TitleScreen = me.ScreenObject.extend({
             // renderable
             this.parent(new me.Vector2d(), 100, 100);
             //this.font = new me.Font('Arial Black', 20, 'black', 'left');
-            this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START';
+            this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START \n\t\t\t\t\t\t\t\t\t\t\tPRESS "M" TO MUTE SOUND';
             this.font = new me.Font('gamefont', 20, '#000');
         },
         update: function () {

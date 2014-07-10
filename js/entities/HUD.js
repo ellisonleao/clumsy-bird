@@ -79,6 +79,14 @@ var BackgroundLayer = me.ImageLayer.extend({
         this.pos.x = 0;
       this.pos.x += this.speed;
     }
+    if (me.input.isKeyPressed('mute')) {
+      game.data.muted = !game.data.muted;
+      if (game.data.muted){
+        me.audio.disable();
+      }else{
+        me.audio.enable();
+      }
+    }
     return true;
   }
 });

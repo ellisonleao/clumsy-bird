@@ -9,7 +9,9 @@ game.PlayScreen = me.ScreenObject.extend({
 
   onResetEvent: function() {
     me.audio.stop("theme");
-    me.audio.play("theme", true);
+    if (!game.data.muted){
+      me.audio.play("theme", true);
+    }
 
     me.input.bindKey(me.input.KEY.SPACE, "fly", true);
     game.data.score = 0;
@@ -52,5 +54,6 @@ game.PlayScreen = me.ScreenObject.extend({
     this.HUD = null;
     this.bird = null;
     me.input.unbindKey(me.input.KEY.SPACE);
+    me.input.unbindPointer(me.input.mouse.LEFT);
   }
 });
