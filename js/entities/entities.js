@@ -29,6 +29,7 @@ var BirdEntity = me.ObjectEntity.extend({
     // mechanics
     if (game.data.start) {
       if (me.input.isKeyPressed('fly')) {
+        me.audio.play('wing');
         this.gravityForce = 0.01;
 
         var currentPos = this.pos.y;
