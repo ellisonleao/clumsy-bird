@@ -24,6 +24,7 @@ and open your browser on http://localhost:8001/
 - **Hungry Willbo** by @dougdiehnelt, @ferentchak @willklein and @city41 - http://hungrywillbo.com/
 - **Flappy Dragon** by @sunzhuoshi - http://flappydragon.net
 - **BurguerFest** by @PanManAms - http://burgerfest.nl
+- **Flappy Tom**  by @jeshuamaxey - http://votetom.in/flappy-tom
 
 If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/issues/39) and i'll be happy to add your game into the list.
 
