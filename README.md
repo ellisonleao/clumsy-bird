@@ -9,7 +9,7 @@ Play online at http://ellisonleao.github.io/clumsy-bird/
 
 ## Running Locally
 
-- Install (Grunt)[http://gruntjs.com/]
+- Install [Grunt)](http://gruntjs.com/)
 - Install the dependencies
 
 	npm install
