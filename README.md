@@ -9,16 +9,24 @@ Play online at http://ellisonleao.github.io/clumsy-bird/
 
 ## Running Locally
 
-- Install [Grunt](http://gruntjs.com/)
+- Install [Node](http://nodejs.org/download/) and [Grunt](http://gruntjs.com/)
 - Install the dependencies
 
-	npm install
+```
+npm install
+```
 
 Then just type on your shell:
 
-	grunt connect:keepalive
+```
+grunt connect:keepalive
+```
 
-and open your browser on http://localhost:8889/
+Open your browser at `http://localhost:8889/`
+
+## Making your customization
+
+See [CUSTOMIZING](https://github.com/ellisonleao/clumsy-bird/blob/gh-pages/CUSTOMIZING.md)
 
 ## Some nice games made with this project
 
