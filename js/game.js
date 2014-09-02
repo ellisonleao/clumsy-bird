@@ -14,10 +14,6 @@ var game = {
     }
 
     me.audio.init("mp3,ogg");
-    window.onReady(function() {
-      me.plugin.register.defer(this, Clayio, "clay", "clumsy");
-    });
-
     me.loader.onload = this.loaded.bind(this);
     me.loader.preload(game.resources);
     me.state.change(me.state.LOADING);

@@ -14,10 +14,6 @@ var game = {
     }
 
     me.audio.init("mp3,ogg");
-    window.onReady(function() {
-      me.plugin.register.defer(this, Clayio, "clay", "clumsy");
-    });
-
     me.loader.onload = this.loaded.bind(this);
     me.loader.preload(game.resources);
     me.state.change(me.state.LOADING);
@@ -561,11 +557,6 @@ game.GameOverScreen = me.ScreenObject.extend({
     };
     me.save.add(this.savedData);
 
-    // clay.io
-    if (game.data.score > 0) {
-      me.plugin.clay.leaderboard('clumsy');
-    }
-
     if (!me.save.topSteps) me.save.add({topSteps: game.data.steps});
     if (game.data.steps > me.save.topSteps) {
       me.save.topSteps = game.data.steps;
@@ -601,16 +592,12 @@ game.GameOverScreen = me.ScreenObject.extend({
 
     // share button
     var buttonsHeight = me.video.getHeight() / 2 + 200;
-    this.share = new Share(me.video.getWidth()/3 - 100, buttonsHeight);
+    this.share = new Share(me.video.getWidth()/2 - 180, buttonsHeight);
     me.game.world.addChild(this.share, 12);
 
     //tweet button
     this.tweet = new Tweet(this.share.pos.x + 170, buttonsHeight);
     me.game.world.addChild(this.tweet, 12);
-
-    //leaderboard button
-    this.leader = new Leader(this.tweet.pos.x + 170, buttonsHeight);
-    me.game.world.addChild(this.leader, 12);
 
     // add the dialog witht he game information
     if (game.data.newHiScore) {
