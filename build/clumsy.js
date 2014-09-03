@@ -39,26 +39,24 @@ var game = {
 };
 
 game.resources = [
-
-	 {name: "bg", type:"image", src: "data/img/bg.png"},
-	 {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
-	 {name: "pipe", type:"image", src: "data/img/pipe.png"},
-	 {name: "logo", type:"image", src: "data/img/logo.png"},
-	 {name: "ground", type:"image", src: "data/img/ground.png"},
-	 {name: "gameover", type:"image", src: "data/img/gameover.png"},
-	 {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
-	 {name: "hit", type:"image", src: "data/img/hit.png"},
-	 {name: "getready", type:"image", src: "data/img/getready.png"},
-	 {name: "new", type:"image", src: "data/img/new.png"},
-	 {name: "share", type:"image", src: "data/img/share.png"},
-	 {name: "tweet", type:"image", src: "data/img/tweet.png"},
-	 {name: "leader", type:"image", src: "data/img/leader.png"},
-
-
-	 {name: "theme", type: "audio", src: "data/bgm/"},
-	 {name: "hit", type: "audio", src: "data/sfx/"},
-	 {name: "lose", type: "audio", src: "data/sfx/"},
-	 {name: "wing", type: "audio", src: "data/sfx/"},
+    // images
+    {name: "bg", type:"image", src: "data/img/bg.png"},
+    {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
+    {name: "pipe", type:"image", src: "data/img/pipe.png"},
+    {name: "logo", type:"image", src: "data/img/logo.png"},
+    {name: "ground", type:"image", src: "data/img/ground.png"},
+    {name: "gameover", type:"image", src: "data/img/gameover.png"},
+    {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
+    {name: "hit", type:"image", src: "data/img/hit.png"},
+    {name: "getready", type:"image", src: "data/img/getready.png"},
+    {name: "new", type:"image", src: "data/img/new.png"},
+    {name: "share", type:"image", src: "data/img/share.png"},
+    {name: "tweet", type:"image", src: "data/img/tweet.png"},
+    // sounds
+    {name: "theme", type: "audio", src: "data/bgm/"},
+    {name: "hit", type: "audio", src: "data/sfx/"},
+    {name: "lose", type: "audio", src: "data/sfx/"},
+    {name: "wing", type: "audio", src: "data/sfx/"},
 ];
 var BirdEntity = me.ObjectEntity.extend({
   init: function(x, y) {
@@ -395,22 +393,6 @@ var Tweet = me.GUI_Object.extend({
     var url = 'http://ellisonleao.github.io/clumsy-bird/';
     var hashtags = 'clumsybird,melonjs'
     window.open('https://twitter.com/intent/tweet?text=' + shareText + '&hashtags=' + hashtags + '&count=' + url + '&url=' + url, 'Tweet!', 'height=300,width=400')
-    return false;
-  }
-
-});
-
-var Leader = me.GUI_Object.extend({
-  init: function(x, y) {
-    var settings = {};
-    settings.image = "leader";
-    settings.spritewidth = 150;
-    settings.spriteheight = 75;
-    this.parent(x, y, settings);
-  },
-
-  onClick: function(event) {
-    me.plugin.clay.showLeaderBoard('clumsy');
     return false;
   }
 

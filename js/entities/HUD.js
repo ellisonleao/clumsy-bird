@@ -132,19 +132,3 @@ var Tweet = me.GUI_Object.extend({
   }
 
 });
-
-var Leader = me.GUI_Object.extend({
-  init: function(x, y) {
-    var settings = {};
-    settings.image = "leader";
-    settings.spritewidth = 150;
-    settings.spriteheight = 75;
-    this.parent(x, y, settings);
-  },
-
-  onClick: function(event) {
-    me.plugin.clay.showLeaderBoard('clumsy');
-    return false;
-  }
-
-});
