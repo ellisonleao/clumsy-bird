@@ -144,6 +144,7 @@ var BirdEntity = me.ObjectEntity.extend({
     },
 
     endAnimation: function() {
+        me.game.viewport.fadeOut("#fff", 100);
         var that = this;
         var currentPos = this.pos.y;
         this.flyTween.stop();
