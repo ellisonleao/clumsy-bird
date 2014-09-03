@@ -90,7 +90,7 @@ var BirdEntity = me.ObjectEntity.extend({
         this.renderable.angle = this.maxAngleRotationDown;
         this.endTween
             .to({y: currentPos - 72}, 1500)
-            .to({y: me.video.getHeight() - 96 - that.renderable.width}, 1000)
+            .to({y: me.video.getHeight() - 96 - that.renderable.width}, 500)
             .onComplete(function() {
                 me.state.change(me.state.GAME_OVER);
             });
