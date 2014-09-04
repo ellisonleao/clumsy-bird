@@ -19,10 +19,10 @@ npm install
 Then just type on your shell:
 
 ```
-grunt connect:keepalive
+grunt connect
 ```
 
-Open your browser at `http://localhost:8889/`
+Open your browser at `http://localhost:8001/`
 
 ## Making your customization
 

@@ -52,16 +52,11 @@ module.exports = function(grunt) {
         },
 
         connect : {
-            server : {
+            root : {
                 options : {
-                    port : 8889
-                }
-            },
-
-            keepalive : {
-                options : {
-                    port : 8889,
-                    keepalive : true
+                    port : 8001,
+                    keepalive : true,
+                    host: '*'
                 }
             }
         },
