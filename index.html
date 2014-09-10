@@ -21,6 +21,9 @@
 
     <!-- Humans -->
     <link rel="author" href="humans.txt" />
+
+    <link rel="stylesheet" type="text/css" href="addtohomescreen.css">
+    <script src="js/addtohomescreen.min.js"></script>
   </head>
 
   <body>
@@ -41,6 +44,7 @@
          js.src = "//connect.facebook.net/pt_BR/all.js";
          fjs.parentNode.insertBefore(js, fjs);
        }(document, 'script', 'facebook-jssdk'));
+       addToHomescreen();
     </script>
     <!-- Canvas placeholder -->
     <div id="screen"></div>
