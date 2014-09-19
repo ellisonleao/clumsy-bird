@@ -37,6 +37,7 @@ See [CUSTOMIZING](https://github.com/ellisonleao/clumsy-bird/blob/gh-pages/CUSTO
 - **Flappy Dragon** by @sunzhuoshi - http://flappydragon.net
 - **BurguerFest** by @PanManAms - http://burgerfest.nl
 - **Flappy Tom**  by @jeshuamaxey - http://votetom.in/flappy-tom
+- **Clippy Jam** by @jkeatinco - http://jkeatinco.github.io/
 
 If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/issues/39) and i'll be happy to add your game into the list.
 
