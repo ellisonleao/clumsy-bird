@@ -24,7 +24,8 @@ var game = {
         me.state.set(me.state.PLAY, new game.PlayScreen());
         me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
 
-        me.input.bindKey(me.input.KEY.SPACE, "fly", true);
+        me.input.bindKey(me.input.KEY.UP, "fly", true);
+        me.input.bindKey(me.input.KEY.DOWN, "drop", true);
         me.input.bindKey(me.input.KEY.M, "mute", true);
         me.input.bindPointer(me.input.KEY.SPACE);
 
@@ -105,7 +106,20 @@ var BirdEntity = me.ObjectEntity.extend({
             this.flyTween.start();
 
             this.renderable.angle = -this.maxAngleRotation;
-        } else {
+        } /*
+        else if (me.input.isKeyPressed('drop')) {
+            me.audio.play('wing');
+            this.gravityForce = 0.0; // default was 0.2
+
+            var currentPos = this.pos.y;
+            // stop the previous one
+            this.flyTween.stop();
+            this.flyTween.to({y: currentPos + 72}, 100);
+            this.flyTween.start();
+
+            this.renderable.angle = -this.maxAngleRotation;
+        } */
+        else {
             this.gravityForce += 0.0; // default was 0.0
             this.pos.y += me.timer.tick * this.gravityForce;
             this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick;
@@ -275,7 +289,7 @@ var Ground = me.ObjectEntity.extend({
         }
         this.pos.add(this.accel);
         if (this.pos.x < -this.renderable.width) {
-            this.pos.x = me.video.getWidth() - 10;
+            this.pos.x = me.video.getWidth() - 20; // deafult - 10
         }
         return this.parent(dt);
     },
