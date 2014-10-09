@@ -119,6 +119,9 @@ var BirdEntity = me.ObjectEntity.extend({
 
             this.renderable.angle = -this.maxAngleRotation;
         } */
+
+// I just want something new
+
         else {
             this.gravityForce += 0.0; // default was 0.0
             this.pos.y += me.timer.tick * this.gravityForce;
