@@ -39,6 +39,7 @@ See [CUSTOMIZING](https://github.com/ellisonleao/clumsy-bird/blob/gh-pages/CUSTO
 - **Flappy Tom**  by [@jeshuamaxey](http://github.com/jeshuamaxey) - http://votetom.in/flappy-tom
 - **Clippy Jam** by [@jkeatinco](http://github.com/jkeatinco) - http://jkeatinco.github.io/
 - **Ducky momo** by [@codex8](http://github.com/codex8) - https://ilmtechlab.com/DuckyMomo/
+- **Derpy Duck** by [@EmmettTan](http://github.com/emmettTan) and [@TheOneAmir](http://github.com/theoneamir) - http://ahdavies.github.io/Derpy-Duck/
 
 If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/issues/39) and i'll be happy to add your game into the list.
 
