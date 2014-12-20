@@ -8,9 +8,15 @@ var game = {
     },
 
     "onload": function() {
-        if (!me.video.init("screen", 900, 600, true, 'auto')) {
+        if (!me.video.init("screen", me.video.CANVAS, 900, 600, true, 'auto')) {
             alert("Your browser does not support HTML5 canvas.");
             return;
+        }
+        // add "#debug" to the URL to enable the debug Panel
+        if (document.location.hash === "#debug") {
+            window.onReady(function () {
+                me.plugin.register.defer(this, debugPanel, "debug", me.input.KEY.V);
+            });
         }
 
         me.audio.init("mp3,ogg");
@@ -22,7 +28,7 @@ var game = {
     "loaded": function() {
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
-        me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
+        //me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
 
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
         me.input.bindKey(me.input.KEY.M, "mute", true);

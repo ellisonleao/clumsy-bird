@@ -8,9 +8,15 @@ var game = {
     },
 
     "onload": function() {
-        if (!me.video.init("screen", 900, 600, true, 'auto')) {
+        if (!me.video.init("screen", me.video.CANVAS, 900, 600, true, 'auto')) {
             alert("Your browser does not support HTML5 canvas.");
             return;
+        }
+        // add "#debug" to the URL to enable the debug Panel
+        if (document.location.hash === "#debug") {
+            window.onReady(function () {
+                me.plugin.register.defer(this, debugPanel, "debug", me.input.KEY.V);
+            });
         }
 
         me.audio.init("mp3,ogg");
@@ -22,7 +28,7 @@ var game = {
     "loaded": function() {
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
-        me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
+        //me.state.set(me.state.GAME_OVER, new game.GameOverScreen());
 
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
         me.input.bindKey(me.input.KEY.M, "mute", true);
@@ -58,7 +64,7 @@ game.resources = [
     {name: "lose", type: "audio", src: "data/sfx/"},
     {name: "wing", type: "audio", src: "data/sfx/"},
 ];
-var BirdEntity = me.ObjectEntity.extend({
+var BirdEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('clumsy');
@@ -67,9 +73,9 @@ var BirdEntity = me.ObjectEntity.extend({
         settings.spritewidth = 85;
         settings.spriteheight= 60;
 
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 0.2;
+        this.body.gravity = 0.2;
         this.gravityForce = 0.01;
         this.maxAngleRotation = Number.prototype.degToRad(30);
         this.maxAngleRotationDown = Number.prototype.degToRad(90);
@@ -79,7 +85,7 @@ var BirdEntity = me.ObjectEntity.extend({
         this.renderable.anchorPoint = new me.Vector2d(0.2, 0.5);
         this.animationController = 0;
         // manually add a rectangular collision shape
-        this.addShape(new me.Rect(new me.Vector2d(5, 5), 70, 50));
+        this.body.addShape(new me.Rect(5, 5, 70, 50));
 
         // a tween object for the flying physic effect
         this.flyTween = new me.Tween(this.pos);
@@ -87,17 +93,19 @@ var BirdEntity = me.ObjectEntity.extend({
 
         this.endTween = new me.Tween(this.pos);
         this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
+
+        // collision shape
+        this.body.onCollision = this.onCollision.bind(this);          
     },
 
     update: function(dt) {
         // mechanics
         if (!game.data.start) {
-            return this.parent(dt);
+            return this._super(me.Entity, 'update', [dt]);
         }
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
             this.gravityForce = 0.02;
-
             var currentPos = this.pos.y;
             // stop the previous one
             this.flyTween.stop();
@@ -112,35 +120,36 @@ var BirdEntity = me.ObjectEntity.extend({
             if (this.renderable.angle > this.maxAngleRotationDown)
                 this.renderable.angle = this.maxAngleRotationDown;
         }
+        this.updateBounds();
 
-        var res = me.game.world.collide(this);
-        var collided = false;
-
-        if (res) {
-            if (res.obj.type === 'pipe' || res.obj.type === 'ground') {
-                me.device.vibrate(500);
-                collided = true;
-            }
-            // remove the hit box
-            if (res.obj.type === 'hit') {
-                me.game.world.removeChildNow(res.obj);
-                // the give dt parameter to the update function
-                // give the time in ms since last frame
-                // use it instead ?
-                game.data.steps++;
-                me.audio.play('hit');
-            }
-
-        }
-        // var hitGround = me.game.viewport.height - (96 + 60);
         var hitSky = -80; // bird height + 20px
-        if (this.pos.y <= hitSky || collided) {
+        if (this.pos.y <= hitSky) {
             game.data.start = false;
             me.audio.play("lose");
             this.endAnimation();
             return false;
         }
-        return this.parent(dt);
+
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
+
+        return this._super(me.Entity, 'update', [dt]);
+    },
+
+    collideHandler: function(response) {
+        console.log('Collide handler', response);
+    },
+
+    onCollision: function(res, obj) {
+        console.log(res, obj);
+        if (obj.type === 'pipe' || obj.type === 'ground') {
+            me.device.vibrate(500);
+        }
+        // remove the hit box
+        if (obj.type === 'hit') {
+            me.game.world.removeChildNow(obj);
+            game.data.steps++;
+            me.audio.play('hit');
+        }
     },
 
     endAnimation: function() {
@@ -162,7 +171,7 @@ var BirdEntity = me.ObjectEntity.extend({
 });
 
 
-var PipeEntity = me.ObjectEntity.extend({
+var PipeEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('pipe');
@@ -171,10 +180,9 @@ var PipeEntity = me.ObjectEntity.extend({
         settings.spritewidth = 148;
         settings.spriteheight= 1664;
 
-
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 5;
+        this.body.gravity = 5;
         this.updateTime = false;
         this.type = 'pipe';
     },
@@ -182,20 +190,21 @@ var PipeEntity = me.ObjectEntity.extend({
     update: function(dt) {
         // mechanics
         if (!game.data.start) {
-            return this.parent(dt);
+            return this._super(me.Entity, 'update', [dt]);
         }
-        this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
+        this.pos.add(new me.Vector2d(-this.body.gravity * me.timer.tick, 0));
         if (this.pos.x < -148) {
             me.game.world.removeChild(this);
         }
-        return this.parent(dt);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
     },
 
 });
 
 var PipeGenerator = me.Renderable.extend({
     init: function() {
-        this.parent(new me.Vector2d(), me.game.viewport.width, me.game.viewport.height);
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height]);
         this.alwaysUpdate = true;
         this.generate = 0;
         this.pipeFrequency = 92;
@@ -206,10 +215,10 @@ var PipeGenerator = me.Renderable.extend({
     update: function(dt) {
         if (this.generate++ % this.pipeFrequency == 0) {
             var posY = Number.prototype.random(
-                    me.video.getHeight() - 100,
+                    me.video.renderer.getHeight() - 100,
                     200
             );
-            var posY2 = posY - me.video.getHeight() - this.pipeHoleSize;
+            var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
             var pipe1 = new me.pool.pull("pipe", this.posX, posY);
             var pipe2 = new me.pool.pull("pipe", this.posX, posY2);
             var hitPos = posY - 100;
@@ -219,12 +228,13 @@ var PipeGenerator = me.Renderable.extend({
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
         }
+        this._super(me.Entity, "update", [dt]);
         return true;
     },
 
 });
 
-var HitEntity = me.ObjectEntity.extend({
+var HitEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('hit');
@@ -233,62 +243,65 @@ var HitEntity = me.ObjectEntity.extend({
         settings.spritewidth = 148;
         settings.spriteheight= 60;
 
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 5;
+        this.body.gravity = 5;
         this.updateTime = false;
         this.type = 'hit';
         this.renderable.alpha = 0;
-        this.ac = new me.Vector2d(-this.gravity, 0);
+        this.body.accel = new me.Vector2d(-this.body.gravity, 0);
     },
 
-    update: function() {
+    update: function(dt) {
         // mechanics
-        this.pos.add(this.ac);
+        //this.body.pos.add(this.body.accel);
         if (this.pos.x < -148) {
             me.game.world.removeChild(this);
         }
+        this.updateBounds();
+        this._super(me.Entity, "update", [dt]);
         return true;
     },
 
 });
 
-var Ground = me.ObjectEntity.extend({
+var Ground = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('ground');
         settings.width = 900;
         settings.height= 96;
-
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 0;
         this.updateTime = false;
-        this.accel = new me.Vector2d(-4, 0);
+        this.body.gravity = 0;
+        //this.body.accel = new me.Vector2d(-4, 0);
+        this.body.vel.set(-4, 0);
+        this.body.addShape(new me.Rect(0 ,0, settings.width, settings.height));
         this.type = 'ground';
     },
 
     update: function(dt) {
         // mechanics
         if (!game.data.start) {
-            return this.parent(dt);
+            return this._super(me.Entity, 'update', [dt]);
         }
-        this.pos.add(this.accel);
+        this.pos.add(this.body.vel);
         if (this.pos.x < -this.renderable.width) {
-            this.pos.x = me.video.getWidth() - 10;
+            this.pos.x = me.video.renderer.getWidth() - 10;
         }
-        return this.parent(dt);
+        this.updateBounds();
+        return this._super(me.Entity, 'update', [dt]);
     },
 
 });
 
 game.HUD = game.HUD || {};
 
-game.HUD.Container = me.ObjectContainer.extend({
+game.HUD.Container = me.Container.extend({
     init: function() {
         // call the constructor
-        this.parent();
-
+        this._super(me.Container, 'init');
         // persistent across level change
         this.isPersistent = true;
 
@@ -315,10 +328,9 @@ game.HUD.ScoreItem = me.Renderable.extend({
      * constructor
      */
     init: function(x, y) {
-
         // call the parent constructor
         // (size does not matter here)
-        this.parent(new me.Vector2d(x, y), 10, 10);
+        this._super(me.Renderable, "init", [x, y, 10, 10]);
 
         // local copy of the global score
         this.stepsFont = new me.Font('gamefont', 80, '#000', 'center');
@@ -327,13 +339,10 @@ game.HUD.ScoreItem = me.Renderable.extend({
         this.floating = true;
     },
 
-    update: function() {
-        return true;
-    },
-
-    draw: function (context) {
+    draw: function (renderer) {
+        var context = renderer.getContext();
         if (game.data.start && me.state.isCurrent(me.state.PLAY))
-            this.stepsFont.draw(context, game.data.steps, me.video.getWidth()/2, 10);
+            this.stepsFont.draw(context, game.data.steps, me.video.renderer.getWidth()/2, 10);
     }
 
 });
@@ -345,7 +354,7 @@ var BackgroundLayer = me.ImageLayer.extend({
         height = 600;
         ratio = 1;
         // call parent constructor
-        this.parent(name, width, height, image, z, ratio);
+        this._super(me.ImageLayer, 'init', [name, width, height, image, z, ratio]);
     },
 
     update: function() {
@@ -367,7 +376,7 @@ var Share = me.GUI_Object.extend({
         settings.image = "share";
         settings.spritewidth = 150;
         settings.spriteheight = 75;
-        this.parent(x, y, settings);
+        this._super(me.GUI_Object, 'init', [x, y, settings]);
     },
 
     onClick: function(event) {
@@ -396,7 +405,7 @@ var Tweet = me.GUI_Object.extend({
         settings.image = "tweet";
         settings.spritewidth = 152;
         settings.spriteheight = 75;
-        this.parent(x, y, settings);
+        this._super(me.GUI_Object, 'init', [x, y, settings]);
     },
 
     onClick: function(event) {
@@ -413,6 +422,7 @@ game.TitleScreen = me.ScreenObject.extend({
     init: function(){
         this.font = null;
         this.logo = null;
+        this._super(me.ScreenObject, 'init');
     },
 
     onResetEvent: function() {
@@ -432,7 +442,7 @@ game.TitleScreen = me.ScreenObject.extend({
 
         //logo
         var logoImg = me.loader.getImage('logo');
-        this.logo = new me.SpriteObject (
+        this.logo = new me.Sprite(
             me.game.viewport.width/2 - 170,
             -logoImg,
             logoImg
@@ -443,27 +453,27 @@ game.TitleScreen = me.ScreenObject.extend({
             .to({y: me.game.viewport.height/2 - 100}, 1000)
             .easing(me.Tween.Easing.Exponential.InOut).start();
 
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = new Ground(0, me.video.renderer.getHeight() - 96);
+        this.ground2 = new Ground(me.video.renderer.getWidth(), me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
         me.game.world.addChild(new (me.Renderable.extend ({
             // constructor
             init: function() {
-                    // size does not matter, it's just to avoid having a zero size
-                    // renderable
-                    this.parent(new me.Vector2d(), 100, 100);
-                    //this.font = new me.Font('Arial Black', 20, 'black', 'left');
-                    this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START \n\t\t\t\t\t\t\t\t\t\t\tPRESS "M" TO MUTE SOUND';
-                    this.font = new me.Font('gamefont', 20, '#000');
+                // size does not matter, it's just to avoid having a zero size
+                // renderable
+                this._super(me.Renderable, 'init', [0, 0, 100, 100]);
+                //this.font = new me.Font('Arial Black', 20, 'black', 'left');
+                this.text = me.device.touch ? 'Tap to start' : 'PRESS SPACE OR CLICK LEFT MOUSE BUTTON TO START \n\t\t\t\t\t\t\t\t\t\t\tPRESS "M" TO MUTE SOUND';
+                this.font = new me.Font('gamefont', 20, '#000');
             },
-            update: function () {
-                    return true;
-            },
-            draw: function (context) {
-                    var measure = this.font.measureText(context, this.text);
-                    this.font.draw(context, this.text, me.game.viewport.width/2 - measure.width/2, me.game.viewport.height/2 + 50);
+            draw: function (renderer) {
+                var context = renderer.getContext();
+                var measure = this.font.measureText(context, this.text);
+                var xpos = me.game.viewport.width/2 - measure.width/2;
+                var ypos = me.game.viewport.height/2 + 50;
+                this.font.draw(context, this.text, xpos, ypos);
             }
         })), 12);
     },
@@ -486,10 +496,11 @@ game.PlayScreen = me.ScreenObject.extend({
         // lower audio volume on firefox browser
         var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
         me.audio.setVolume(vol);
-        this.parent(this);
+        this._super(me.ScreenObject, 'init');
     },
 
     onResetEvent: function() {
+        me.game.reset();
         me.audio.stop("theme");
         if (!game.data.muted){
             me.audio.play("theme", true);
@@ -503,8 +514,8 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = new Ground(0, me.video.renderer.getHeight() - 96);
+        this.ground2 = new Ground(me.video.renderer.getWidth(), me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
@@ -517,9 +528,9 @@ game.PlayScreen = me.ScreenObject.extend({
         //inputs
         me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.SPACE);
 
-        this.getReady = new me.SpriteObject(
-            me.video.getWidth()/2 - 200,
-            me.video.getHeight()/2 - 100,
+        this.getReady = new me.Sprite(
+            me.video.renderer.getWidth()/2 - 200,
+            me.video.renderer.getHeight()/2 - 100,
             me.loader.getImage('getready')
         );
         me.game.world.addChild(this.getReady, 11);
@@ -575,30 +586,30 @@ game.GameOverScreen = me.ScreenObject.extend({
             });
 
         var gImage = me.loader.getImage('gameover');
-        me.game.world.addChild(new me.SpriteObject(
-                me.video.getWidth()/2 - gImage.width/2,
-                me.video.getHeight()/2 - gImage.height/2 - 100,
+        me.game.world.addChild(new me.Sprite(
+                me.video.renderer.getWidth()/2 - gImage.width/2,
+                me.video.renderer.getHeight()/2 - gImage.height/2 - 100,
                 gImage
         ), 12);
 
         var gImageBoard = me.loader.getImage('gameoverbg');
-        me.game.world.addChild(new me.SpriteObject(
-            me.video.getWidth()/2 - gImageBoard.width/2,
-            me.video.getHeight()/2 - gImageBoard.height/2,
+        me.game.world.addChild(new me.Sprite(
+            me.video.renderer.getWidth()/2 - gImageBoard.width/2,
+            me.video.renderer.getHeight()/2 - gImageBoard.height/2,
             gImageBoard
         ), 10);
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
         // ground
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = new Ground(0, me.video.renderer.getHeight() - 96);
+        this.ground2 = new Ground(me.video.renderer.getWidth(), me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
         // share button
-        var buttonsHeight = me.video.getHeight() / 2 + 200;
-        this.share = new Share(me.video.getWidth()/2 - 180, buttonsHeight);
+        var buttonsHeight = me.video.renderer.getHeight() / 2 + 200;
+        this.share = new Share(me.video.renderer.getWidth()/2 - 180, buttonsHeight);
         me.game.world.addChild(this.share, 12);
 
         //tweet button
@@ -607,7 +618,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 
         // add the dialog witht he game information
         if (game.data.newHiScore) {
-            var newRect = new me.SpriteObject(
+            var newRect = new me.Sprite(
                     235,
                     355,
                     me.loader.getImage('new')

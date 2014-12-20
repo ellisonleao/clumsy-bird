@@ -29,30 +29,30 @@ game.GameOverScreen = me.ScreenObject.extend({
             });
 
         var gImage = me.loader.getImage('gameover');
-        me.game.world.addChild(new me.SpriteObject(
-                me.video.getWidth()/2 - gImage.width/2,
-                me.video.getHeight()/2 - gImage.height/2 - 100,
+        me.game.world.addChild(new me.Sprite(
+                me.video.renderer.getWidth()/2 - gImage.width/2,
+                me.video.renderer.getHeight()/2 - gImage.height/2 - 100,
                 gImage
         ), 12);
 
         var gImageBoard = me.loader.getImage('gameoverbg');
-        me.game.world.addChild(new me.SpriteObject(
-            me.video.getWidth()/2 - gImageBoard.width/2,
-            me.video.getHeight()/2 - gImageBoard.height/2,
+        me.game.world.addChild(new me.Sprite(
+            me.video.renderer.getWidth()/2 - gImageBoard.width/2,
+            me.video.renderer.getHeight()/2 - gImageBoard.height/2,
             gImageBoard
         ), 10);
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
         // ground
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = new Ground(0, me.video.renderer.getHeight() - 96);
+        this.ground2 = new Ground(me.video.renderer.getWidth(), me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
         // share button
-        var buttonsHeight = me.video.getHeight() / 2 + 200;
-        this.share = new Share(me.video.getWidth()/2 - 180, buttonsHeight);
+        var buttonsHeight = me.video.renderer.getHeight() / 2 + 200;
+        this.share = new Share(me.video.renderer.getWidth()/2 - 180, buttonsHeight);
         me.game.world.addChild(this.share, 12);
 
         //tweet button
@@ -61,7 +61,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 
         // add the dialog witht he game information
         if (game.data.newHiScore) {
-            var newRect = new me.SpriteObject(
+            var newRect = new me.Sprite(
                     235,
                     355,
                     me.loader.getImage('new')
