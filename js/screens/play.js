@@ -22,8 +22,9 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-        this.ground1 = new Ground(0, me.video.renderer.getHeight() - 96);
-        this.ground2 = new Ground(me.video.renderer.getWidth(), me.video.renderer.getHeight() - 96);
+        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
+        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
+                                    me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
@@ -43,11 +44,13 @@ game.PlayScreen = me.ScreenObject.extend({
         );
         me.game.world.addChild(this.getReady, 11);
 
+        var that = this;
         var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
             .easing(me.Tween.Easing.Linear.None)
             .onComplete(function() {
-                        game.data.start = true;
-                        me.game.world.addChild(new PipeGenerator(), 0);
+                    game.data.start = true;
+                    me.game.world.addChild(new PipeGenerator(), 0);
+                    me.game.world.removeChild(that.getReady);
              }).start();
     },
 
