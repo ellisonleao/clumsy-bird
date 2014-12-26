@@ -8,11 +8,10 @@ var game = {
     },
 
     "onload": function() {
-        if (!me.video.init("screen", 900, 600, true, 'auto')) {
+        if (!me.video.init("screen", me.video.CANVAS, 900, 600, true, 'auto')) {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
-
         me.audio.init("mp3,ogg");
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(game.resources);
@@ -31,6 +30,7 @@ var game = {
         me.pool.register("clumsy", BirdEntity);
         me.pool.register("pipe", PipeEntity, true);
         me.pool.register("hit", HitEntity, true);
+        me.pool.register("ground", Ground, true);
 
         // in melonJS 1.0.0, viewport size is set to Infinity by default
         me.game.viewport.setBounds(0, 0, 900, 600);

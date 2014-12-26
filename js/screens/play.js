@@ -4,10 +4,11 @@ game.PlayScreen = me.ScreenObject.extend({
         // lower audio volume on firefox browser
         var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
         me.audio.setVolume(vol);
-        this.parent(this);
+        this._super(me.ScreenObject, 'init');
     },
 
     onResetEvent: function() {
+        me.game.reset();
         me.audio.stop("theme");
         if (!game.data.muted){
             me.audio.play("theme", true);
@@ -21,8 +22,9 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
+        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
+                                    me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
@@ -35,18 +37,20 @@ game.PlayScreen = me.ScreenObject.extend({
         //inputs
         me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.SPACE);
 
-        this.getReady = new me.SpriteObject(
-            me.video.getWidth()/2 - 200,
-            me.video.getHeight()/2 - 100,
+        this.getReady = new me.Sprite(
+            me.video.renderer.getWidth()/2 - 200,
+            me.video.renderer.getHeight()/2 - 100,
             me.loader.getImage('getready')
         );
         me.game.world.addChild(this.getReady, 11);
 
+        var that = this;
         var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
             .easing(me.Tween.Easing.Linear.None)
             .onComplete(function() {
-                        game.data.start = true;
-                        me.game.world.addChild(new PipeGenerator(), 0);
+                    game.data.start = true;
+                    me.game.world.addChild(new PipeGenerator(), 0);
+                    me.game.world.removeChild(that.getReady);
              }).start();
     },
 

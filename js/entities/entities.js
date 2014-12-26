@@ -1,4 +1,4 @@
-var BirdEntity = me.ObjectEntity.extend({
+var BirdEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('clumsy');
@@ -7,9 +7,9 @@ var BirdEntity = me.ObjectEntity.extend({
         settings.spritewidth = 85;
         settings.spriteheight= 60;
 
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 0.2;
+        this.body.gravity = 0.2;
         this.gravityForce = 0.01;
         this.maxAngleRotation = Number.prototype.degToRad(30);
         this.maxAngleRotationDown = Number.prototype.degToRad(90);
@@ -19,31 +19,32 @@ var BirdEntity = me.ObjectEntity.extend({
         this.renderable.anchorPoint = new me.Vector2d(0.2, 0.5);
         this.animationController = 0;
         // manually add a rectangular collision shape
-        this.addShape(new me.Rect(new me.Vector2d(5, 5), 70, 50));
+        this.body.addShape(new me.Rect(5, 5, 70, 50));
 
         // a tween object for the flying physic effect
         this.flyTween = new me.Tween(this.pos);
         this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
 
-        this.endTween = new me.Tween(this.pos);
-        this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
+        // end animation tween
+        this.endTween = null;
+
+        // collision shape
+        this.collided = false;
     },
 
     update: function(dt) {
         // mechanics
         if (!game.data.start) {
-            return this.parent(dt);
+            return this._super(me.Entity, 'update', [dt]);
         }
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
             this.gravityForce = 0.02;
-
             var currentPos = this.pos.y;
             // stop the previous one
             this.flyTween.stop();
-            this.flyTween.to({y: currentPos - 72}, 100);
+            this.flyTween.to({y: currentPos - 72}, 90);
             this.flyTween.start();
-
             this.renderable.angle = -this.maxAngleRotation;
         } else {
             this.gravityForce += 0.2;
@@ -52,90 +53,93 @@ var BirdEntity = me.ObjectEntity.extend({
             if (this.renderable.angle > this.maxAngleRotationDown)
                 this.renderable.angle = this.maxAngleRotationDown;
         }
+        this.updateBounds();
 
-        var res = me.game.world.collide(this);
-        var collided = false;
-
-        if (res) {
-            if (res.obj.type === 'pipe' || res.obj.type === 'ground') {
-                me.device.vibrate(500);
-                collided = true;
-            }
-            // remove the hit box
-            if (res.obj.type === 'hit') {
-                me.game.world.removeChildNow(res.obj);
-                // the give dt parameter to the update function
-                // give the time in ms since last frame
-                // use it instead ?
-                game.data.steps++;
-                me.audio.play('hit');
-            }
-
-        }
-        // var hitGround = me.game.viewport.height - (96 + 60);
         var hitSky = -80; // bird height + 20px
-        if (this.pos.y <= hitSky || collided) {
+        if (this.pos.y <= hitSky || this.collided) {
             game.data.start = false;
             me.audio.play("lose");
             this.endAnimation();
             return false;
         }
-        return this.parent(dt);
+
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
+    },
+
+    collideHandler: function(response) {
+        var obj = response.obj;
+        if (obj.type === 'pipe' || obj.type === 'ground') {
+            me.device.vibrate(500);
+            this.collided = true;
+        }
+        // remove the hit box
+        if (obj.type === 'hit') {
+            me.game.world.removeChildNow(obj);
+            game.data.steps++;
+            me.audio.play('hit');
+        }
     },
 
     endAnimation: function() {
         me.game.viewport.fadeOut("#fff", 100);
         var that = this;
-        var currentPos = this.pos.y;
+        var currentPos = this.renderable.pos.y;
+        this.endTween = new me.Tween(this.renderable.pos);
+        this.endTween.easing(me.Tween.Easing.Exponential.InOut);
+
         this.flyTween.stop();
         this.renderable.angle = this.maxAngleRotationDown;
+        var finalPos = me.video.renderer.getHeight() - that.renderable.width - 96;
         this.endTween
             .to({y: currentPos - 72}, 1500)
-            .to({y: me.video.getHeight() - 96 - that.renderable.width}, 500)
+            .to({y: finalPos}, 1000)
             .onComplete(function() {
                 me.state.change(me.state.GAME_OVER);
             });
         this.endTween.start();
-        return false;
     }
 
 });
 
 
-var PipeEntity = me.ObjectEntity.extend({
+var PipeEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
-        settings.image = me.loader.getImage('pipe');
+        settings.image = this.image = me.loader.getImage('pipe');
         settings.width = 148;
         settings.height= 1664;
         settings.spritewidth = 148;
         settings.spriteheight= 1664;
 
-
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 5;
-        this.updateTime = false;
+        this.body.addShape(new me.Rect(0 ,0, settings.width, settings.height));
+        this.body.gravity = 0;
+        this.body.vel.set(-5, 0);
         this.type = 'pipe';
     },
 
     update: function(dt) {
         // mechanics
         if (!game.data.start) {
-            return this.parent(dt);
+            return this._super(me.Entity, 'update', [dt]);
         }
-        this.pos.add(new me.Vector2d(-this.gravity * me.timer.tick, 0));
-        if (this.pos.x < -148) {
+        this.pos.add(this.body.vel);
+        if (this.pos.x < -this.image.width) {
             me.game.world.removeChild(this);
         }
-        return this.parent(dt);
+        this.updateBounds();
+        this._super(me.Entity, 'update', [dt]);
+        return true;
     },
 
 });
 
 var PipeGenerator = me.Renderable.extend({
     init: function() {
-        this.parent(new me.Vector2d(), me.game.viewport.width, me.game.viewport.height);
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height]);
         this.alwaysUpdate = true;
         this.generate = 0;
         this.pipeFrequency = 92;
@@ -146,78 +150,79 @@ var PipeGenerator = me.Renderable.extend({
     update: function(dt) {
         if (this.generate++ % this.pipeFrequency == 0) {
             var posY = Number.prototype.random(
-                    me.video.getHeight() - 100,
+                    me.video.renderer.getHeight() - 100,
                     200
             );
-            var posY2 = posY - me.video.getHeight() - this.pipeHoleSize;
-            var pipe1 = new me.pool.pull("pipe", this.posX, posY);
-            var pipe2 = new me.pool.pull("pipe", this.posX, posY2);
+            var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
+            var pipe1 = new me.pool.pull('pipe', this.posX, posY);
+            var pipe2 = new me.pool.pull('pipe', this.posX, posY2);
             var hitPos = posY - 100;
             var hit = new me.pool.pull("hit", this.posX, hitPos);
-            pipe1.renderable.flipY();
+            pipe1.renderable.flipY(true);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
         }
+        this._super(me.Entity, "update", [dt]);
         return true;
     },
 
 });
 
-var HitEntity = me.ObjectEntity.extend({
+var HitEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
-        settings.image = me.loader.getImage('hit');
+        settings.image = this.image = me.loader.getImage('hit');
         settings.width = 148;
         settings.height= 60;
         settings.spritewidth = 148;
         settings.spriteheight= 60;
 
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 5;
+        this.body.gravity = 0;
         this.updateTime = false;
-        this.type = 'hit';
         this.renderable.alpha = 0;
-        this.ac = new me.Vector2d(-this.gravity, 0);
+        this.body.accel.set(-5, 0);
+        this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
+        this.type = 'hit';
     },
 
-    update: function() {
+    update: function(dt) {
         // mechanics
-        this.pos.add(this.ac);
-        if (this.pos.x < -148) {
+        this.pos.add(this.body.accel);
+        if (this.pos.x < -this.image.width) {
             me.game.world.removeChild(this);
         }
+        this.updateBounds();
+        this._super(me.Entity, "update", [dt]);
         return true;
     },
 
 });
 
-var Ground = me.ObjectEntity.extend({
+var Ground = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('ground');
         settings.width = 900;
         settings.height= 96;
-
-        this.parent(x, y, settings);
+        this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.gravity = 0;
-        this.updateTime = false;
-        this.accel = new me.Vector2d(-4, 0);
+        this.body.gravity = 0;
+        this.body.vel.set(-4, 0);
+        this.body.addShape(new me.Rect(0 ,0, settings.width, settings.height));
         this.type = 'ground';
     },
 
     update: function(dt) {
         // mechanics
-        if (!game.data.start) {
-            return this.parent(dt);
-        }
-        this.pos.add(this.accel);
+        this.pos.add(this.body.vel);
         if (this.pos.x < -this.renderable.width) {
-            this.pos.x = me.video.getWidth() - 10;
+            this.pos.x = me.video.renderer.getWidth() - 10;
         }
-        return this.parent(dt);
+        this.updateBounds();
+        return this._super(me.Entity, 'update', [dt]);
     },
 
 });

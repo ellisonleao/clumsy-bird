@@ -29,30 +29,31 @@ game.GameOverScreen = me.ScreenObject.extend({
             });
 
         var gImage = me.loader.getImage('gameover');
-        me.game.world.addChild(new me.SpriteObject(
-                me.video.getWidth()/2 - gImage.width/2,
-                me.video.getHeight()/2 - gImage.height/2 - 100,
+        me.game.world.addChild(new me.Sprite(
+                me.video.renderer.getWidth()/2 - gImage.width/2,
+                me.video.renderer.getHeight()/2 - gImage.height/2 - 100,
                 gImage
         ), 12);
 
         var gImageBoard = me.loader.getImage('gameoverbg');
-        me.game.world.addChild(new me.SpriteObject(
-            me.video.getWidth()/2 - gImageBoard.width/2,
-            me.video.getHeight()/2 - gImageBoard.height/2,
+        me.game.world.addChild(new me.Sprite(
+            me.video.renderer.getWidth()/2 - gImageBoard.width/2,
+            me.video.renderer.getHeight()/2 - gImageBoard.height/2,
             gImageBoard
         ), 10);
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
         // ground
-        this.ground1 = new Ground(0, me.video.getHeight() - 96);
-        this.ground2 = new Ground(me.video.getWidth(), me.video.getHeight() - 96);
+        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
+        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
+                                    me.video.renderer.getHeight() - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
         // share button
-        var buttonsHeight = me.video.getHeight() / 2 + 200;
-        this.share = new Share(me.video.getWidth()/2 - 180, buttonsHeight);
+        var buttonsHeight = me.video.renderer.getHeight() / 2 + 200;
+        this.share = new Share(me.video.renderer.getWidth()/2 - 180, buttonsHeight);
         me.game.world.addChild(this.share, 12);
 
         //tweet button
@@ -61,7 +62,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 
         // add the dialog witht he game information
         if (game.data.newHiScore) {
-            var newRect = new me.SpriteObject(
+            var newRect = new me.Sprite(
                     235,
                     355,
                     me.loader.getImage('new')
@@ -75,21 +76,18 @@ game.GameOverScreen = me.ScreenObject.extend({
                 // size does not matter, it's just to avoid having a
                 // zero size
                 // renderable
-                this.parent(new me.Vector2d(), 100, 100);
+                this._super(me.Renderable, 'init', [0, 0, 100, 100]);
                 this.font = new me.Font('gamefont', 40, 'black', 'left');
                 this.steps = 'Steps: ' + game.data.steps.toString();
                 this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
             },
 
-            update: function (dt) {
-                return this.parent(dt);
-            },
-
-            draw: function (context) {
+            draw: function (renderer) {
+                var context = renderer.getContext();
                 var stepsText = this.font.measureText(context, this.steps);
                 var topStepsText = this.font.measureText(context, this.topSteps);
-
                 var scoreText = this.font.measureText(context, this.score);
+
                 //steps
                 this.font.draw(
                     context,
@@ -97,6 +95,7 @@ game.GameOverScreen = me.ScreenObject.extend({
                     me.game.viewport.width/2 - stepsText.width/2 - 60,
                     me.game.viewport.height/2
                 );
+
                 //top score
                 this.font.draw(
                     context,
@@ -104,7 +103,6 @@ game.GameOverScreen = me.ScreenObject.extend({
                     me.game.viewport.width/2 - stepsText.width/2 - 60,
                     me.game.viewport.height/2 + 50
                 );
-
             }
         }));
         me.game.world.addChild(this.dialog, 12);
@@ -116,8 +114,8 @@ game.GameOverScreen = me.ScreenObject.extend({
         me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
         me.input.unbindPointer(me.input.mouse.LEFT);
-        me.game.world.removeChild(this.ground1);
-        me.game.world.removeChild(this.ground2);
+        this.ground1 = null;
+        this.ground2 = null;
         this.font = null;
         me.audio.stop("theme");
     }
