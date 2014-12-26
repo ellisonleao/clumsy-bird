@@ -63,13 +63,13 @@ var BirdEntity = me.Entity.extend({
             return false;
         }
 
-        me.collision.check(this, true, this.collideHandler.bind(this), true);
+        me.collision.check(this);
         this._super(me.Entity, 'update', [dt]);
         return true;
     },
 
-    collideHandler: function(response) {
-        var obj = response.obj;
+    onCollision: function(response) {
+        var obj = response.b;
         if (obj.type === 'pipe' || obj.type === 'ground') {
             me.device.vibrate(500);
             this.collided = true;
@@ -84,16 +84,15 @@ var BirdEntity = me.Entity.extend({
 
     endAnimation: function() {
         me.game.viewport.fadeOut("#fff", 100);
-        var that = this;
         var currentPos = this.renderable.pos.y;
         this.endTween = new me.Tween(this.renderable.pos);
         this.endTween.easing(me.Tween.Easing.Exponential.InOut);
 
         this.flyTween.stop();
         this.renderable.angle = this.maxAngleRotationDown;
-        var finalPos = me.video.renderer.getHeight() - that.renderable.width - 96;
+        var finalPos = me.video.renderer.getHeight() - this.renderable.width/2 - 96;
         this.endTween
-            .to({y: currentPos - 72}, 1500)
+            .to({y: currentPos}, 1000)
             .to({y: finalPos}, 1000)
             .onComplete(function() {
                 me.state.change(me.state.GAME_OVER);
