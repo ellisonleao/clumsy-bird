@@ -85,13 +85,13 @@ var BirdEntity = me.Entity.extend({
     endAnimation: function() {
         me.game.viewport.fadeOut("#fff", 100);
         var that = this;
-        var currentPos = this.pos.y;
-        this.endTween = new me.Tween(this.pos);
+        var currentPos = this.renderable.pos.y;
+        this.endTween = new me.Tween(this.renderable.pos);
         this.endTween.easing(me.Tween.Easing.Exponential.InOut);
 
         this.flyTween.stop();
         this.renderable.angle = this.maxAngleRotationDown;
-        var finalPos = me.video.renderer.getHeight() - 96 - that.renderable.width;
+        var finalPos = me.video.renderer.getHeight() - that.renderable.width - 96;
         this.endTween
             .to({y: currentPos - 72}, 1500)
             .to({y: finalPos}, 1000)
@@ -184,7 +184,7 @@ var HitEntity = me.Entity.extend({
         this.updateTime = false;
         this.renderable.alpha = 0;
         this.body.accel.set(-5, 0);
-        this.body.addShape(new me.Rect(0, 0, settings.width, settings.height));
+        this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
         this.type = 'hit';
     },
 

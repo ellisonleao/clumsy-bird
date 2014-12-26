@@ -12,13 +12,6 @@ var game = {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
-        // add "#debug" to the URL to enable the debug Panel
-        if (document.location.hash === "#debug") {
-            window.onReady(function () {
-                me.plugin.register.defer(this, debugPanel, "debug", me.input.KEY.V);
-            });
-        }
-
         me.audio.init("mp3,ogg");
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(game.resources);

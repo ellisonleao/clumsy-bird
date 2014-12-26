@@ -12,13 +12,6 @@ var game = {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
-        // add "#debug" to the URL to enable the debug Panel
-        if (document.location.hash === "#debug") {
-            window.onReady(function () {
-                me.plugin.register.defer(this, debugPanel, "debug", me.input.KEY.V);
-            });
-        }
-
         me.audio.init("mp3,ogg");
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(game.resources);
@@ -152,13 +145,13 @@ var BirdEntity = me.Entity.extend({
     endAnimation: function() {
         me.game.viewport.fadeOut("#fff", 100);
         var that = this;
-        var currentPos = this.pos.y;
-        this.endTween = new me.Tween(this.pos);
+        var currentPos = this.renderable.pos.y;
+        this.endTween = new me.Tween(this.renderable.pos);
         this.endTween.easing(me.Tween.Easing.Exponential.InOut);
 
         this.flyTween.stop();
         this.renderable.angle = this.maxAngleRotationDown;
-        var finalPos = me.video.renderer.getHeight() - 96 - that.renderable.width;
+        var finalPos = me.video.renderer.getHeight() - that.renderable.width - 96;
         this.endTween
             .to({y: currentPos - 72}, 1500)
             .to({y: finalPos}, 1000)
@@ -251,7 +244,7 @@ var HitEntity = me.Entity.extend({
         this.updateTime = false;
         this.renderable.alpha = 0;
         this.body.accel.set(-5, 0);
-        this.body.addShape(new me.Rect(0, 0, settings.width, settings.height));
+        this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
         this.type = 'hit';
     },
 
