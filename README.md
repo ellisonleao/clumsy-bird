@@ -41,6 +41,6 @@ See [CUSTOMIZING](https://github.com/ellisonleao/clumsy-bird/blob/gh-pages/CUSTO
 - **Ducky momo** by [@codex8](http://github.com/codex8) - https://ilmtechlab.com/DuckyMomo/
 - **Derpy Duck** by [@EmmettTan](http://github.com/emmettTan) and [@TheOneAmir](http://github.com/theoneamir) - http://ahdavies.github.io/Derpy-Duck/
 
-If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/issues/39) and i'll be happy to add your game into the list.
+If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/wiki/Games-using-clumsy-bird-code) and i'll be happy to add your game into the list.
 
 Some thoughts about this code you can find on my blog post: http://ellisonleao.svbtle.com/clumsy-bird-an-open-source-flappy-bird-clone
