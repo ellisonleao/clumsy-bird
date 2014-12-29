@@ -16,8 +16,7 @@ var BirdEntity = me.Entity.extend({
         this.renderable.addAnimation("flying", [0, 1, 2]);
         this.renderable.addAnimation("idle", [0]);
         this.renderable.setCurrentAnimation("flying");
-        this.renderable.anchorPoint = new me.Vector2d(0.2, 0.5);
-        this.animationController = 0;
+        this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
         // manually add a rectangular collision shape
         this.body.addShape(new me.Rect(5, 5, 70, 50));
 
@@ -34,6 +33,7 @@ var BirdEntity = me.Entity.extend({
 
     update: function(dt) {
         // mechanics
+
         if (!game.data.start) {
             return this._super(me.Entity, 'update', [dt]);
         }
@@ -41,15 +41,15 @@ var BirdEntity = me.Entity.extend({
             me.audio.play('wing');
             this.gravityForce = 0.02;
             var currentPos = this.pos.y;
-            // stop the previous one
+            // stop the previous tweens
             this.flyTween.stop();
-            this.flyTween.to({y: currentPos - 72}, 90);
+            this.flyTween.to({y: currentPos - 72}, 50);
             this.flyTween.start();
             this.renderable.angle = -this.maxAngleRotation;
         } else {
             this.gravityForce += 0.2;
             this.pos.y += me.timer.tick * this.gravityForce;
-            this.renderable.angle += Number.prototype.degToRad(3) * me.timer.tick;
+            this.renderable.angle += Number.prototype.degToRad(0.5) * this.gravityForce;
             if (this.renderable.angle > this.maxAngleRotationDown)
                 this.renderable.angle = this.maxAngleRotationDown;
         }
