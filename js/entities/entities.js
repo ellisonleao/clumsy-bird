@@ -78,6 +78,7 @@ var BirdEntity = me.Entity.extend({
             me.game.world.removeChildNow(obj);
             game.data.steps++;
             me.audio.play('hit');
+            this.pos.x = 60;
         }
     },
 
