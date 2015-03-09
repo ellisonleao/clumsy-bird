@@ -12,13 +12,6 @@ module.exports = function(grunt) {
 
     // Project configuration.
     grunt.initConfig({
-        concat: {
-            dist: {
-                src: sourceFiles,
-                dest: 'build/clumsy.js'
-            }
-        },
-
         uglify: {
             options: {
                 report: 'min',
@@ -63,7 +56,6 @@ module.exports = function(grunt) {
 
         clean: {
             dist: [
-                'build/clumsy.js',
                 'build/clumsy-min.js'
             ],
         },
@@ -72,12 +64,11 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks("grunt-contrib-connect");
 
 
     // Default task.
-    grunt.registerTask('default', ['concat', 'uglify']);
+    grunt.registerTask('default', ['uglify']);
     grunt.registerTask('lint', ['jshint:beforeConcat', 'concat', 'jshint:afterConcat']);
 };
