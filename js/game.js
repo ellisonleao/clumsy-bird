@@ -14,12 +14,6 @@ var game = {
         }
         me.audio.init("mp3,ogg");
 
-        if (document.location.hash === "#debug") {
-            window.onReady(function () {
-                me.plugin.register.defer(this, me.debug.Panel, "debug");
-            });
-        }
-
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(game.resources);
         me.state.change(me.state.LOADING);
