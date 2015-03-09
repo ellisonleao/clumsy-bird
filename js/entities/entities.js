@@ -62,7 +62,6 @@ var BirdEntity = me.Entity.extend({
             this.endAnimation();
             return false;
         }
-
         me.collision.check(this);
         this._super(me.Entity, 'update', [dt]);
         return true;
