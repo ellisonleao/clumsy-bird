@@ -1,4 +1,4 @@
-/* TEAM */
+﻿/* TEAM */
 
 Developer: Ellison Leão 
 Site: https://ellisonleao.github.io, https://github.com/ellisonleao
@@ -9,5 +9,5 @@ Location: Curitiba, Brazil
 
 Last Update: 2014/03/06
 Standards: HTML5, CSS3
-Components: MelonJS, jQuery
+Components: MelonJS, jQuery,jquery easyui
 Software: VIM, Photoshop
