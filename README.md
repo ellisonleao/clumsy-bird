@@ -40,6 +40,7 @@ See [CUSTOMIZING](https://github.com/ellisonleao/clumsy-bird/blob/gh-pages/CUSTO
 - **Clippy Jam** by [@jkeatinco](http://github.com/jkeatinco) - http://jkeatinco.github.io/
 - **Ducky momo** by [@codex8](http://github.com/codex8) - https://ilmtechlab.com/DuckyMomo/
 - **Derpy Duck** by [@EmmettTan](http://github.com/emmettTan) and [@TheOneAmir](http://github.com/theoneamir) - http://ahdavies.github.io/Derpy-Duck/
+- **Flippy Cat** (@Github's Game Off 2015 Winner) by [@t4nuj](http://github.com/t4nuj) - https://t4nuj.github.io/clumsy-bird
 
 If you made something with this code, please [share here](https://github.com/ellisonleao/clumsy-bird/wiki/Games-using-clumsy-bird-code) and i'll be happy to add your game into the list.
 
