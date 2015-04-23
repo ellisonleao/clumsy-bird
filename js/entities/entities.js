@@ -18,7 +18,7 @@ var BirdEntity = me.Entity.extend({
         this.renderable.setCurrentAnimation("flying");
         this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
         // manually add a rectangular collision shape
-        this.body.addShape(new me.Rect(5, 5, 70, 50));
+        this.body.addShape(new me.Ellipse(5, 5, 70, 50));
 
         // a tween object for the flying physic effect
         this.flyTween = new me.Tween(this.pos);
