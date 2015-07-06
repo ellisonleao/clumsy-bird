@@ -32,14 +32,14 @@ game.GameOverScreen = me.ScreenObject.extend({
         me.game.world.addChild(new me.Sprite(
                 me.video.renderer.getWidth()/2 - gImage.width/2,
                 me.video.renderer.getHeight()/2 - gImage.height/2 - 100,
-                gImage
+                {image: gImage}
         ), 12);
 
         var gImageBoard = me.loader.getImage('gameoverbg');
         me.game.world.addChild(new me.Sprite(
             me.video.renderer.getWidth()/2 - gImageBoard.width/2,
             me.video.renderer.getHeight()/2 - gImageBoard.height/2,
-            gImageBoard
+            {image: gImageBoard}
         ), 10);
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
@@ -65,7 +65,7 @@ game.GameOverScreen = me.ScreenObject.extend({
             var newRect = new me.Sprite(
                     235,
                     355,
-                    me.loader.getImage('new')
+                    {image: me.loader.getImage('new')}
             );
             me.game.world.addChild(newRect, 12);
         }
@@ -83,14 +83,13 @@ game.GameOverScreen = me.ScreenObject.extend({
             },
 
             draw: function (renderer) {
-                var context = renderer.getContext();
-                var stepsText = this.font.measureText(context, this.steps);
-                var topStepsText = this.font.measureText(context, this.topSteps);
-                var scoreText = this.font.measureText(context, this.score);
+                var stepsText = this.font.measureText(renderer, this.steps);
+                var topStepsText = this.font.measureText(renderer, this.topSteps);
+                var scoreText = this.font.measureText(renderer, this.score);
 
                 //steps
                 this.font.draw(
-                    context,
+                    renderer,
                     this.steps,
                     me.game.viewport.width/2 - stepsText.width/2 - 60,
                     me.game.viewport.height/2
@@ -98,7 +97,7 @@ game.GameOverScreen = me.ScreenObject.extend({
 
                 //top score
                 this.font.draw(
-                    context,
+                    renderer,
                     this.topSteps,
                     me.game.viewport.width/2 - stepsText.width/2 - 60,
                     me.game.viewport.height/2 + 50

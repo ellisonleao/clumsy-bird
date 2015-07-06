@@ -40,7 +40,7 @@ game.PlayScreen = me.ScreenObject.extend({
         this.getReady = new me.Sprite(
             me.video.renderer.getWidth()/2 - 200,
             me.video.renderer.getHeight()/2 - 100,
-            me.loader.getImage('getready')
+            {image: me.loader.getImage('getready')}
         );
         me.game.world.addChild(this.getReady, 11);
 
