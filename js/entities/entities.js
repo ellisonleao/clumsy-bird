@@ -4,8 +4,8 @@ var BirdEntity = me.Entity.extend({
         settings.image = me.loader.getImage('clumsy');
         settings.width = 85;
         settings.height = 60;
-        settings.spritewidth = 85;
-        settings.spriteheight= 60;
+        settings.framewidth = 85;
+        settings.frameheight = 60;
 
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
@@ -18,6 +18,7 @@ var BirdEntity = me.Entity.extend({
         this.renderable.setCurrentAnimation("flying");
         this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
         // manually add a rectangular collision shape
+        this.body.removeShapeAt(0);
         this.body.addShape(new me.Ellipse(5, 5, 71, 51));
 
         // a tween object for the flying physic effect
@@ -53,7 +54,7 @@ var BirdEntity = me.Entity.extend({
             if (this.renderable.angle > this.maxAngleRotationDown)
                 this.renderable.angle = this.maxAngleRotationDown;
         }
-        this.updateBounds();
+        me.Rect.prototype.updateBounds.apply(this);
 
         var hitSky = -80; // bird height + 20px
         if (this.pos.y <= hitSky || this.collided) {
@@ -109,12 +110,11 @@ var PipeEntity = me.Entity.extend({
         settings.image = this.image = me.loader.getImage('pipe');
         settings.width = 148;
         settings.height= 1664;
-        settings.spritewidth = 148;
-        settings.spriteheight= 1664;
+        settings.framewidth = 148;
+        settings.frameheight = 1664;
 
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
-        this.body.addShape(new me.Rect(0 ,0, settings.width, settings.height));
         this.body.gravity = 0;
         this.body.vel.set(-5, 0);
         this.type = 'pipe';
@@ -129,7 +129,7 @@ var PipeEntity = me.Entity.extend({
         if (this.pos.x < -this.image.width) {
             me.game.world.removeChild(this);
         }
-        this.updateBounds();
+        me.Rect.prototype.updateBounds.apply(this);
         this._super(me.Entity, 'update', [dt]);
         return true;
     },
@@ -174,8 +174,8 @@ var HitEntity = me.Entity.extend({
         settings.image = this.image = me.loader.getImage('hit');
         settings.width = 148;
         settings.height= 60;
-        settings.spritewidth = 148;
-        settings.spriteheight= 60;
+        settings.framewidth = 148;
+        settings.frameheight = 60;
 
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
@@ -183,6 +183,7 @@ var HitEntity = me.Entity.extend({
         this.updateTime = false;
         this.renderable.alpha = 0;
         this.body.accel.set(-5, 0);
+        this.body.removeShapeAt(0);
         this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
         this.type = 'hit';
     },
@@ -193,7 +194,7 @@ var HitEntity = me.Entity.extend({
         if (this.pos.x < -this.image.width) {
             me.game.world.removeChild(this);
         }
-        this.updateBounds();
+        me.Rect.prototype.updateBounds.apply(this);
         this._super(me.Entity, "update", [dt]);
         return true;
     },
@@ -210,7 +211,6 @@ var Ground = me.Entity.extend({
         this.alwaysUpdate = true;
         this.body.gravity = 0;
         this.body.vel.set(-4, 0);
-        this.body.addShape(new me.Rect(0 ,0, settings.width, settings.height));
         this.type = 'ground';
     },
 
@@ -220,7 +220,7 @@ var Ground = me.Entity.extend({
         if (this.pos.x < -this.renderable.width) {
             this.pos.x = me.video.renderer.getWidth() - 10;
         }
-        this.updateBounds();
+        me.Rect.prototype.updateBounds.apply(this);
         return this._super(me.Entity, 'update', [dt]);
     },
 

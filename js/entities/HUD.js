@@ -42,21 +42,23 @@ game.HUD.ScoreItem = me.Renderable.extend({
     },
 
     draw: function (renderer) {
-        var context = renderer.getContext();
         if (game.data.start && me.state.isCurrent(me.state.PLAY))
-            this.stepsFont.draw(context, game.data.steps, me.video.renderer.getWidth()/2, 10);
+            this.stepsFont.draw(renderer, game.data.steps, me.video.renderer.getWidth()/2, 10);
     }
 
 });
 
 var BackgroundLayer = me.ImageLayer.extend({
     init: function(image, z, speed) {
-        name = image;
-        width = 900;
-        height = 600;
-        ratio = 1;
+        var settings = {};
+        settings.name = image;
+        settings.width = 900;
+        settings.height = 600;
+        settings.image = image;
+        settings.z = z;
+        settings.ratio = 1;
         // call parent constructor
-        this._super(me.ImageLayer, 'init', [name, width, height, image, z, ratio]);
+        this._super(me.ImageLayer, 'init', [0, 0, settings]);
     },
 
     update: function() {
@@ -76,8 +78,8 @@ var Share = me.GUI_Object.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = "share";
-        settings.spritewidth = 150;
-        settings.spriteheight = 75;
+        settings.framewidth = 150;
+        settings.frameheight = 75;
         this._super(me.GUI_Object, 'init', [x, y, settings]);
     },
 
@@ -105,8 +107,8 @@ var Tweet = me.GUI_Object.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = "tweet";
-        settings.spritewidth = 152;
-        settings.spriteheight = 75;
+        settings.framewidth = 152;
+        settings.frameheight = 75;
         this._super(me.GUI_Object, 'init', [x, y, settings]);
     },
 

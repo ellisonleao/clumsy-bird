@@ -27,7 +27,7 @@ game.TitleScreen = me.ScreenObject.extend({
         this.logo = new me.Sprite(
             me.game.viewport.width/2 - 170,
             -logoImg,
-            logoImg
+            {image: logoImg}
         );
         me.game.world.addChild(this.logo, 10);
 
@@ -52,11 +52,10 @@ game.TitleScreen = me.ScreenObject.extend({
                 this.font = new me.Font('gamefont', 20, '#000');
             },
             draw: function (renderer) {
-                var context = renderer.getContext();
-                var measure = this.font.measureText(context, this.text);
+                var measure = this.font.measureText(renderer, this.text);
                 var xpos = me.game.viewport.width/2 - measure.width/2;
                 var ypos = me.game.viewport.height/2 + 50;
-                this.font.draw(context, this.text, xpos, ypos);
+                this.font.draw(renderer, this.text, xpos, ypos);
             }
         })), 12);
     },

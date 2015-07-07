@@ -1,10 +1,10 @@
 /*
  * MelonJS Game Engine
- * Copyright (C) 2011 - 2014 Olivier Biot, Jason Oster, Aaron McLeod
+ * Copyright (C) 2011 - 2015, Olivier Biot, Jason Oster, Aaron McLeod
  * http://www.melonjs.org
  *
  * a simple debug panel plugin
- * usage : me.plugin.register(debugPanel, "debug");
+ * usage : me.plugin.register.defer(this, me.debug.Panel, "debug");
  *
  * you can then use me.plugin.debug.show() or me.plugin.debug.hide()
  * to show or hide the panel, or press respectively the "S" and "H" keys.
@@ -21,31 +21,49 @@
 
     var DEBUG_HEIGHT = 50;
 
-    /**
-     * @class
-     * @public
-     * @extends me.plugin.Base
-     * @memberOf me
-     * @constructor
-     */
-    me.debug.Panel = me.plugin.Base.extend(
-    /** @scope me.debug.Panel.prototype */
-    {
+    var Counters = Object.extend({
+        init : function (stats) {
+            this.stats = {};
+            this.reset(stats);
+        },
 
+        reset : function (stats) {
+            var self = this;
+            (stats || Object.keys(this.stats)).forEach(function (stat) {
+                self.stats[stat] = 0;
+            });
+        },
+
+        inc : function (stat, value) {
+            this.stats[stat] += (value || 1);
+        },
+
+        get : function (stat) {
+            return this.stats[stat];
+        }
+    });
+
+    var DebugPanel = me.Renderable.extend({
         /** @private */
         init : function (showKey, hideKey) {
             // call the super constructor
-            this._super(me.plugin.Base, "init");
+            this._super(me.Renderable, "init", [ 0, 0, me.game.viewport.width, DEBUG_HEIGHT ]);
 
             // minimum melonJS version expected
-            this.version = "2.0.0";
+            this.version = "2.1.0";
 
             // to hold the debug options
             // clickable rect area
             this.area = {};
 
-            // panel position and size
-            this.rect = null;
+            // Useful counters
+            this.counters = new Counters([
+                "shapes",
+                "sprites",
+                "velocity",
+                "bounds",
+                "children"
+            ]);
 
             // for z ordering
             // make it ridiculously high
@@ -79,22 +97,16 @@
             this.alwaysUpdate = true;
 
             // WebGL/Canvas compatibility
-            var canvas = me.video.renderer.getCanvas();
-            this.canvas = me.video.createCanvas(canvas.width, DEBUG_HEIGHT, true);
-            this.context = me.CanvasRenderer.getContext2d(this.canvas);
-            this.overlay = new me.Color(255, 255, 255, 1.0);
-
-            // Size
-            this.rect = new me.Rect(0, 0, canvas.width, DEBUG_HEIGHT);
+            this.canvas = me.video.createCanvas(this.width, this.height, true);
 
             // create a default font, with fixed char width
-            var s = 10;
+            this.font_size = 10;
             this.mod = 1;
-            if (me.game.viewport.width < 500) {
-                s = 7;
+            if (this.width < 500) {
+                this.font_size = 7;
                 this.mod = 0.7;
             }
-            this.font = new me.Font("courier", s, "white");
+            this.font = new me.Font("courier", this.font_size, "white");
 
             // clickable areas
             var size = 12 * this.mod;
@@ -104,9 +116,9 @@
 
             // some internal string/length
             this.help_str        = "(s)how/(h)ide";
-            this.help_str_len    = this.font.measureText(this.context, this.help_str).width;
-            this.fps_str_len     = this.font.measureText(this.context, "00/00 fps").width;
-            this.memoryPositionX = this.font.measureText(this.context, "Draw   : ").width * 2.2 + 310 * this.mod;
+            this.help_str_len    = this.font.measureText(me.video.renderer, this.help_str).width;
+            this.fps_str_len     = this.font.measureText(me.video.renderer, "00/00 fps").width;
+            this.memoryPositionX = 400 * this.mod;
 
             // enable the FPS counter
             me.debug.displayFPS = true;
@@ -125,14 +137,12 @@
                     self.hide();
                 }
             });
-
-            // memory heap sample points
-            this.samples = [];
+            me.event.subscribe(me.event.VIEWPORT_ONRESIZE, function (w) {
+                self.resize(w, DEBUG_HEIGHT);
+            });
 
             //patch patch patch !
             this.patchSystemFn();
-            // make it visible
-            this.show();
         },
 
         /**
@@ -141,11 +151,12 @@
         patchSystemFn : function () {
 
             // add a few new debug flag (if not yet defined)
-            me.debug.renderHitBox   = me.debug.renderHitBox   || false;
-            me.debug.renderVelocity = me.debug.renderVelocity || false;
-            me.debug.renderQuadTree = me.debug.renderQuadTree || false;
+            me.debug.renderHitBox   = me.debug.renderHitBox   || me.game.HASH.hitbox || false;
+            me.debug.renderVelocity = me.debug.renderVelocity || me.game.HASH.velocity || false;
+            me.debug.renderQuadTree = me.debug.renderQuadTree || me.game.HASH.quadtree || false;
 
             var _this = this;
+            var bounds = new me.Rect(0, 0, 0, 0);
 
             // patch timer.js
             me.plugin.patch(me.timer, "update", function (dt) {
@@ -170,6 +181,7 @@
             me.plugin.patch(me.game, "draw", function () {
                 var frameDrawStartTime = window.performance.now();
 
+                _this.counters.reset();
                 this._patched();
 
                 // calculate the drawing time
@@ -178,7 +190,7 @@
 
             // patch sprite.js
             me.plugin.patch(me.Sprite, "draw", function (renderer) {
-                // call the original me.Sprite function
+                // call the original me.Sprite.draw function
                 this._patched(renderer);
 
                 // draw the sprite rectangle
@@ -186,40 +198,83 @@
                     renderer.save();
                     renderer.setColor("green");
                     renderer.strokeRect(this.left, this.top, this.width, this.height);
+                    _this.counters.inc("sprites");
                     renderer.restore();
                 }
             });
 
             // patch entities.js
             me.plugin.patch(me.Entity, "draw", function (renderer) {
-                // call the original me.game.draw function
+                // call the original me.Entity.draw function
                 this._patched(renderer);
+
+                // check if debug mode is enabled
+                if (me.debug.renderHitBox) {
+                    renderer.save();
+                    renderer.setLineWidth(1);
+
+                    // draw the bounding rect shape
+                    renderer.setColor("orange");
+                    bounds.copy(this.getBounds());
+                    bounds.pos.sub(this.ancestor._absPos);
+                    renderer.drawShape(bounds);
+                    _this.counters.inc("bounds");
+
+                    // draw all defined shapes
+                    renderer.setColor("red");
+                    renderer.translate(this.pos.x, this.pos.y);
+                    for (var i = this.body.shapes.length, shape; i--, (shape = this.body.shapes[i]);) {
+                        renderer.drawShape(shape);
+                        _this.counters.inc("shapes");
+                    }
+
+                    renderer.restore();
+                }
+
+                if (me.debug.renderVelocity && (this.body.vel.x || this.body.vel.y)) {
+                    bounds.copy(this.getBounds());
+                    bounds.pos.sub(this.ancestor._absPos);
+                    // draw entity current velocity
+                    var x = ~~(bounds.pos.x + (bounds.width / 2));
+                    var y = ~~(bounds.pos.y + (bounds.height / 2));
+
+                    renderer.save();
+                    renderer.setLineWidth(1);
+
+                    renderer.setColor("blue");
+                    renderer.translate(x, y);
+                    renderer.strokeLine(0, 0, ~~(this.body.vel.x * (bounds.width / 2)), ~~(this.body.vel.y * (bounds.height / 2)));
+                    _this.counters.inc("velocity");
+
+                    renderer.restore();
+                }
+            });
+
+            // patch container.js
+            me.plugin.patch(me.Container, "draw", function (renderer, rect) {
+                // call the original me.Container.draw function
+                this._patched(renderer, rect);
 
                 // check if debug mode is enabled
 
                 if (me.debug.renderHitBox) {
                     renderer.save();
-                    renderer.setColor("orange");
                     renderer.setLineWidth(1);
-                    // draw the bounding rect shape
-                    renderer.drawShape(this.getBounds());
-                    renderer.translate(this.pos.x, this.pos.y);
-                    // draw all defined shapes
-                    renderer.setColor("red");
-                    for (var i = this.body.shapes.length, shape; i--, (shape = this.body.shapes[i]);) {
-                        renderer.drawShape(shape);
-                    }
-                    renderer.restore();
-                }
 
-                if (me.debug.renderVelocity) {
-                    // draw entity current velocity
-                    var x = ~~(this.pos.x + this.hWidth);
-                    var y = ~~(this.pos.y + this.hHeight);
-                    renderer.save();
-                    renderer.setColor("blue");
-                    renderer.setLineWidth(1);
-                    renderer.strokeLine(x, y, x + ~~(this.body.vel.x * this.hWidth), y + ~~(this.body.vel.y * this.hHeight));
+                    // draw the bounding rect shape
+                    renderer.setColor("orange");
+                    bounds.copy(this.getBounds());
+                    bounds.pos.sub(this.ancestor._absPos);
+                    renderer.drawShape(bounds);
+                    _this.counters.inc("bounds");
+
+                    // draw the children bounding rect shape
+                    renderer.setColor("purple");
+                    bounds.copy(this.childBounds);
+                    bounds.pos.sub(this.ancestor._absPos);
+                    renderer.drawShape(bounds);
+                    _this.counters.inc("children");
+
                     renderer.restore();
                 }
             });
@@ -231,7 +286,7 @@
         show : function () {
             if (!this.visible) {
                 // register a mouse event for the checkboxes
-                me.input.registerPointerEvent("pointerdown", this.rect, this.onClick.bind(this), true);
+                me.input.registerPointerEvent("pointerdown", this, this.onClick.bind(this), true);
                 // add the debug panel to the game world
                 me.game.world.addChild(this, Infinity);
                 // mark it as visible
@@ -245,7 +300,7 @@
         hide : function () {
             if (this.visible) {
                 // release the mouse event for the checkboxes
-                // me.input.releasePointerEvent("pointerdown", this.rect);
+                // me.input.releasePointerEvent("pointerdown", this);
                 this.canvas.removeEventListener("click", this.onClick.bind(this));
                 // remove the debug panel from the game world
                 me.game.world.removeChild(this);
@@ -264,13 +319,6 @@
                 this.hide();
             }
             return true;
-        },
-
-        /**
-         * @private
-         */
-        getBounds : function () {
-            return this.rect;
         },
 
         /** @private */
@@ -301,8 +349,7 @@
                 var _alpha = (node.objects.length * 0.4) / me.collision.maxChildren;
                 if (_alpha > 0.0) {
                     renderer.save();
-                    renderer.setGlobalAlpha(_alpha);
-                    renderer.setColor("red");
+                    renderer.setColor("rgba(255,0,0," + _alpha + ")");
                     renderer.fillRect(bounds.pos.x, bounds.pos.y, bounds.width, bounds.height);
                     renderer.restore();
                 }
@@ -332,39 +379,29 @@
         },
 
         /** @private */
-        drawMemoryGraph : function (context, endX) {
+        drawMemoryGraph : function (renderer, endX) {
             if (window.performance && window.performance.memory) {
                 var usedHeap  = Number.prototype.round(window.performance.memory.usedJSHeapSize / 1048576, 2);
                 var totalHeap =  Number.prototype.round(window.performance.memory.totalJSHeapSize / 1048576, 2);
-                var len = ~~(endX - this.memoryPositionX - 5);
+                var maxLen = ~~(endX - this.memoryPositionX - 5);
+                var len = maxLen * (usedHeap / totalHeap);
 
-                // remove the first item
-                this.samples.shift();
-                // add a new sample (25 is the height of the graph)
-                this.samples[len] = (usedHeap / totalHeap) * 20;
+                renderer.setColor("#0065AD");
+                renderer.fillRect(this.memoryPositionX, 0, maxLen, 20);
+                renderer.setColor("#3AA4F0");
+                renderer.fillRect(this.memoryPositionX + 1, 1, len - 1, 17);
 
-                // draw the graph
-                for (var x = len; x >= 0; x--) {
-                    var where = endX - (len - x) - 5;
-                    context.beginPath();
-                    context.strokeStyle = "lightblue";
-                    context.moveTo(where, 40 * this.mod);
-                    context.lineTo(where, 40 * this.mod - (this.samples[x] || 0));
-                    context.stroke();
-                }
-                // display the current value
-
-                this.font.draw(context, "Heap : " + usedHeap + "/" + totalHeap + " MB", this.memoryPositionX, 5 * this.mod);
+                this.font.draw(renderer, "Heap : " + usedHeap + "/" + totalHeap + " MB", this.memoryPositionX + 5, 5 * this.mod);
             }
             else {
                 // Heap Memory information not available
-                this.font.draw(context, "Heap : ??/?? MB", this.memoryPositionX, 5 * this.mod);
+                this.font.draw(renderer, "Heap : ??/?? MB", this.memoryPositionX, 5 * this.mod);
             }
         },
 
         /** @private */
         draw : function (renderer) {
-            this.context.save();
+            renderer.save();
 
             // draw the QuadTree (before the panel)
             if (me.debug.renderQuadTree === true) {
@@ -372,48 +409,61 @@
             }
 
             // draw the panel
-            this.context.globalAlpha = 0.5;
-            this.context.fillStyle = "black";
-            this.context.fillRect(this.rect.left,  this.rect.top,
-                                  this.rect.width, this.rect.height);
-            this.context.globalAlpha = 1.0;
+            renderer.setGlobalAlpha(0.5);
+            renderer.setColor("black");
+            renderer.fillRect(
+                this.left,  this.top,
+                this.width, this.height
+            );
+            renderer.setGlobalAlpha(1.0);
 
-            this.font.draw(this.context, "#objects : " + me.game.world.children.length, 5 * this.mod, 5 * this.mod);
-            this.font.draw(this.context, "#draws   : " + me.game.world.drawCount, 5 * this.mod, 20 * this.mod);
+            this.font.draw(renderer, "#objects : " + me.game.world.children.length, 5 * this.mod, 5 * this.mod);
+            this.font.draw(renderer, "#draws   : " + me.game.world.drawCount, 5 * this.mod, 20 * this.mod);
 
             // debug checkboxes
-            this.font.draw(this.context, "?hitbox   [" + (me.debug.renderHitBox ? "x" : " ") + "]",   100 * this.mod, 5 * this.mod);
-            this.font.draw(this.context, "?velocity [" + (me.debug.renderVelocity ? "x" : " ") + "]", 100 * this.mod, 20 * this.mod);
+            this.font.draw(renderer, "?hitbox   [" + (me.debug.renderHitBox ? "x" : " ") + "]",   100 * this.mod, 5 * this.mod);
+            this.font.draw(renderer, "?velocity [" + (me.debug.renderVelocity ? "x" : " ") + "]", 100 * this.mod, 20 * this.mod);
 
-            this.font.draw(this.context, "?QuadTree [" + (me.debug.renderQuadTree ? "x" : " ") + "]", 190 * this.mod, 5 * this.mod);
+            this.font.draw(renderer, "?QuadTree [" + (me.debug.renderQuadTree ? "x" : " ") + "]", 190 * this.mod, 5 * this.mod);
 
             // draw the update duration
-            this.font.draw(this.context, "Update : " + this.frameUpdateTime.toFixed(2) + " ms", 285 * this.mod, 5 * this.mod);
+            this.font.draw(renderer, "Update : " + this.frameUpdateTime.toFixed(2) + " ms", 285 * this.mod, 5 * this.mod);
             // draw the draw duration
-            this.font.draw(this.context, "Draw   : " + this.frameDrawTime.toFixed(2) + " ms", 285 * this.mod, 20 * this.mod);
+            this.font.draw(renderer, "Draw   : " + this.frameDrawTime.toFixed(2) + " ms", 285 * this.mod, 20 * this.mod);
+
+            this.font.bold();
+
+            // Draw color code hints
+            this.font.fillStyle.copy("red");
+            this.font.draw(renderer, "Shapes   : " + this.counters.get("shapes"), 5 * this.mod, 35 * this.mod);
+
+            this.font.fillStyle.copy("green");
+            this.font.draw(renderer, "Sprites   : " + this.counters.get("sprites"), 100 * this.mod, 35 * this.mod);
+
+            this.font.fillStyle.copy("blue");
+            this.font.draw(renderer, "Velocity  : " + this.counters.get("velocity"), 190 * this.mod, 35 * this.mod);
+
+            this.font.fillStyle.copy("orange");
+            this.font.draw(renderer, "Bounds : " + this.counters.get("bounds"), 285 * this.mod, 35 * this.mod);
+
+            this.font.fillStyle.copy("purple");
+            this.font.draw(renderer, "Children : " + this.counters.get("children"), 400 * this.mod, 35 * this.mod);
+
+            // Reset font style
+            this.font.setFont("courier", this.font_size, "white");
 
             // draw the memory heap usage
-            var endX = this.rect.width - 25;
-            this.drawMemoryGraph(this.context, endX - this.help_str_len);
+            var endX = this.width - 25;
+            this.drawMemoryGraph(renderer, endX - this.help_str_len);
 
             // some help string
-            this.font.draw(this.context, this.help_str, endX - this.help_str_len, 20 * this.mod);
+            this.font.draw(renderer, this.help_str, endX - this.help_str_len, 20 * this.mod);
 
             //fps counter
             var fps_str = me.timer.fps + "/" + me.sys.fps + " fps";
-            this.font.draw(this.context, fps_str, this.rect.width - this.fps_str_len - 5, 5 * this.mod);
+            this.font.draw(renderer, fps_str, this.width - this.fps_str_len - 5, 5 * this.mod);
 
-            this.context.restore();
-            me.video.renderer.setGlobalAlpha(0.7);
-            var color = me.video.renderer.getColor();
-            me.video.renderer.setColor(this.overlay);
-            me.video.renderer.drawImage(
-                this.canvas, 0, 0,
-                this.canvas.width, this.canvas.height,
-                0, 0, this.rect.width, this.rect.height
-            );
-            me.video.renderer.setColor(color);
-            me.video.renderer.setGlobalAlpha(1.0);
+            renderer.restore();
         },
 
         /** @private */
@@ -424,6 +474,27 @@
             me.input.unbindKey(me.input.KEY.S);
             me.input.unbindKey(me.input.KEY.H);
             me.event.unsubscribe(this.keyHandler);
+        }
+    });
+
+    /**
+     * @class
+     * @public
+     * @extends me.plugin.Base
+     * @memberOf me
+     * @constructor
+     */
+    me.debug.Panel = me.plugin.Base.extend(
+    /** @scope me.debug.Panel.prototype */
+    {
+
+        /** @private */
+        init : function (showKey, hideKey) {
+            // call the super constructor
+            this._super(me.plugin.Base, "init");
+
+            var panel = new DebugPanel(showKey, hideKey);
+            panel.show();
         }
     });
 
