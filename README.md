@@ -7,6 +7,8 @@ A MelonJS made "Flappy Bird" clone.
 
 Play online at http://ellisonleao.github.io/clumsy-bird/
 
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 ## Running Locally
 
 - Install [Node](http://nodejs.org/download/) and [Grunt](http://gruntjs.com/)
