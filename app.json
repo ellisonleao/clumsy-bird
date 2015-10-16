@@ -3,6 +3,6 @@
   "description": "MelonJS Flapppy Bird Clone",
   "repository": "https://github.com/ellisonleao/clumsy-bird",
   "logo": "https://raw.githubusercontent.com/ellisonleao/clumsy-bird/gh-pages/data/img/touch-icon-iphone.png",
-  "keywords": ["grunt", "melonjs", "games"],
+  "keywords": ["grunt", "melonjs", "games"]
 }
 
