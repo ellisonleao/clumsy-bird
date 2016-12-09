@@ -14,7 +14,7 @@ game.TitleScreen = me.ScreenObject.extend({
         me.game.world.addChild(new BackgroundLayer('bg', 1));
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);
         me.input.bindKey(me.input.KEY.SPACE, "enter", true);
-        me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
+        me.input.bindPointer(me.input.pointer.LEFT, me.input.KEY.ENTER);
 
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
@@ -23,11 +23,10 @@ game.TitleScreen = me.ScreenObject.extend({
         });
 
         //logo
-        var logoImg = me.loader.getImage('logo');
         this.logo = new me.Sprite(
-            me.game.viewport.width/2 - 170,
-            -logoImg,
-            {image: logoImg}
+            me.game.viewport.width/2,
+            me.game.viewport.height/2 - 20,
+            {image: 'logo'}
         );
         me.game.world.addChild(this.logo, 10);
 
@@ -65,7 +64,7 @@ game.TitleScreen = me.ScreenObject.extend({
         me.event.unsubscribe(this.handler);
         me.input.unbindKey(me.input.KEY.ENTER);
         me.input.unbindKey(me.input.KEY.SPACE);
-        me.input.unbindPointer(me.input.mouse.LEFT);
+        me.input.unbindPointer(me.input.pointer.LEFT);
         this.ground1 = null;
         this.ground2 = null;
         me.game.world.removeChild(this.logo);

@@ -1,23 +1,19 @@
-var BirdEntity = me.Entity.extend({
+game.BirdEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
-        settings.image = me.loader.getImage('clumsy');
+        settings.image = 'clumsy';
         settings.width = 85;
         settings.height = 60;
-        settings.framewidth = 85;
-        settings.frameheight = 60;
 
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0.2;
-        this.gravityForce = 0.01;
         this.maxAngleRotation = Number.prototype.degToRad(30);
         this.maxAngleRotationDown = Number.prototype.degToRad(90);
         this.renderable.addAnimation("flying", [0, 1, 2]);
         this.renderable.addAnimation("idle", [0]);
         this.renderable.setCurrentAnimation("flying");
-        this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
-        // manually add a rectangular collision shape
+        //this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
         this.body.removeShapeAt(0);
         this.body.addShape(new me.Ellipse(5, 5, 71, 51));
 
@@ -30,30 +26,33 @@ var BirdEntity = me.Entity.extend({
 
         // collision shape
         this.collided = false;
+
+        this.currentAngle = 0;
+        this.gravityForce = 0.02;
     },
 
     update: function(dt) {
         // mechanics
-
         if (!game.data.start) {
             return this._super(me.Entity, 'update', [dt]);
         }
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
-            this.gravityForce = 0.02;
             var currentPos = this.pos.y;
+            this.gravityForce = 0.02;
+            //this.currentAngle = -this.maxAngleRotation;
+            //this.renderable.currentTransform.rotate(-this.maxAngleRotation);
             // stop the previous tweens
             this.flyTween.stop();
             this.flyTween.to({y: currentPos - 72}, 50);
             this.flyTween.start();
-            this.renderable.angle = -this.maxAngleRotation;
         } else {
             this.gravityForce += 0.2;
             this.pos.y += me.timer.tick * this.gravityForce;
-            this.renderable.angle += Number.prototype.degToRad(0.5) * this.gravityForce;
-            if (this.renderable.angle > this.maxAngleRotationDown)
-                this.renderable.angle = this.maxAngleRotationDown;
+            this.currentAngle += Number.prototype.degToRad(0.2);
+            //this.renderable.currentTransform.rotate(this.currentAngle);
         }
+        console.log('pos y', this.pos.y);
         me.Rect.prototype.updateBounds.apply(this);
 
         var hitSky = -80; // bird height + 20px
@@ -65,7 +64,6 @@ var BirdEntity = me.Entity.extend({
         }
         me.collision.check(this);
         this._super(me.Entity, 'update', [dt]);
-        return true;
     },
 
     onCollision: function(response) {
@@ -85,13 +83,13 @@ var BirdEntity = me.Entity.extend({
 
     endAnimation: function() {
         me.game.viewport.fadeOut("#fff", 100);
-        var currentPos = this.renderable.pos.y;
-        this.endTween = new me.Tween(this.renderable.pos);
+        var currentPos = this.pos.y;
+        this.endTween = new me.Tween(this.pos);
         this.endTween.easing(me.Tween.Easing.Exponential.InOut);
 
         this.flyTween.stop();
-        this.renderable.angle = this.maxAngleRotationDown;
-        var finalPos = me.video.renderer.getHeight() - this.renderable.width/2 - 96;
+        this.renderable.currentTransform.rotate(this.maxAngleRotationDown);
+        var finalPos = me.game.viewport.height - this.renderable.width/2 - 96;
         this.endTween
             .to({y: currentPos}, 1000)
             .to({y: finalPos}, 1000)
@@ -104,7 +102,7 @@ var BirdEntity = me.Entity.extend({
 });
 
 
-var PipeEntity = me.Entity.extend({
+game.PipeEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = this.image = me.loader.getImage('pipe');
@@ -136,9 +134,9 @@ var PipeEntity = me.Entity.extend({
 
 });
 
-var PipeGenerator = me.Renderable.extend({
+game.PipeGenerator = me.Renderable.extend({
     init: function() {
-        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height]);
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
         this.alwaysUpdate = true;
         this.generate = 0;
         this.pipeFrequency = 92;
@@ -152,23 +150,22 @@ var PipeGenerator = me.Renderable.extend({
                     me.video.renderer.getHeight() - 100,
                     200
             );
-            var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
+            var posY2 = posY - me.game.viewport.height - this.pipeHoleSize;
             var pipe1 = new me.pool.pull('pipe', this.posX, posY);
             var pipe2 = new me.pool.pull('pipe', this.posX, posY2);
             var hitPos = posY - 100;
             var hit = new me.pool.pull("hit", this.posX, hitPos);
-            pipe1.renderable.flipY(true);
+            pipe1.renderable.currentTransform.scaleY(-1);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
         }
         this._super(me.Entity, "update", [dt]);
-        return true;
     },
 
 });
 
-var HitEntity = me.Entity.extend({
+game.HitEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = this.image = me.loader.getImage('hit');
@@ -201,7 +198,7 @@ var HitEntity = me.Entity.extend({
 
 });
 
-var Ground = me.Entity.extend({
+game.Ground = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
         settings.image = me.loader.getImage('ground');

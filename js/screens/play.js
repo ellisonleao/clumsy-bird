@@ -2,7 +2,7 @@ game.PlayScreen = me.ScreenObject.extend({
     init: function() {
         me.audio.play("theme", true);
         // lower audio volume on firefox browser
-        var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
+        var vol = me.device.ua.indexOf("Firefox") !== -1 ? 0.3 : 0.5;
         me.audio.setVolume(vol);
         this._super(me.ScreenObject, 'init');
     },
@@ -22,25 +22,25 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
-        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
-                                    me.video.renderer.getHeight() - 96);
+        this.ground1 = me.pool.pull('ground', 0, me.game.viewport.height - 96);
+        this.ground2 = me.pool.pull('ground', me.game.viewport.width,
+            me.game.viewport.height - 96);
         me.game.world.addChild(this.ground1, 11);
         me.game.world.addChild(this.ground2, 11);
 
         this.HUD = new game.HUD.Container();
-        me.game.world.addChild(this.HUD);
+        me.game.world.addChild(this.HUD, 11);
 
         this.bird = me.pool.pull("clumsy", 60, me.game.viewport.height/2 - 100);
         me.game.world.addChild(this.bird, 10);
 
         //inputs
-        me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.SPACE);
+        me.input.bindPointer(me.input.pointer.LEFT, me.input.KEY.SPACE);
 
         this.getReady = new me.Sprite(
-            me.video.renderer.getWidth()/2 - 200,
-            me.video.renderer.getHeight()/2 - 100,
-            {image: me.loader.getImage('getready')}
+            me.game.viewport.width/2,
+            me.game.viewport.height/2,
+            {image: 'getready'}
         );
         me.game.world.addChild(this.getReady, 11);
 
@@ -48,10 +48,10 @@ game.PlayScreen = me.ScreenObject.extend({
         var fadeOut = new me.Tween(this.getReady).to({alpha: 0}, 2000)
             .easing(me.Tween.Easing.Linear.None)
             .onComplete(function() {
-                    game.data.start = true;
-                    me.game.world.addChild(new PipeGenerator(), 0);
-                    me.game.world.removeChild(that.getReady);
-             }).start();
+                game.data.start = true;
+                me.game.world.addChild(new game.PipeGenerator(), 0);
+                me.game.world.removeChild(that.getReady);
+            }).start();
     },
 
     onDestroyEvent: function() {
@@ -62,6 +62,6 @@ game.PlayScreen = me.ScreenObject.extend({
         this.ground1 = null;
         this.ground2 = null;
         me.input.unbindKey(me.input.KEY.SPACE);
-        me.input.unbindPointer(me.input.mouse.LEFT);
+        me.input.unbindPointer(me.input.pointer.LEFT);
     }
 });

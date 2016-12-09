@@ -47,7 +47,7 @@ module.exports = function(grunt) {
         connect : {
             root : {
                 options : {
-                    port : 8001,
+                    port : process.env.PORT || 8001,
                     keepalive : true,
                     host: '*'
                 }
