@@ -8,8 +8,8 @@ game.BirdEntity = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0.2;
-        this.maxAngleRotation = Number.prototype.degToRad(30);
-        this.maxAngleRotationDown = Number.prototype.degToRad(90);
+        this.maxAngleRotation = Number.prototype.degToRad(-30);
+        this.maxAngleRotationDown = Number.prototype.degToRad(35);
         this.renderable.addAnimation("flying", [0, 1, 2]);
         this.renderable.addAnimation("idle", [0]);
         this.renderable.setCurrentAnimation("flying");
@@ -21,38 +21,52 @@ game.BirdEntity = me.Entity.extend({
         this.flyTween = new me.Tween(this.pos);
         this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
 
+        this.currentAngle = 0;
+        this.angleTween = new me.Tween(this);
+        this.angleTween.easing(me.Tween.Easing.Exponential.InOut);
+
         // end animation tween
         this.endTween = null;
 
         // collision shape
         this.collided = false;
 
-        this.currentAngle = 0;
-        this.gravityForce = 0.02;
+        this.gravityForce = 0.2;
     },
 
     update: function(dt) {
-        // mechanics
+        var that = this;
         if (!game.data.start) {
             return this._super(me.Entity, 'update', [dt]);
         }
+        this.renderable.currentTransform.identity();
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
+            this.gravityForce = 0.2;
             var currentPos = this.pos.y;
-            this.gravityForce = 0.02;
-            //this.currentAngle = -this.maxAngleRotation;
-            //this.renderable.currentTransform.rotate(-this.maxAngleRotation);
-            // stop the previous tweens
+
+            this.angleTween.stop();
             this.flyTween.stop();
+
+
             this.flyTween.to({y: currentPos - 72}, 50);
             this.flyTween.start();
+
+            this.angleTween.to({currentAngle: that.maxAngleRotation}, 50).onComplete(function(angle) {
+                that.renderable.currentTransform.rotate(that.maxAngleRotation);
+            })
+            this.angleTween.start();
+
         } else {
             this.gravityForce += 0.2;
             this.pos.y += me.timer.tick * this.gravityForce;
-            this.currentAngle += Number.prototype.degToRad(0.2);
-            //this.renderable.currentTransform.rotate(this.currentAngle);
+            this.currentAngle += Number.prototype.degToRad(3);
+            if (this.currentAngle >= this.maxAngleRotationDown) {
+                this.renderable.currentTransform.identity();
+                this.currentAngle = this.maxAngleRotationDown;
+            }
         }
-        console.log('pos y', this.pos.y);
+        this.renderable.currentTransform.rotate(this.currentAngle);
         me.Rect.prototype.updateBounds.apply(this);
 
         var hitSky = -80; // bird height + 20px
@@ -63,7 +77,7 @@ game.BirdEntity = me.Entity.extend({
             return false;
         }
         me.collision.check(this);
-        this._super(me.Entity, 'update', [dt]);
+        return true;
     },
 
     onCollision: function(response) {
@@ -88,7 +102,8 @@ game.BirdEntity = me.Entity.extend({
         this.endTween.easing(me.Tween.Easing.Exponential.InOut);
 
         this.flyTween.stop();
-        this.renderable.currentTransform.rotate(this.maxAngleRotationDown);
+        this.renderable.currentTransform.identity();
+        this.renderable.currentTransform.rotate(Number.prototype.degToRad(90));
         var finalPos = me.game.viewport.height - this.renderable.width/2 - 96;
         this.endTween
             .to({y: currentPos}, 1000)
