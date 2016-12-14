@@ -36,6 +36,7 @@ game.BirdEntity = me.Entity.extend({
 
     update: function(dt) {
         var that = this;
+        this.pos.x = 60;
         if (!game.data.start) {
             return this._super(me.Entity, 'update', [dt]);
         }
@@ -91,7 +92,6 @@ game.BirdEntity = me.Entity.extend({
             me.game.world.removeChildNow(obj);
             game.data.steps++;
             me.audio.play('hit');
-            this.pos.x = 60;
         }
     },
 
