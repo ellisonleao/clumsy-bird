@@ -83,7 +83,7 @@ game.BirdEntity = me.Entity.extend({
 
     onCollision: function(response) {
         var obj = response.b;
-        if (obj.type === 'pipe' || obj.type === 'ground') {
+        if (obj.type === 'pipe' || obj.type === 'pipe_blue' || obj.type === 'ground') {
             me.device.vibrate(500);
             this.collided = true;
         }
@@ -160,8 +160,9 @@ game.PipeGenerator = me.Renderable.extend({
     },
 
     update: function(dt) {
-        // if (this.generate++ % this.pipeFrequency == 0) {
-        if (false) {
+        if ((++this.generate % this.pipeFrequency == 0) ) {
+            if((this.generate % (this.pipeFrequency*2) != 0)){
+        // if (false) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -175,6 +176,7 @@ game.PipeGenerator = me.Renderable.extend({
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
+        }
         }
         this._super(me.Entity, "update", [dt]);
     },
@@ -224,7 +226,7 @@ game.BluePipeGenerator = me.Renderable.extend({
     },
 
     update: function(dt) {
-        if (this.generate++ % this.pipe_blueFrequency == 0) {
+        if (++this.generate % this.pipe_blueFrequency == 0) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -286,7 +288,7 @@ game.Ground = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0;
-        this.body.vel.set(-4, 0);
+        this.body.vel.set(-5, 0);
         this.type = 'ground';
     },
 
