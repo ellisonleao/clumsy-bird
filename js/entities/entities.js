@@ -160,7 +160,8 @@ game.PipeGenerator = me.Renderable.extend({
     },
 
     update: function(dt) {
-        if (this.generate++ % this.pipeFrequency == 0) {
+        // if (this.generate++ % this.pipeFrequency == 0) {
+        if (false) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -173,6 +174,69 @@ game.PipeGenerator = me.Renderable.extend({
             pipe1.renderable.currentTransform.scaleY(-1);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
+            me.game.world.addChild(hit, 11);
+        }
+        this._super(me.Entity, "update", [dt]);
+    },
+
+});
+
+game.BluePipeEntity = me.Entity.extend({
+    init: function(x, y) {
+        var settings = {};
+        settings.image = this.image = me.loader.getImage('pipe_blue');
+        settings.width = 148;
+        settings.height= 1664;
+        settings.framewidth = 148;
+        settings.frameheight = 1664;
+
+        this._super(me.Entity, 'init', [x, y, settings]);
+        this.alwaysUpdate = true;
+        this.body.gravity = 0;
+        this.body.vel.set(-5, 0);
+        this.type = 'pipe_blue';
+    },
+
+    update: function(dt) {
+        // mechanics
+        if (!game.data.start) {
+            return this._super(me.Entity, 'update', [dt]);
+        }
+        this.pos.add(this.body.vel);
+        if (this.pos.x < -this.image.width) {
+            me.game.world.removeChild(this);
+        }
+        me.Rect.prototype.updateBounds.apply(this);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
+    },
+
+});
+
+game.BluePipeGenerator = me.Renderable.extend({
+    init: function() {
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
+        this.alwaysUpdate = true;
+        this.generate = 0;
+        this.pipe_blueFrequency = 92*2;
+        this.pipe_blueHoleSize = 1240;
+        this.posX = me.game.viewport.width;
+    },
+
+    update: function(dt) {
+        if (this.generate++ % this.pipe_blueFrequency == 0) {
+            var posY = Number.prototype.random(
+                    me.video.renderer.getHeight() - 100,
+                    200
+            );
+            var posY2 = posY - me.game.viewport.height - this.pipe_blueHoleSize;
+            var pipe_blue1 = new me.pool.pull('pipe_blue', this.posX, posY);
+            var pipe_blue2 = new me.pool.pull('pipe_blue', this.posX, posY2);
+            var hitPos = posY - 100;
+            var hit = new me.pool.pull("hit", this.posX, hitPos);
+            pipe_blue1.renderable.currentTransform.scaleY(-1);
+            me.game.world.addChild(pipe_blue1, 10);
+            me.game.world.addChild(pipe_blue2, 10);
             me.game.world.addChild(hit, 11);
         }
         this._super(me.Entity, "update", [dt]);

@@ -12,6 +12,7 @@ var game = {
         {name: "bg", type:"image", src: "data/img/bg.png"},
         {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
         {name: "pipe", type:"image", src: "data/img/pipe.png"},
+        {name: "pipe_blue", type:"image", src: "data/img/pipe_blue.png"},
         {name: "logo", type:"image", src: "data/img/logo.png"},
         {name: "ground", type:"image", src: "data/img/ground.png"},
         {name: "gameover", type:"image", src: "data/img/gameover.png"},
@@ -53,6 +54,7 @@ var game = {
 
         me.pool.register("clumsy", game.BirdEntity);
         me.pool.register("pipe", game.PipeEntity, true);
+        me.pool.register("pipe_blue", game.BluePipeEntity, true);
         me.pool.register("hit", game.HitEntity, true);
         me.pool.register("ground", game.Ground, true);
 
