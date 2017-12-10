@@ -184,7 +184,7 @@ game.PipeGenerator = me.Renderable.extend({
 });
 
 game.BluePipeEntity = me.Entity.extend({
-    init: function(x, y) {
+    init: function(x, y , p) {  //initializing variables-coordiantes and up or down pipe identifier
         var settings = {};
         settings.image = this.image = me.loader.getImage('pipe_blue');
         settings.width = 148;
@@ -195,7 +195,9 @@ game.BluePipeEntity = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0;
-        this.body.vel.set(-5, 0);
+        this.initialPosY=this.pos.y;
+        this.identify = p;// 0 for upper pipe and 1 for lower pipe
+        this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2));
         this.type = 'pipe_blue';
     },
 
@@ -205,6 +207,14 @@ game.BluePipeEntity = me.Entity.extend({
             return this._super(me.Entity, 'update', [dt]);
         }
         this.pos.add(this.body.vel);
+        if(this.pos.y == this.initialPosY+40*Math.pow(-1,this.identify%2)){
+            this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2+1));
+        }
+        if(this.pos.y == this.initialPosY){
+            this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2));
+        }
+
+
         if (this.pos.x < -this.image.width) {
             me.game.world.removeChild(this);
         }
@@ -232,8 +242,8 @@ game.BluePipeGenerator = me.Renderable.extend({
                     200
             );
             var posY2 = posY - me.game.viewport.height - this.pipe_blueHoleSize;
-            var pipe_blue1 = new me.pool.pull('pipe_blue', this.posX, posY);
-            var pipe_blue2 = new me.pool.pull('pipe_blue', this.posX, posY2);
+            var pipe_blue1 = new me.pool.pull('pipe_blue', this.posX, posY ,0);
+            var pipe_blue2 = new me.pool.pull('pipe_blue', this.posX, posY2 ,1);
             var hitPos = posY - 100;
             var hit = new me.pool.pull("hit", this.posX, hitPos);
             pipe_blue1.renderable.currentTransform.scaleY(-1);
