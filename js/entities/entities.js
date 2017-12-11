@@ -32,6 +32,8 @@ game.BirdEntity = me.Entity.extend({
         this.collided = false;
 
         this.gravityForce = 0.2;
+        this.powermode=false;
+        this.powertime=0;
     },
 
     update: function(dt) {
@@ -41,6 +43,12 @@ game.BirdEntity = me.Entity.extend({
             return this._super(me.Entity, 'update', [dt]);
         }
         this.renderable.currentTransform.identity();
+        if(me.input.isKeyPressed('power')) {  //power key pressed
+            this.powermode=true;
+            game.data.powerpoints--;
+        }
+
+        if(this.powermode==false){
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
             this.gravityForce = 0.2;
@@ -66,6 +74,14 @@ game.BirdEntity = me.Entity.extend({
                 this.renderable.currentTransform.identity();
                 this.currentAngle = this.maxAngleRotationDown;
             }
+        }
+        }  //if power mode is off
+        if(this.powermode==true){
+            //powermode animation fly straight
+            this.gravityForce=0;
+            this.currentAngle=0;
+            this.powertime++;
+            if(this.powertime==40){ this.powermode=false;this.powertime=0;}
         }
         this.renderable.currentTransform.rotate(this.currentAngle);
         me.Rect.prototype.updateBounds.apply(this);
