@@ -2,6 +2,7 @@ var game = {
     data: {
         score : 0,
         steps: 0,
+        powerpoints: 0,
         start: false,
         newHiScore: false,
         muted: false
@@ -12,7 +13,9 @@ var game = {
         {name: "bg", type:"image", src: "data/img/bg.png"},
         {name: "clumsy", type:"image", src: "data/img/clumsy.png"},
         {name: "pipe", type:"image", src: "data/img/pipe.png"},
+        {name: "pipe_blue", type:"image", src: "data/img/pipe_blue.png"},
         {name: "logo", type:"image", src: "data/img/logo.png"},
+        {name: "powerup", type:"image", src: "data/img/powerup.png"},
         {name: "ground", type:"image", src: "data/img/ground.png"},
         {name: "gameover", type:"image", src: "data/img/gameover.png"},
         {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
@@ -24,6 +27,7 @@ var game = {
         // sounds
         {name: "theme", type: "audio", src: "data/bgm/"},
         {name: "hit", type: "audio", src: "data/sfx/"},
+        {name: "whoosh", type: "audio", src: "data/sfx/"},
         {name: "lose", type: "audio", src: "data/sfx/"},
         {name: "wing", type: "audio", src: "data/sfx/"},
 
@@ -49,10 +53,13 @@ var game = {
 
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
         me.input.bindKey(me.input.KEY.M, "mute", true);
+        me.input.bindKey(me.input.KEY.Z, "power", true);
         me.input.bindPointer(me.input.KEY.SPACE);
 
         me.pool.register("clumsy", game.BirdEntity);
         me.pool.register("pipe", game.PipeEntity, true);
+        me.pool.register("pipe_blue", game.BluePipeEntity, true);
+        me.pool.register("powerup", game.PowerUpEntity, true);
         me.pool.register("hit", game.HitEntity, true);
         me.pool.register("ground", game.Ground, true);
 

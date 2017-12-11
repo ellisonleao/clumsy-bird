@@ -32,6 +32,8 @@ game.BirdEntity = me.Entity.extend({
         this.collided = false;
 
         this.gravityForce = 0.2;
+        this.powermode=false;
+        this.powertime=0;
     },
 
     update: function(dt) {
@@ -41,6 +43,12 @@ game.BirdEntity = me.Entity.extend({
             return this._super(me.Entity, 'update', [dt]);
         }
         this.renderable.currentTransform.identity();
+        if(me.input.isKeyPressed('power') && game.data.powerpoints > 0) {  //power key pressed
+            this.powermode=true;
+            game.data.powerpoints--;
+        }
+
+        if(this.powermode==false){
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
             this.gravityForce = 0.2;
@@ -67,6 +75,15 @@ game.BirdEntity = me.Entity.extend({
                 this.currentAngle = this.maxAngleRotationDown;
             }
         }
+        }  //if power mode is off
+        if(this.powermode==true ){
+            //powermode animation fly straight
+            me.audio.play('whoosh'); 
+            this.gravityForce=0;
+            this.currentAngle=0;
+            this.powertime++;
+            if(this.powertime==40){ this.powermode=false;this.powertime=0;}
+        }
         this.renderable.currentTransform.rotate(this.currentAngle);
         me.Rect.prototype.updateBounds.apply(this);
 
@@ -83,9 +100,13 @@ game.BirdEntity = me.Entity.extend({
 
     onCollision: function(response) {
         var obj = response.b;
-        if (obj.type === 'pipe' || obj.type === 'ground') {
+        if (obj.type === 'pipe' || obj.type === 'pipe_blue' || obj.type === 'ground') {
             me.device.vibrate(500);
             this.collided = true;
+        }
+        if (obj.type==='powerup') {
+            me.game.world.removeChildNow(obj);
+            game.data.powerpoints++;
         }
         // remove the hit box
         if (obj.type === 'hit') {
@@ -154,13 +175,15 @@ game.PipeGenerator = me.Renderable.extend({
         this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
         this.alwaysUpdate = true;
         this.generate = 0;
-        this.pipeFrequency = 92;
+        this.pipeTimeInterval = 92;
         this.pipeHoleSize = 1240;
         this.posX = me.game.viewport.width;
     },
 
     update: function(dt) {
-        if (this.generate++ % this.pipeFrequency == 0) {
+        if ((++this.generate % this.pipeTimeInterval == 0) ) {
+            if((this.generate % (this.pipeTimeInterval*2) != 0)){
+        // if (false) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -173,6 +196,80 @@ game.PipeGenerator = me.Renderable.extend({
             pipe1.renderable.currentTransform.scaleY(-1);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
+            me.game.world.addChild(hit, 11);
+        }
+        }
+        this._super(me.Entity, "update", [dt]);
+    },
+
+});
+
+game.BluePipeEntity = me.Entity.extend({
+    init: function(x, y , p) {  //initializing variables-coordiantes and up or down pipe identifier
+        var settings = {};
+        settings.image = this.image = me.loader.getImage('pipe_blue');
+        settings.width = 148;
+        settings.height= 1664;
+        settings.framewidth = 148;
+        settings.frameheight = 1664;
+
+        this._super(me.Entity, 'init', [x, y, settings]);
+        this.alwaysUpdate = true;
+        this.body.gravity = 0;
+        this.initialPosY=this.pos.y;
+        this.identify = p;// 0 for upper pipe and 1 for lower pipe
+        this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2));
+        this.type = 'pipe_blue';
+    },
+
+    update: function(dt) {
+        // mechanics
+        if (!game.data.start) {
+            return this._super(me.Entity, 'update', [dt]);
+        }
+        this.pos.add(this.body.vel);
+        if(this.pos.y == this.initialPosY+40*Math.pow(-1,this.identify%2)){
+            this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2+1));
+        }
+        if(this.pos.y == this.initialPosY){
+            this.body.vel.set(-5, 1*Math.pow(-1,this.identify%2));
+        }
+
+
+        if (this.pos.x < -this.image.width) {
+            me.game.world.removeChild(this);
+        }
+        me.Rect.prototype.updateBounds.apply(this);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
+    },
+
+});
+
+game.BluePipeGenerator = me.Renderable.extend({
+    init: function() {
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
+        this.alwaysUpdate = true;
+        this.generate = 0;
+        this.pipe_blueTimeInterval = 92*2;
+        this.pipe_blueHoleSize = 1240;
+        this.posX = me.game.viewport.width;
+    },
+
+    update: function(dt) {
+        if (++this.generate % this.pipe_blueTimeInterval == 0) {
+            var posY = Number.prototype.random(
+                    me.video.renderer.getHeight() - 100,
+                    200
+            );
+            var posY2 = posY - me.game.viewport.height - this.pipe_blueHoleSize;
+            var pipe_blue1 = new me.pool.pull('pipe_blue', this.posX, posY ,0);
+            var pipe_blue2 = new me.pool.pull('pipe_blue', this.posX, posY2 ,1);
+            var hitPos = posY - 100;
+            var hit = new me.pool.pull("hit", this.posX, hitPos);
+            pipe_blue1.renderable.currentTransform.scaleY(-1);
+            me.game.world.addChild(pipe_blue1, 10);
+            me.game.world.addChild(pipe_blue2, 10);
             me.game.world.addChild(hit, 11);
         }
         this._super(me.Entity, "update", [dt]);
@@ -222,7 +319,7 @@ game.Ground = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0;
-        this.body.vel.set(-4, 0);
+        this.body.vel.set(-5, 0);
         this.type = 'ground';
     },
 
@@ -234,6 +331,63 @@ game.Ground = me.Entity.extend({
         }
         me.Rect.prototype.updateBounds.apply(this);
         return this._super(me.Entity, 'update', [dt]);
+    },
+
+});
+
+
+
+game.PowerUpEntity = me.Entity.extend({
+    init: function(x, y) {
+        var settings = {};
+        settings.image = this.image = me.loader.getImage('powerup');
+        settings.width = 148;
+        settings.height= 1664;
+        settings.framewidth = 148;
+        settings.frameheight = 1664;
+
+        this._super(me.Entity, 'init', [x, y, settings]);
+        this.alwaysUpdate = true;
+        this.body.gravity = 0;
+        this.body.vel.set(-5, 0);
+        this.type = 'powerup';
+    },
+
+    update: function(dt) {
+        // mechanics
+        if (!game.data.start) {
+            return this._super(me.Entity, 'update', [dt]);
+        }
+        this.pos.add(this.body.vel);
+        if (this.pos.x < -this.image.width) {
+            me.game.world.removeChild(this);
+        }
+        me.Rect.prototype.updateBounds.apply(this);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
+    },
+
+});
+
+game.PowerUpGenerator = me.Renderable.extend({
+    init: function() {
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
+        this.alwaysUpdate = true;
+        this.generate = 46;
+        this.powerupTimeInterval = 92*5;
+        this.posX = me.game.viewport.width;
+    },
+
+    update: function(dt) {
+        if ((++this.generate % this.powerupTimeInterval == 0) ) {
+            var posY = Number.prototype.random(
+                    me.video.renderer.getHeight() - 100,
+                    200
+            );
+            var pipe1 = new me.pool.pull('powerup', this.posX, posY);
+            me.game.world.addChild(pipe1, 10);
+        }
+        this._super(me.Entity, "update", [dt]);
     },
 
 });
