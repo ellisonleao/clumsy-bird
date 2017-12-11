@@ -43,7 +43,7 @@ game.BirdEntity = me.Entity.extend({
             return this._super(me.Entity, 'update', [dt]);
         }
         this.renderable.currentTransform.identity();
-        if(me.input.isKeyPressed('power')) {  //power key pressed
+        if(me.input.isKeyPressed('power') && game.data.powerpoints > 0) {  //power key pressed
             this.powermode=true;
             game.data.powerpoints--;
         }
@@ -76,8 +76,9 @@ game.BirdEntity = me.Entity.extend({
             }
         }
         }  //if power mode is off
-        if(this.powermode==true){
+        if(this.powermode==true ){
             //powermode animation fly straight
+            me.audio.play('whoosh'); 
             this.gravityForce=0;
             this.currentAngle=0;
             this.powertime++;
@@ -174,14 +175,14 @@ game.PipeGenerator = me.Renderable.extend({
         this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
         this.alwaysUpdate = true;
         this.generate = 0;
-        this.pipeFrequency = 92;
+        this.pipeTimeInterval = 92;
         this.pipeHoleSize = 1240;
         this.posX = me.game.viewport.width;
     },
 
     update: function(dt) {
-        if ((++this.generate % this.pipeFrequency == 0) ) {
-            if((this.generate % (this.pipeFrequency*2) != 0)){
+        if ((++this.generate % this.pipeTimeInterval == 0) ) {
+            if((this.generate % (this.pipeTimeInterval*2) != 0)){
         // if (false) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
@@ -250,13 +251,13 @@ game.BluePipeGenerator = me.Renderable.extend({
         this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
         this.alwaysUpdate = true;
         this.generate = 0;
-        this.pipe_blueFrequency = 92*2;
+        this.pipe_blueTimeInterval = 92*2;
         this.pipe_blueHoleSize = 1240;
         this.posX = me.game.viewport.width;
     },
 
     update: function(dt) {
-        if (++this.generate % this.pipe_blueFrequency == 0) {
+        if (++this.generate % this.pipe_blueTimeInterval == 0) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -373,29 +374,18 @@ game.PowerUpGenerator = me.Renderable.extend({
         this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
         this.alwaysUpdate = true;
         this.generate = 46;
-        this.powerupFrequency = 92;
-        // this.pipeHoleSize = 1240;
+        this.powerupTimeInterval = 92*5;
         this.posX = me.game.viewport.width;
     },
 
     update: function(dt) {
-        if ((++this.generate % this.powerupFrequency == 0) ) {
-            // if((this.generate % (this.pipeFrequency*2) != 0)){
-        // if (false) {
+        if ((++this.generate % this.powerupTimeInterval == 0) ) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
             );
-            // var posY2 = posY - me.game.viewport.height - this.pipeHoleSize;
             var pipe1 = new me.pool.pull('powerup', this.posX, posY);
-            // var pipe2 = new me.pool.pull('powerup', this.posX, posY2);
-            // var hitPos = posY - 100;
-            // var hit = new me.pool.pull("hit", this.posX, hitPos);
-            // pipe1.renderable.currentTransform.scaleY(-1);
             me.game.world.addChild(pipe1, 10);
-            // me.game.world.addChild(pipe2, 10);
-            // me.game.world.addChild(hit, 11);
-        // }
         }
         this._super(me.Entity, "update", [dt]);
     },
