@@ -27,7 +27,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
 
         // local copy of the global score
         this.stepsFont = new me.Font('gamefont', 80, '#000', 'center');
-
+        this.powerpointsFont = new me.Font('gamefont',40,'#F00','center');
         // make sure we use screen coordinates
         this.floating = true;
     },
@@ -35,7 +35,8 @@ game.HUD.ScoreItem = me.Renderable.extend({
     draw: function (renderer) {
         if (game.data.start && me.state.isCurrent(me.state.PLAY))
             this.stepsFont.draw(renderer, game.data.steps, me.game.viewport.width/2, 10);
-            this.stepsFont.draw(renderer, game.data.powerpoints, me.game.viewport.width-30, 5);
+            if(game.data.powerpoints>0)
+            this.stepsFont.draw(renderer, game.data.powerpoints, me.game.viewport.width-30, 10);
     }
 
 });

@@ -64,6 +64,7 @@ game.PlayScreen = me.ScreenObject.extend({
         this.bird = null;
         this.ground1 = null;
         this.ground2 = null;
+        game.data.powerpoints=0;
         me.input.unbindKey(me.input.KEY.SPACE);
         me.input.unbindPointer(me.input.pointer.LEFT);
     }
