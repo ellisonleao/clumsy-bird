@@ -2,6 +2,7 @@ var game = {
     data: {
         score : 0,
         steps: 0,
+        powerpoints: 0,
         start: false,
         newHiScore: false,
         muted: false
@@ -14,6 +15,7 @@ var game = {
         {name: "pipe", type:"image", src: "data/img/pipe.png"},
         {name: "pipe_blue", type:"image", src: "data/img/pipe_blue.png"},
         {name: "logo", type:"image", src: "data/img/logo.png"},
+        {name: "powerup", type:"image", src: "data/img/powerup.png"},
         {name: "ground", type:"image", src: "data/img/ground.png"},
         {name: "gameover", type:"image", src: "data/img/gameover.png"},
         {name: "gameoverbg", type:"image", src: "data/img/gameoverbg.png"},
@@ -55,6 +57,7 @@ var game = {
         me.pool.register("clumsy", game.BirdEntity);
         me.pool.register("pipe", game.PipeEntity, true);
         me.pool.register("pipe_blue", game.BluePipeEntity, true);
+        me.pool.register("powerup", game.PowerUpEntity, true);
         me.pool.register("hit", game.HitEntity, true);
         me.pool.register("ground", game.Ground, true);
 

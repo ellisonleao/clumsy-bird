@@ -87,6 +87,10 @@ game.BirdEntity = me.Entity.extend({
             me.device.vibrate(500);
             this.collided = true;
         }
+        if (obj.type==='powerup') {
+            me.game.world.removeChildNow(obj);
+            game.data.powerpoints++;
+        }
         // remove the hit box
         if (obj.type === 'hit') {
             me.game.world.removeChildNow(obj);
@@ -310,6 +314,74 @@ game.Ground = me.Entity.extend({
         }
         me.Rect.prototype.updateBounds.apply(this);
         return this._super(me.Entity, 'update', [dt]);
+    },
+
+});
+
+
+
+game.PowerUpEntity = me.Entity.extend({
+    init: function(x, y) {
+        var settings = {};
+        settings.image = this.image = me.loader.getImage('powerup');
+        settings.width = 148;
+        settings.height= 1664;
+        settings.framewidth = 148;
+        settings.frameheight = 1664;
+
+        this._super(me.Entity, 'init', [x, y, settings]);
+        this.alwaysUpdate = true;
+        this.body.gravity = 0;
+        this.body.vel.set(-5, 0);
+        this.type = 'powerup';
+    },
+
+    update: function(dt) {
+        // mechanics
+        if (!game.data.start) {
+            return this._super(me.Entity, 'update', [dt]);
+        }
+        this.pos.add(this.body.vel);
+        if (this.pos.x < -this.image.width) {
+            me.game.world.removeChild(this);
+        }
+        me.Rect.prototype.updateBounds.apply(this);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
+    },
+
+});
+
+game.PowerUpGenerator = me.Renderable.extend({
+    init: function() {
+        this._super(me.Renderable, 'init', [0, me.game.viewport.width, me.game.viewport.height, 92]);
+        this.alwaysUpdate = true;
+        this.generate = 46;
+        this.powerupFrequency = 92;
+        // this.pipeHoleSize = 1240;
+        this.posX = me.game.viewport.width;
+    },
+
+    update: function(dt) {
+        if ((++this.generate % this.powerupFrequency == 0) ) {
+            // if((this.generate % (this.pipeFrequency*2) != 0)){
+        // if (false) {
+            var posY = Number.prototype.random(
+                    me.video.renderer.getHeight() - 100,
+                    200
+            );
+            // var posY2 = posY - me.game.viewport.height - this.pipeHoleSize;
+            var pipe1 = new me.pool.pull('powerup', this.posX, posY);
+            // var pipe2 = new me.pool.pull('powerup', this.posX, posY2);
+            // var hitPos = posY - 100;
+            // var hit = new me.pool.pull("hit", this.posX, hitPos);
+            // pipe1.renderable.currentTransform.scaleY(-1);
+            me.game.world.addChild(pipe1, 10);
+            // me.game.world.addChild(pipe2, 10);
+            // me.game.world.addChild(hit, 11);
+        // }
+        }
+        this._super(me.Entity, "update", [dt]);
     },
 
 });

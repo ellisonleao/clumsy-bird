@@ -35,6 +35,7 @@ game.HUD.ScoreItem = me.Renderable.extend({
     draw: function (renderer) {
         if (game.data.start && me.state.isCurrent(me.state.PLAY))
             this.stepsFont.draw(renderer, game.data.steps, me.game.viewport.width/2, 10);
+            this.stepsFont.draw(renderer, game.data.powerpoints, me.game.viewport.width-30, 5);
     }
 
 });

@@ -17,6 +17,7 @@ game.PlayScreen = me.ScreenObject.extend({
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
         game.data.score = 0;
         game.data.steps = 0;
+        game.data.powerpoints=0;
         game.data.start = false;
         game.data.newHiscore = false;
 
@@ -51,6 +52,7 @@ game.PlayScreen = me.ScreenObject.extend({
                 game.data.start = true;
                 me.game.world.addChild(new game.PipeGenerator(), 0);
                 me.game.world.addChild(new game.BluePipeGenerator(), 0);
+                me.game.world.addChild(new game.PowerUpGenerator(), 0);
                 me.game.world.removeChild(that.getReady);
             }).start();
     },
