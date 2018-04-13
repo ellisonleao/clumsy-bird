@@ -42,6 +42,9 @@ game.BirdEntity = me.Entity.extend({
         }
         this.renderable.currentTransform.identity();
         if (me.input.isKeyPressed('fly')) {
+            for (i=0; i<game.data.user_count; i++) {
+                alooma.track_custom_event({'event': 'fly', 'user': i})
+            }
             me.audio.play('wing');
             this.gravityForce = 0.2;
             var currentPos = this.pos.y;
@@ -84,8 +87,11 @@ game.BirdEntity = me.Entity.extend({
     onCollision: function(response) {
         var obj = response.b;
         if (obj.type === 'pipe' || obj.type === 'ground') {
+            alooma.track('collision', {'steps': game.data.steps});
             me.device.vibrate(500);
-            this.collided = true;
+            if (game.data.god_mode == false) {
+                this.collided = true;
+            }
         }
         // remove the hit box
         if (obj.type === 'hit') {

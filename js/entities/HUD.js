@@ -16,8 +16,48 @@ game.HUD.Container = me.Container.extend({
         this.name = "HUD";
 
         // add our child score object at the top left corner
+        this.addChild(new game.HUD.UserCount(5, 5));
         this.addChild(new game.HUD.ScoreItem(5, 5));
+        this.addChild(new game.HUD.GodMode(5, 5));
     }
+});
+
+
+game.HUD.UserCount = me.Renderable.extend({
+    init: function(x, y) {
+        this._super(me.Renderable, "init", [x, y, 10, 10]);
+
+        // local copy of the global score
+        this.stepsFont = new me.Font('gamefont', 30, '#000', 'center');
+        game.data.user_count = 1;
+        // make sure we use screen coordinates
+        this.floating = true;
+    },
+
+    draw: function (renderer) {
+        if (game.data.start && me.state.isCurrent(me.state.PLAY))
+            this.stepsFont.draw(renderer, 'Users: ' + game.data.user_count, me.game.viewport.width/5, 10);
+    }
+
+});
+
+
+game.HUD.GodMode = me.Renderable.extend({
+    init: function(x, y) {
+        this._super(me.Renderable, "init", [x, y, 10, 10]);
+
+        // local copy of the global score
+        this.stepsFont = new me.Font('gamefont', 30, '#000', 'center');
+        game.data.god_mode = false;
+        // make sure we use screen coordinates
+        this.floating = true;
+    },
+
+    draw: function (renderer) {
+        if (game.data.start && me.state.isCurrent(me.state.PLAY) && game.data.god_mode)
+            this.stepsFont.draw(renderer, 'God Mode!', me.game.viewport.width - (me.game.viewport.width/5), 10);
+    }
+
 });
 
 
@@ -56,9 +96,23 @@ var BackgroundLayer = me.ImageLayer.extend({
         if (me.input.isKeyPressed('mute')) {
             game.data.muted = !game.data.muted;
             if (game.data.muted){
+                alooma.track('game_muted', {});
                 me.audio.disable();
             }else{
+                alooma.track('game_unmuted', {});
                 me.audio.enable();
+            }
+        }
+        if (me.input.isKeyPressed('multiplyUsers')) {
+            game.data.user_count = game.data.user_count*2;
+        }
+        if (me.input.isKeyPressed('godMode')) {
+            if (game.data.god_mode){
+                alooma.track('god_mode_off', {});
+                game.data.god_mode = false
+            }else{
+                alooma.track('god_mode_on', {});
+                game.data.god_mode = true
             }
         }
         return true;
